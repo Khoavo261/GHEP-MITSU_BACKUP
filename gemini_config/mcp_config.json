@@ -1,0 +1,32 @@
+{
+  "mcpServers": {
+    "notebooks": {
+      "command": "node",
+      "args": [
+        "c:\\Users\\DUYANH\\.antigravity-ide\\extensions\\googlecloudtools.datacloud-0.9.0-universal\\mcp_servers\\cli\\mcp_proxy_bundle.js",
+        "notebooks-antigravityide"
+      ]
+    },
+    "visualization": {
+      "command": "node",
+      "args": [
+        "c:\\Users\\DUYANH\\.antigravity-ide\\extensions\\googlecloudtools.datacloud-0.9.0-universal\\mcp_servers\\cli\\mcp_proxy_bundle.js",
+        "visualization-antigravityide"
+      ]
+    },
+    "context": {
+      "command": "node",
+      "args": [
+        "c:\\Users\\DUYANH\\.antigravity-ide\\extensions\\googlecloudtools.datacloud-0.7.2-universal\\mcp_servers\\cli\\mcp_proxy_bundle.js",
+        "context-antigravityide"
+      ]
+    },
+    "data-agent-kit": {
+      "command": "node",
+      "args": [
+        "c:\\Users\\DUYANH\\.antigravity-ide\\extensions\\googlecloudtools.datacloud-0.9.0-universal\\mcp_servers\\cli\\mcp_proxy_bundle.js",
+        "dataAgentKit-antigravityide"
+      ]
+    }
+  }
+}

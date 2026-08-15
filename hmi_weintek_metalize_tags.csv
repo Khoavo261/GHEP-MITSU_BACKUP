@@ -1,0 +1,85 @@
+Name,Address,Type,Comment
+HMI_Auto_Mode,M100,Bit,Che do Auto/Manual Test (1: Auto 0: Manual)
+HMI_Reset_Error,M101,Bit,Nut Nhan Reset Loi He Thong
+HMI_Start,M102,Bit,Phim START Khoi Dong May Ghep
+HMI_Stop,M103,Bit,Phim STOP Dung May An Toan
+HMI_Inc_Hold,M109,Bit,Phim INC Nhan Giu Tang Toc
+HMI_Dec_Hold,M114,Bit,Phim DEC Nhan Giu Giam Toc
+HMI_PID_Enable,M108,Bit,Bat/Tat Che Do PID Luc Cang Automatic
+HMI_Reset_Roll_M,M104,Bit,Reset Cuon Mang Metalize M Moi (Init Dia)
+HMI_Reset_Roll_U,M105,Bit,Reset Cuon Mang Giay U Moi (Init Dia)
+HMI_Reset_Roll_T,M106,Bit,Reset Cuon Thu T Moi (Init Core Dia)
+HMI_Reset_Length,M107,Bit,Reset Dem Tong Chieu Dai Met Hang (X2)
+Hold_Torque_Stop_M,M130,Bit,Giu Torque Ham Thang M Khi Dung May (Chong Trung Mang)
+Hold_Torque_Stop_U,M131,Bit,Giu Torque Xa Cuon U Khi Dung May (Chong Trung Mang)
+Anti_Dry_Rotate_S,M132,Bit,Cho Truc Dau S Quay Bo Cham Khi Dung May (Chong Kho Dau)
+Anti_Dry_Rotate_Ms,M133,Bit,Cho Truc Ghep Ms Quay Bo Cham Khi Dung May (Chong Kho Keo)
+Lift_Up_T,M120,Bit,Nut Nhan Ben Nang Cuon Thu T (Y60)
+Lift_Down_T,M121,Bit,Nut Nhan Ben Ha Cuon Thu T (Y61)
+Lift_Up_M,M122,Bit,Nut Nhan Ben Nang Cuon Metalize M (Y62)
+Lift_Down_M,M123,Bit,Nut Nhan Ben Ha Cuon Metalize M (Y63)
+Lift_Up_U,M124,Bit,Nut Nhan Ben Nang Cuon Giay U (Y64)
+Lift_Down_U,M125,Bit,Nut Nhan Ben Ha Cuon Giay U (Y65)
+Zero_Set_T,M110,Bit,Nut Nhan Set Zero Loadcell Truc T
+Zero_Set_X1,M111,Bit,Nut Nhan Set Zero Loadcell Truc X1
+Zero_Set_M,M112,Bit,Nut Nhan Set Zero Loadcell Truc M
+Zero_Set_U,M113,Bit,Nut Nhan Set Zero Loadcell Truc U
+Test_Son_T,M210,Bit,Test Servo ON Truc Thu T (Manual)
+Test_Son_X1,M211,Bit,Test Servo ON Truc Xa Giay X1 (Manual)
+Test_Son_X2,M212,Bit,Test Servo ON Truc Master X2 (Manual)
+Test_Son_M,M213,Bit,Test Servo ON Truc Metalize M (Manual)
+Test_Son_S,M214,Bit,Test Servo ON Truc Dau S (Manual)
+S_Ready_T,M1104,Bit,Trang Thai Servo Ready Truc T
+S_Ready_X1,M1105,Bit,Trang Thai Servo Ready Truc X1
+S_Ready_X2,M1106,Bit,Trang Thai Servo Ready Truc X2
+S_Ready_M,M1107,Bit,Trang Thai Servo Ready Truc M
+S_Ready_S,M1108,Bit,Trang Thai Servo Ready Truc S
+CCLink_OK,SB0020,Bit,Bao Truyenn Thong CC-Link OK
+Weight_Net_T,D500,32-bit Signed,Trong Luong Net Truc T sau Calib (0..4000)
+Weight_Net_X1,D501,32-bit Signed,Trong Luong Net Truc X1 sau Calib (0..4000)
+Weight_Net_M,D502,32-bit Signed,Trong Luong Net Truc M sau Calib (0..4000)
+Weight_Net_U,D503,32-bit Signed,Trong Luong Net Truc U sau Calib (0..4000)
+Anti_Dry_Crawl_Speed,D738,32-bit Signed,Toc Do Bo Cham Chong Kho Keo/Dau (1.0 m/p)
+Min_Torque_M,D760,32-bit Signed,Torque Ham Min Thang Tu M (Khi cuon nho)
+Max_Torque_M,D762,32-bit Signed,Torque Ham Max Thang Tu M (Khi cuon day)
+Init_Holding_Torque_M,D764,32-bit Signed,Luc Ham Ban Dau Khi Moi Len Cuon M
+Core_Dia_T_mm,D740,32-bit Signed,Duong Kinh Loi Cuon Thu T (76mm)
+Core_Dia_M_mm,D742,32-bit Signed,Duong Kinh Loi Cuon Metalize M (76mm)
+Core_Dia_U_mm,D744,32-bit Signed,Duong Kinh Loi Cuon Giay U (76mm)
+Max_Dia_T_mm,D750,32-bit Signed,Duong Kinh Phong Max Cuon Thu T (1000mm)
+Max_Dia_M_mm,D752,32-bit Signed,Duong Kinh Max Cuon Metalize M (600mm)
+Max_Dia_U_mm,D754,32-bit Signed,Duong Kinh Max Cuon Giay U (800mm)
+Set_Target_Length,D652,32-bit Signed,Chieu Dai Met Hang Cai Dat Tu Dung (Met)
+Total_Length_Meters,D650,32-bit Signed,Tong Chieu Dai Met Hang Da Ghep (Met)
+Current_Line_MPM,D730,32-bit Signed,Toc Do Day Chuyen Hien Tai (MPM x10)
+Target_Line_MPM,D732,32-bit Signed,Toc Do Muc Tieu Dang Huong Toi (MPM x10)
+Max_Speed_MPM,D734,32-bit Signed,Toc Do Max Cai Dat (100.0 m/p)
+Min_Speed_MPM,D736,32-bit Signed,Toc Do Min Khoi Dong (2.0 m/p)
+Speed_Ratio_S,D642,32-bit Signed,Ty Le Toc Do Trang Dau Truc S vo X2 (x1000)
+Speed_Offset_S,D644,32-bit Signed,Bu Toc Do Thu Cong Truc Dau S
+SP_Tension_T,D660,32-bit Signed,Luc Cang Cai Dat SP Truc Thu T (N/Kg)
+SP_Tension_X1,D662,32-bit Signed,Luc Cang Cai Dat SP Truc Xa Giay X1 (N/Kg)
+SP_Tension_M,D664,32-bit Signed,Luc Cang Cai Dat SP Truc Metalize M (N/Kg)
+SP_Tension_U,D668,32-bit Signed,Luc Cang Cai Dat SP Truc Xa Metalize U (N/Kg)
+Kp_T,D670,32-bit Signed,He So Kp PID Truc T (x100)
+Ki_T,D672,32-bit Signed,He So Ki PID Truc T (x100)
+Kd_T,D674,32-bit Signed,He So Kd PID Truc T (x100)
+Kp_X1,D676,32-bit Signed,He So Kp PID Truc X1 (x100)
+Ki_X1,D678,32-bit Signed,He So Ki PID Truc X1 (x100)
+Kd_X1,D680,32-bit Signed,He So Kd PID Truc X1 (x100)
+Kp_M,D682,32-bit Signed,He So Kp PID Truc M (x100)
+Ki_M,D684,32-bit Signed,He So Ki PID Truc M (x100)
+Kd_M,D686,32-bit Signed,He So Kd PID Truc M (x100)
+RPM_T,D700,32-bit Signed,Toc Do Vong Phut Truc Thu T (RPM x10)
+RPM_X1,D702,32-bit Signed,Toc Do Vong Phut Truc Xa Giay X1 (RPM x10)
+RPM_X2,D704,32-bit Signed,Toc Do Vong Phut Truc Master X2 (RPM x10)
+RPM_M,D706,32-bit Signed,Toc Do Vong Phut Truc Metalize M (RPM x10)
+RPM_S,D708,32-bit Signed,Toc Do Vong Phut Truc Dau S (RPM x10)
+MPM_T,D710,32-bit Signed,Van Toc Day Cuon Thu T (MPM x10)
+MPM_X1,D712,32-bit Signed,Van Toc Day Cuon Xa Giay X1 (MPM x10)
+MPM_X2,D714,32-bit Signed,Van Toc Day Chuyen Master X2 (MPM x10)
+MPM_M,D716,32-bit Signed,Van Toc Day Truc Metalize M (MPM x10)
+MPM_S,D718,32-bit Signed,Van Toc Day Truc Dau S (MPM x10)
+Real_Dia_U_mm,D720,32-bit Signed,Duong Kinh Hien Tai Cuon Giay U (mm)
+Real_Dia_M_mm,D722,32-bit Signed,Duong Kinh Hien Tai Cuon Metalize M (mm)
+Real_Dia_T_mm,D724,32-bit Signed,Duong Kinh Hien Tai Cuon Thu T (mm)
