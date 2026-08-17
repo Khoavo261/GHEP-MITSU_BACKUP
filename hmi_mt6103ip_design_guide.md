@@ -3,96 +3,88 @@
 
 ---
 
-## 🛠️ PHẦN 1: CẤU HÌNH KẾT NỐI PLC (SYSTEM PARAMETERS)
+## 🛠️ PHẦN 1: THÔNG SỐ CƠ KHÍ & TỐC ĐỘ MAX RPM CÁC TRỤC ĐỘNG CƠ
+
+| Trục Động Cơ | Tên Trục | Tốc độ Max RPM | Chế độ chạy khi máy Auto | Tỷ số truyền `Speed_Ratio` | Chế độ chạy Test độc lập |
+| :--- | :--- | :---: | :--- | :--- | :--- |
+| **Trục X2** | **Master Trục Chính** | **1000 RPM** | Quyết định tốc độ dây chuyền + **`pid_X2` Tốc Độ** | Chuẩn gốc | Cờ `M172` + Tốc độ test `D804` |
+| **Trục X1** | **Kéo / Xả Giấy X1** | **1000 RPM** | Đồng bộ vận tốc dài theo X2 + **`pid_X1` Lực căng** | `Speed_Ratio_X1` (`D758`) | Cờ `M171` + Tốc độ test `D802` |
+| **Trục Ms** | **Lô Ép Ghép Ms** | **3000 RPM** | Đồng bộ vận tốc dài theo X2 + **`pid_Ms` Tốc Độ** | `Speed_Ratio_Ms` (`D760`) | Cờ `M173` + Tốc độ test `D806` |
+| **Trục S** | **Lô Tráng Dầu S** | **3000 RPM** | Đồng bộ vận tốc dài theo X2 + **`pid_S` Tốc Độ** | `Speed_Ratio_S` (`D762`) | Cờ `M174` + Tốc độ test `D808` |
+| **Trục T** | **Thu Cuộn T** | **1500 RPM** | **Speed / Torque**: Chạy nhanh hơn để giữ Torque | `Speed_Ratio_T` (`D756`) | Cờ `M170` + Tốc test `D800`/`D801` |
+| **Trục M** | **Thắng Từ Xả Film**| - | 3 Pha Torque + **`pid_M` Lực căng Loadcell** | - | Cờ `M175` + Torque test `D810` |
+| **Trục U** | **Xả Cuộn Giấy U** | - | Theo Ø Cuộn Xả + **`pid_U` Lực căng Loadcell** | - | Cờ `M176` + Tốc độ test `D812` |
+
+---
+
+## 🛠️ PHẦN 2: CẤU HÌNH KẾT NỐI PLC (SYSTEM PARAMETERS)
 
 Trong phần mềm **EasyBuilder Pro**:
 1. Tạo dự án mới $\rightarrow$ Chọn Model: **`MT6103iP (1024 x 600)`**.
 2. Vào **`Home`** $\rightarrow$ **`System Parameters`** $\rightarrow$ Thêm thiết bị mới (**New Device**):
-   * **Device Type:** `Mitsubishi Q/QnA (Serial)` *(hoặc `Mitsubishi Q/QnA (Ethernet)` nếu dùng cáp mạng)*.
-   * **Interface:** `RS-232` (hoặc `RS-485 2W`).
-   * **COM Port:** `COM1 (19200, O, 8, 1)` *(Baudrate: 19200, Parity: Odd, Data Bits: 8, Stop Bit: 1)*.
+   * **Device Type:** `Mitsubishi Q00/Q00UJ/Q01/QJ71`.
+   * **Interface:** `RS-232` (hoặc Ethernet).
+   * **COM Port:** `COM1 (19200, O, 8, 1)`.
    * **PLC Station No.:** `0`.
 3. Nhập bảng Tag biến:
    * Vào menu **`Project`** $\rightarrow$ **`Address Tag Library`** $\rightarrow$ Bấm nút **`Import...`** $\rightarrow$ Chọn file [`weintek_easybuilder_tags_import.csv`](file:///d:/data-2026/lap_top/GHEP-MITSU_BACKUP/weintek_easybuilder_tags_import.csv).
-   * Toàn bộ 50+ biến điều khiển sẽ được nạp tự động vào HMI chỉ trong 1 click!
+   * Toàn bộ 80+ biến điều khiển sẽ được nạp tự động vào HMI chỉ trong 1 click!
 
 ---
 
-## 🎨 PHẦN 2: THIẾT KẾ CHI TIẾT 4 MÀN HÌNH CHÍNH (RESOLUTION: 1024 x 600)
+## 🎨 PHẦN 3: THIẾT KẾ 5 MÀN HÌNH CHỨC NĂNG (1024 x 600)
 
 ### 🔹 MÀN HÌNH 10: VẬN HÀNH CHÍNH (MAIN OPERATION)
-
-| Vị trí Layout | Loại Object trong EasyBuilder Pro | Địa chỉ kết nối | Thuộc tính & Định dạng | Ghi chú & Màu sắc |
-| :--- | :--- | :---: | :--- | :--- |
-| **Top Banner** | Text Label & System Date/Time | - | Font: Arial Bold, Size 20 | Nền xanh đen Header sang trọng |
-| **Top Right** | Bit Lamp (Đèn báo) | `M100` | State 0: DỪNG (Xám), State 1: CHẠY (Xanh lá) | Báo trạng thái máy |
-| **Top Right** | Bit Lamp (Đèn báo CC-Link) | `M1311` | State 0: OK (Xanh lá), State 1: LỖI (Đỏ nhấp nháy) | Báo lỗi truyền thông CC-Link |
-| **Khung Tốc Độ** | **Numeric Display** (Tốc độ thực) | `D700` | 32-bit Signed, 1 số lẻ (Format: `999.9 m/p`) | Số to Size 36, màu Xanh lục |
-| **Khung Tốc Độ** | **Numeric Input** (Tốc độ cài) | `D702` | 32-bit Signed, 1 số lẻ (Format: `999.9 m/p`) | Khung nhập màu Vàng cam |
-| **Nút START** | **Set Bit Object** (Momentary) | `M102` | Style: Round Rect, Màu Xanh Lá | Chữ trắng: **CHẠY MÁY (START)** |
-| **Nút STOP** | **Set Bit Object** (Momentary) | `M103` | Style: Round Rect, Màu Đỏ | Chữ trắng: **DỪNG MÁY (STOP)** |
-| **Nút INC (+)** | **Set Bit Object** (Momentary) | `M109` | Style: Button, Màu Xanh Dương | Bấm giữ tăng tốc liên tục |
-| **Nút DEC (-)** | **Set Bit Object** (Momentary) | `M114` | Style: Button, Màu Xanh Dương | Bấm giữ giảm tốc liên tục |
-| **Nút PEN 1** | **Toggle Switch / Set Bit** | `M115` | Đèn chỉ thị: `M1309` | Bật / Nhả Van Ép Pen 1 |
-| **Nút PEN 2** | **Toggle Switch / Set Bit** | `M116` | Đèn chỉ thị: `M1310` | Bật / Nhả Van Ép Pen 2 |
-| **Cuộn Thu T** | Numeric Display + Reset Roll | `D710` + `M105` | Format: `9999 mm`, Nút nạp cuộn mới | Đo đường kính cuộn Thu T |
-| **Cuộn Xả M** | Numeric Display + Reset Roll | `D712` + `M106` | Format: `9999 mm`, Nút nạp cuộn mới | Đo đường kính cuộn Xả M |
-| **Cuộn Xả U** | Numeric Display + Reset Roll | `D714` + `M107` | Format: `9999 mm`, Nút nạp cuộn mới | Đo đường kính cuộn Xả U |
-| **Độ dài Mét** | Numeric Display (Đã chạy) | `D720` | Format: `99,999 m` (32-bit Signed) | Đếm tổng chiều dài màng |
-| **Cài đặt Mét**| Numeric Input (Dừng máy) | `D722` | Format: `99,999 m`, Reset `M104` | Tự động báo giảm tốc & dừng |
-| **5 Trục Servo**| 5 Đèn Bit Lamp Ready | `M1104..M1108` | Xanh lá khi Driver sẵn sàng | T, X1, X2, Ms, S |
+* **Khung Tốc độ chính:** Hiển thị `Current_Line_MPM` (`D730`), Ô cài đặt `Target_Line_MPM` (`D732`).
+* **Nút bấm điều khiển:** `START` (`M102`), `STOP` (`M103`), `INC` (`M109`), `DEC` (`M114`), `PEN 1` (`M115`), `PEN 2` (`M116`).
+* **Đường kính thực 3 cuộn:** Cuộn Thu T (`D724`), Cuộn Xả M (`D722`), Cuộn Xả U (`D720`) + Nút nạp cuộn mới (`M105, M106, M107`).
+* **Đồng hồ Mét hàng:** Đã chạy (`D708`), Cài đặt dừng (`D700`), Reset mét (`M104`).
+* **5 Đèn Servo Ready:** `M1104..M1108` (T, X1, X2, Ms, S).
 
 ---
 
-### 🔹 MÀN HÌNH 20: CÀI ĐẶT LỰC CĂNG & PID (TENSION & PID SETTINGS)
-
-| Chức năng điều khiển | Loại Object | Địa chỉ hiển thị | Địa chỉ cài đặt | Đơn vị tính |
-| :--- | :--- | :---: | :---: | :---: |
-| **Lực căng Cuộn Thu T** | Numeric Input/Display | `D600` (Thực tế) | `D602` (Cài đặt) | $0 \sim 500\text{ N}$ |
-| **Lực căng Kéo Giấy X1** | Numeric Input/Display | `D604` (Thực tế) | `D606` (Cài đặt) | $0 \sim 300\text{ N}$ |
-| **Lực căng Thắng Xả M** | Numeric Input/Display | `D608` (Thực tế) | `D610` (Cài đặt) | $0 \sim 500\text{ N}$ |
-| **Lực căng Trục Xả U** | Numeric Input/Display | `D612` (Thực tế) | `D614` (Cài đặt) | $0 \sim 400\text{ N}$ |
-| **Hệ số PID Cuộn T** | 3 Numeric Inputs | - | `D620` (Kp), `D622` (Ki), `D624` (Kd) | x100 |
-| **Hệ số PID Trục X1** | 3 Numeric Inputs | - | `D626` (Kp), `D628` (Ki), `D630` (Kd) | x100 |
-| **Hệ số PID Thắng M** | 3 Numeric Inputs | - | `D682` (Kp), `D684` (Ki), `D686` (Kd) | x100 |
-| **Hệ số PID Trục Xả U**| 3 Numeric Inputs | - | `D688` (Kp), `D690` (Ki), `D692` (Kd) | x100 |
-| **Tỷ lệ Tốc độ Trục S** | Numeric Input | - | `D762` (1000 = 100%, >1000 Nhanh, <1000 Chậm) | $0.1\%$ |
-| **Bù Tốc độ Trục S**   | Numeric Input | - | `D764` (Bù lệch tốc độ $\pm \Delta v$) | $0.1\text{ m/p}$ |
-| **Côn Lực Taper Tension T**| Numeric Input | - | `D666` (% Côn lực) | $0 \sim 100\%$ |
-| **3 Pha Thắng M** | 3 Numeric Inputs | - | `D764` (Hold), `D760` (Min), `D762` (Max) | $0 \sim 4000\text{ DAC}$ |
+### 🔹 MÀN HÌNH 20: CÀI ĐẶT LỰC CĂNG & PID CÁC TRỤC (TENSION & PID SETTING)
+* **Cài đặt lực căng đặt:** SP_T (`D660`), SP_X1 (`D662`), SP_M (`D664`), SP_U (`D668`).
+* **Cài đặt hệ số PID Lực căng:** Kp, Ki, Kd cho 4 trục T, X1, M, U (`D670..D692`).
+* **Cài đặt hệ số PID Tốc độ:** Kp, Ki, Kd cho 3 trục X2, Ms, S (`D681..D698`).
+* **Cài đặt Tỷ lệ tốc độ `Speed_Ratio` (1000 = 100.0%):**
+  * `Speed_Ratio_T` (`D756`): Mặc định `1050` (chạy nhanh hơn 5% để căng giữ Torque).
+  * `Speed_Ratio_X1` (`D758`): Mặc định `1000`.
+  * `Speed_Ratio_Ms` (`D760`): Mặc định `1000`.
+  * `Speed_Ratio_S` (`D762`): Mặc định `1000` (>1000 chạy nhanh hơn, <1000 chạy chậm hơn).
+* **Côn lực Taper Tension T:** `D666` (% Côn lực).
+* **3 Pha Thắng M:** `D764` (Hold), `D760` (Min), `D762` (Max).
 
 ---
 
-### 🔹 MÀN HÌNH 30: CÂN CHỈNH LOADCELL & CƠ KHÍ (CALIBRATION)
+### 🔹 MÀN HÌNH 30: CHẾ ĐỘ TEST RIÊNG BIỆT TỪNG TRỤC (MANUAL / JOG TEST)
+Dành cho kỹ sư đứng máy căn chỉnh từng trục độc lập:
 
-* **4 Nút Cân Bì Zero Loadcell (Set Bit Momentary):**
-  * `M110`: Zero Set Cuộn Thu T
-  * `M111`: Zero Set Kéo X1
-  * `M112`: Zero Set Thắng M
-  * `M113`: Zero Set Xả U
-* **Cài đặt Tỷ số truyền và Bù tốc độ:**
-  * `D760`: Tỷ số tốc độ Lô Ghép Ms (`1000 = 100.0%`)
-  * `D762`: Tỷ số tốc độ Lô Dầu S (`1000 = 100.0%`)
-  * `D764`: Tốc độ bù lệch Lô Dầu S (`Speed_Offset_S`)
-  * `D734`: Gia tốc tăng tốc đường dốc (`Ramp_Accel_Rate`)
-  * `D736`: Gia tốc giảm tốc đường dốc (`Ramp_Decel_Rate`)
+| Trục Động Cơ | Cờ Kích Hoạt Test (Toggle/Set Bit) | Ô Nhập Tốc Độ Test (Numeric Input 0..4000) | Ô Nhập Torque Test (0..4000) |
+| :--- | :---: | :---: | :---: |
+| 🔵 **Test Trục Master X2** | **`M172`** | **`D804`** (`Test_Speed_X2`) | - |
+| 🔵 **Test Trục Kéo X1** | **`M171`** | **`D802`** (`Test_Speed_X1`) | - |
+| 🔵 **Test Trục Ghép Ms** | **`M173`** | **`D806`** (`Test_Speed_Ms`) | - |
+| 🔵 **Test Trục Dầu S** | **`M174`** | **`D808`** (`Test_Speed_S`) | - |
+| 🔵 **Test Trục Thu T** | **`M170`** | **`D800`** (`Test_Speed_T`) | **`D801`** (`Test_Torque_T`) |
+| 🔵 **Test Thắng Từ M** | **`M175`** | - | **`D810`** (`Test_Torque_M`) |
+| 🔵 **Test Trục Xả U** | **`M176`** | **`D812`** (`Test_Speed_U`) | - |
 
 ---
 
-### 🔹 MÀN HÌNH 40: BÁO LỖI & CHẨN ĐOÁN (ALARMS & DIAGNOSTICS)
+### 🔹 MÀN HÌNH 40: CÂN CHỈNH LOADCELL & CƠ KHÍ (CALIBRATION)
+* 4 Nút Cân Bì Zero Loadcell: `M110` (T), `M111` (X1), `M112` (M), `M113` (U).
+* Cài đặt Gia tốc đường dốc: `D704` (`Ramp_Accel_Rate`), `D706` (`Ramp_Decel_Rate`).
 
-* **Thanh trạng thái 3 Trạm CC-Link:**
-  * Trạm 1 (AJ65SBT-64AD): Đèn xanh `M1016` (AD Conversion Ready).
-  * Trạm 2 & 3 (AJ65VBTCU-68DAVN): Đèn xanh `M1064` (DA Output Ready).
-  * Trạm 4 (AJ65SBTB1-16DT): Đèn xanh Cyclic OK.
-* **Bảng Báo Động (Alarm Display Object):** Tự động ghi lại thời gian xảy ra lỗi Servo Not Ready, Quá tải WDT, Mất kết nối CC-Link.
-* **Nút bấm RESET LỖI TOÀN HỆ THỐNG:** `M101` (Kích thước lớn, màu Vàng).
+---
+
+### 🔹 MÀN HÌNH 50: BÁO LỖI & CHẨN ĐOÁN (ALARMS & DIAGNOSTICS)
+* Đèn trạng thái 3 Trạm CC-Link: Trạm 1 AD (`M1016`), Trạm 2&3 DA (`M1064`), Trạm 4 16DT.
+* Bảng Báo Động (Alarm Display Object).
+* Nút bấm RESET LỖI TOÀN HỆ THỐNG: `M101`.
 
 ---
 
 ### 🔹 THANH ĐIỀU HƯỚNG DƯỚI CÙNG (BOTTOM NAVIGATION BAR - TỌA ĐỘ Y: 540..600):
-Đặt 4 nút chuyển trang (**Function Key / Change Window Button**) cố định ở đáy màn hình:
-1. `[ F1: VẬN HÀNH CHÍNH ]` $\rightarrow$ Mở Window 10
-2. `[ F2: CÀI ĐẶT PID ]` $\rightarrow$ Mở Window 20
-3. `[ F3: CÂN CHỈNH ]` $\rightarrow$ Mở Window 30
-4. `[ F4: CHẨN ĐOÁN LỖI ]` $\rightarrow$ Mở Window 40
+5 Nút chuyển trang (**Function Key / Change Window Button**):
+`[F1: VẬN HÀNH]`  `[F2: CÀI ĐẶT PID]`  `[F3: TEST TRỤC]`  `[F4: CÂN CHỈNH]`  `[F5: BÁO LỖI]`

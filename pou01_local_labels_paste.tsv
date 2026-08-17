@@ -1,11 +1,20 @@
-VAR	pid_T	FB_TENSION_PID				Instance PID Truc Thu T
-VAR	pid_X1	FB_TENSION_PID				Instance PID Truc Xa Giay X1
+VAR	pid_T	FB_TENSION_PID				Instance PID Luc cang Thu T
+VAR	pid_X1	FB_TENSION_PID				Instance PID Luc cang Xa X1
 VAR	pid_M	FB_TENSION_PID				Instance PID Thang Tu M
-VAR	pid_U	FB_TENSION_PID				Instance PID Truc Xa Metalize U
-VAR	pid_S	FB_TENSION_PID				Instance PID Toc do Truc Trang Dau S
+VAR	pid_U	FB_TENSION_PID				Instance PID Luc cang Xa U
+VAR	pid_X2	FB_TENSION_PID				Instance PID Toc do Master X2
+VAR	pid_Ms	FB_TENSION_PID				Instance PID Toc do Ghep Ms
+VAR	pid_S	FB_TENSION_PID				Instance PID Toc do Trang Dau S
 VAR	fbCCLink	FFB_CCLINK_CONTROL				Instance Control CC-Link Master
+VAR	Base_Speed_X2	Double Word[Signed]				Toc do nen Master X2
+VAR	SP_Speed_X2	Double Word[Signed]				Toc do Setpoint Master X2
+VAR	SP_Speed_X1	Double Word[Signed]				Toc do Setpoint Xa X1
+VAR	SP_Speed_Ms	Double Word[Signed]				Toc do Setpoint Ghep Ms
+VAR	SP_Speed_S	Double Word[Signed]				Toc do Setpoint Trang Dau S
+VAR	SP_Speed_T	Double Word[Signed]				Toc do Setpoint Thu T
 VAR	Calc_Speed_X2	Double Word[Signed]				Toc do tinh toan Master X2
 VAR	Calc_Speed_T	Double Word[Signed]				Toc do tinh toan Thu T
+VAR	Calc_Torque_T	Double Word[Signed]				Torque tinh toan Thu T
 VAR	Calc_Speed_X1	Double Word[Signed]				Toc do tinh toan Xa X1
 VAR	Calc_Speed_Ms	Double Word[Signed]				Toc do tinh toan Ghep Ms
 VAR	Calc_Speed_S	Double Word[Signed]				Toc do tinh toan Trang Dau S
@@ -50,12 +59,16 @@ VAR	Trig_Pen1	Bit				Xung nhan phim Toggle Pen 1 X56
 VAR	Trig_Pen2	Bit				Xung nhan phim Toggle Pen 2 X57
 VAR	Prev_Pen1_PB	Bit				Trang thai X56 vong scan truoc
 VAR	Prev_Pen2_PB	Bit				Trang thai X57 vong scan truoc
+VAR	Prev_Pen1_16DT	Bit				Trang thai Pen 1 tren 16DT vong truoc
+VAR	Prev_Pen2_16DT	Bit				Trang thai Pen 2 tren 16DT vong truoc
 VAR	Pen1_State	Bit				Trang thai ON/OFF hien tai Pen 1
 VAR	Pen2_State	Bit				Trang thai ON/OFF hien tai Pen 2
 VAR	PID_Out_T	Double Word[Signed]				Output PID sau khi lay tu pid_T
 VAR	PID_Out_X1	Double Word[Signed]				Output PID sau khi lay tu pid_X1
 VAR	PID_Out_M	Double Word[Signed]				Output PID sau khi lay tu pid_M
 VAR	PID_Out_U	Double Word[Signed]				Output PID sau khi lay tu pid_U
-VAR	PID_Out_S	Double Word[Signed]				Output PID sau khi lay tu pid_S
+VAR	PID_Out_X2	Double Word[Signed]				Output PID Toc do X2
+VAR	PID_Out_Ms	Double Word[Signed]				Output PID Toc do Ms
+VAR	PID_Out_S	Double Word[Signed]				Output PID Toc do S
 VAR	Trig_PID_10ms	Bit				Xung kich hoat PID moi 10ms (SM409)
 VAR	Prev_SM409	Bit				Trang thai SM409 vong scan truoc
