@@ -2,6 +2,7 @@
 (* MÃ NGUỒN TỔNG HỢP TOÀN DIỆN (MASTER BACKUP) - DỰ ÁN MÁY GHÉP MÀNG METALIZE  *)
 (* PLC MITSUBISHI Q02U CPU - 100% STRUCTURED TEXT (POU_01)                      *)
 (* ĐỒNG BỘ VẬN TỐC DÀI THEO TRỤC MASTER X2 + SPEED_RATIO CHO TỪNG TRỤC          *)
+(* ĐO CHIỀU DÀI MÀNG TỪ XUNG ENCODER X2 + CÀI ĐẶT MÉT DỪNG & GIẢM TỐC TỰ ĐỘNG  *)
 (* MAX RPM: X2=1000, X1=1000, Ms=3000, S=3000, T=1500                          *)
 (* TÍCH HỢP CHẾ ĐỘ TEST RIÊNG BIỆT CHO TỪNG TRỤC (M170..M176 / D800..D812)     *)
 (* ============================================================================ *)
@@ -129,9 +130,35 @@ ELSIF Current_Line_MPM > Target_Line_MPM THEN
     IF Current_Line_MPM < Target_Line_MPM THEN Current_Line_MPM := Target_Line_MPM; END_IF;
 END_IF;
 
-(* 7. TÍNH ĐƯỜNG KÍNH 3 CUỘN T, M, U *)
+(* 7. TÍNH ĐƯỜNG KÍNH 3 CUỘN T, M, U VÀ ĐO CHIỀU DÀI MÀNG CHẠY *)
 Curr_Pulse_T  := INT_TO_DINT(D5000);
 Curr_Pulse_X2 := INT_TO_DINT(D5002);
+
+(* TÍNH TOÁN CHIỀU DÀI MÀNG CHẠY TÍCH LŨY TỪ XUNG ENCODER MASTER X2 *)
+IF Curr_Pulse_X2 >= Last_Pulse_X2_Len THEN
+    Delta_Pulse_X2 := Curr_Pulse_X2 - Last_Pulse_X2_Len;
+ELSE
+    Delta_Pulse_X2 := (Curr_Pulse_X2 + 65536) - Last_Pulse_X2_Len;
+END_IF;
+
+IF Delta_Pulse_X2 > 0 AND State_Machine = 1 THEN
+    Delta_Length_mm := (Delta_Pulse_X2 * 3142 * Dia_Ms_Roller_mm) / ((8 * Gear_Ratio_X2) * 100);
+    Accum_Length_mm := Accum_Length_mm + Delta_Length_mm;
+    
+    (* Chuyển đổi mm sang mét *)
+    IF Accum_Length_mm >= 1000 THEN
+        Total_Length_Meters := Total_Length_Meters + (Accum_Length_mm / 1000);
+        Accum_Length_mm     := Accum_Length_mm MOD 1000;
+    END_IF;
+END_IF;
+Last_Pulse_X2_Len := Curr_Pulse_X2;
+
+(* NÚT RESET TỔNG CHIỀU DÀI MÉT TỪ HMI (M104) *)
+IF HMI_Reset_Length THEN
+    Total_Length_Meters := 0;
+    Accum_Length_mm     := 0;
+    HMI_Reset_Length    := FALSE;
+END_IF;
 
 IF (Curr_Pulse_T - Last_Pulse_T) >= ((8000 * Gear_Ratio_T) / 1000) THEN
     Rev_Count_T := Rev_Count_T + 1;
@@ -362,12 +389,21 @@ fbCCLink(
     Set_Speed_U     := DINT_TO_WORD(Calc_Speed_U)
 );
 
-(* 13. TỰ ĐỘNG BÁO GIẢM TỐC KHI GẦN ĐẠT CHIỀU DÀI MÉT CÀI ĐẶT *)
-IF Set_Target_Length > 0 AND Decel_Distance_Meters > 0 THEN
-    IF Total_Length_Meters >= (Set_Target_Length - Decel_Distance_Meters) THEN
+(* 13. TỰ ĐỘNG BÁO GIẢM TỐC VÀ DỪNG MÁY KHI ĐẠT CHIỀU DÀI MÉT CÀI ĐẶT *)
+IF Set_Target_Length > 0 AND State_Machine = 1 THEN
+    (* Pha 1: Giảm tốc về Min_Speed khi còn cách đích khoảng cách Decel_Distance_Meters *)
+    IF Decel_Distance_Meters > 0 AND Total_Length_Meters >= (Set_Target_Length - Decel_Distance_Meters) THEN
         Auto_Decel_Flag := TRUE;
         IF Target_Line_MPM > Min_Speed_MPM THEN Target_Line_MPM := Min_Speed_MPM; END_IF;
     ELSE
         Auto_Decel_Flag := FALSE;
+    END_IF;
+
+    (* Pha 2: Dừng máy hoàn toàn khi đã đủ tổng mét màng cài đặt *)
+    IF Total_Length_Meters >= Set_Target_Length THEN
+        State_Machine    := 0; (* Tự động chuyển về trạng thái STOP *)
+        Target_Line_MPM  := 0;
+        Current_Line_MPM := 0;
+        Auto_Decel_Flag  := FALSE;
     END_IF;
 END_IF;

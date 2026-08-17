@@ -44,6 +44,10 @@ VAR	Curr_Pulse_X2	Double Word[Signed]				Xung Encoder Master X2
 VAR	Last_Pulse_X2_T	Double Word[Signed]				Xung Master X2 khi Thu T quay 1 vong
 VAR	Last_Pulse_X2_M	Double Word[Signed]				Xung Master X2 khi Cuon M quay 1 vong
 VAR	Last_Pulse_X2_U	Double Word[Signed]				Xung Master X2 khi Cuon U quay 1 vong
+VAR	Last_Pulse_X2_Len	Double Word[Signed]				Xung Master X2 vong truoc de do met
+VAR	Delta_Pulse_X2	Double Word[Signed]				So xung Master X2 tang them moi chu ky
+VAR	Delta_Length_mm	Double Word[Signed]				So mm mang tang them moi chu ky
+VAR	Accum_Length_mm	Double Word[Signed]				Tich luy mm mang de doi ra met
 VAR	Trig_X50	Bit				Xung phat hien cam bien X50 cuon M
 VAR	Trig_X51	Bit				Xung phat hien cam bien X51 cuon U
 VAR	Prev_X50	Bit				Trang thai X50 vong scan truoc
