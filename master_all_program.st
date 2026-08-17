@@ -1,11 +1,169 @@
 (* ============================================================================ *)
-(* MÃ NGUỒN TỔNG HỢP TOÀN DIỆN (MASTER BACKUP) - DỰ ÁN MÁY GHÉP MÀNG METALIZE  *)
-(* PLC MITSUBISHI Q02U CPU - 100% STRUCTURED TEXT (POU_01)                      *)
-(* ĐỒNG BỘ VẬN TỐC DÀI THEO TRỤC MASTER X2 + SPEED_RATIO CHO TỪNG TRỤC          *)
-(* ĐO CHIỀU DÀI MÀNG TỪ XUNG ENCODER X2 + CÀI ĐẶT MÉT DỪNG & GIẢM TỐC TỰ ĐỘNG  *)
-(* MAX RPM: X2=1000, X1=1000, Ms=3000, S=3000, T=1500                          *)
-(* TÍCH HỢP CHẾ ĐỘ TEST RIÊNG BIỆT CHO TỪNG TRỤC (M170..M176 / D800..D812)     *)
+(* DỰ ÁN: MÁY GHÉP MÀNG METALIZE TỰ ĐỘNG - MITSUBISHI Q02U CPU                  *)
+(* TẬP TIN TỔNG HỢP TOÀN BỘ MÃ NGUỒN HỆ THỐNG (MASTER ALL IN ONE)              *)
+(* BAO GỒM: FB_TENSION_PID + FFB_CCLINK_CONTROL + CHƯƠNG TRÌNH CHÍNH POU_01     *)
 (* ============================================================================ *)
+
+(* ============================================================================ *)
+(* PHẦN 1: FUNCTION BLOCK THUẬT TOÁN ĐIỀU KHIỂN PID (FB_TENSION_PID)            *)
+(* ÁP DỤNG CHO PID TỐC ĐỘ (X2, Ms, S) VÀ PID LỰC CĂNG TENSION (T, X1, M, U)     *)
+(* ============================================================================ *)
+FUNCTION_BLOCK FB_TENSION_PID
+VAR_INPUT
+    Enable      : Bit;                 (* Cho phep khoi PID hoat dong *)
+    Reset       : Bit;                 (* Reset thanh phan tich phan I *)
+    Setpoint    : Double Word[Signed]; (* Gia tri cai dat muc tieu *)
+    Feedback    : Double Word[Signed]; (* Gia tri phan hoi thuc te *)
+    Kp          : Double Word[Signed]; (* He so ti le P (x100) *)
+    Ki          : Double Word[Signed]; (* He so tich phan I (x100) *)
+    Kd          : Double Word[Signed]; (* He so vi sai D (x100) *)
+    Deadband    : Double Word[Signed]; (* Vung chet sai so *)
+    Out_Min     : Double Word[Signed]; (* Gioi han duoi Output *)
+    Out_Max     : Double Word[Signed]; (* Gioi han tren Output *)
+END_VAR
+VAR_OUTPUT
+    PID_Output  : Double Word[Signed]; (* Gia tri ngo ra PID dieu khien *)
+    Error       : Double Word[Signed]; (* Sai so hien tai e(k) *)
+END_VAR
+VAR
+    Error_Prev  : Double Word[Signed]; (* Sai so chu ky truoc e(k-1) *)
+    P_Term      : Double Word[Signed]; (* Thanh phan Ti le P *)
+    I_Term      : Double Word[Signed]; (* Thanh phan Tich phan I *)
+    D_Term      : Double Word[Signed]; (* Thanh phan Vi sai D *)
+END_VAR
+
+IF NOT Enable THEN
+    PID_Output := 0;
+    I_Term     := 0;
+    Error_Prev := 0;
+    RETURN;
+END_IF;
+
+IF Reset THEN
+    I_Term     := 0;
+    Error_Prev := 0;
+    PID_Output := 0;
+    RETURN;
+END_IF;
+
+(* 1. TÍNH ĐỘ LỆCH SAI SỐ ERROR E(K) *)
+Error := Setpoint - Feedback;
+
+(* 2. BỘ LỌC VÙNG CHẾT DEADBAND *)
+IF ABS(Error) <= Deadband THEN
+    Error := 0;
+END_IF;
+
+(* 3. TÍNH THÀNH PHẦN PROPORTIONAL (P) *)
+P_Term := (Error * Kp) / 100;
+
+(* 4. TÍNH THÀNH PHẦN INTEGRAL (I) VỚI CHỐNG BÃO HÒA ANTI-WINDUP *)
+I_Term := I_Term + ((Error * Ki) / 100);
+
+IF I_Term > Out_Max THEN
+    I_Term := Out_Max;
+ELSIF I_Term < Out_Min THEN
+    I_Term := Out_Min;
+END_IF;
+
+(* 5. TÍNH THÀNH PHẦN DERIVATIVE (D) *)
+D_Term := ((Error - Error_Prev) * Kd) / 100;
+Error_Prev := Error;
+
+(* 6. TỔNG HỢP NỔI PID VÀ ÉP BIÊN OUT_MIN..OUT_MAX *)
+PID_Output := P_Term + I_Term + D_Term;
+
+IF PID_Output > Out_Max THEN
+    PID_Output := Out_Max;
+ELSIF PID_Output < Out_Min THEN
+    PID_Output := Out_Min;
+END_IF;
+
+END_FUNCTION_BLOCK
+
+
+(* ============================================================================ *)
+(* PHẦN 2: FUNCTION BLOCK ĐIỀU KHIỂN TRUYỀN THÔNG CC-LINK (FFB_CCLINK_CONTROL)   *)
+(* TRẠM 1: 4CH AD (AJ65SBT-64AD) | TRẠM 2&3: 8CH DA (AJ65VBTCU-68DAVN)          *)
+(* TRẠM 4: 16DT I/O (AJ65SBTB1-16DT)                                            *)
+(* ============================================================================ *)
+FUNCTION_BLOCK FFB_CCLINK_CONTROL
+VAR_INPUT
+    Enable          : Bit;
+    ResetErr        : Bit;
+    Auto_Mode       : Bit;
+    Set_Speed_T     : Word[Unsigned]/Bit String[16-bit];
+    Set_Torque_T    : Word[Unsigned]/Bit String[16-bit];
+    Set_Speed_X1    : Word[Unsigned]/Bit String[16-bit];
+    Set_Speed_X2    : Word[Unsigned]/Bit String[16-bit];
+    Set_Speed_Ms    : Word[Unsigned]/Bit String[16-bit];
+    Set_Torque_M    : Word[Unsigned]/Bit String[16-bit];
+    Set_Speed_S     : Word[Unsigned]/Bit String[16-bit];
+    Set_Speed_U     : Word[Unsigned]/Bit String[16-bit];
+END_VAR
+VAR_OUTPUT
+    CCLink_OK       : Bit;
+    HasError        : Bit;
+    ADC_CH1_Raw     : Word[Unsigned]/Bit String[16-bit];
+    ADC_CH2_Raw     : Word[Unsigned]/Bit String[16-bit];
+    ADC_CH3_Raw     : Word[Unsigned]/Bit String[16-bit];
+    ADC_CH4_Raw     : Word[Unsigned]/Bit String[16-bit];
+    DI_X0_State     : Bit;
+    DI_X1_State     : Bit;
+END_VAR
+
+IF Enable THEN
+
+    (* 1. Kiem tra trang thai mang CC-Link (SB0020=0 va SB0049=0 la mang binh thuong) *)
+    CCLink_OK := (NOT SB0020) AND (NOT SB0049);
+    HasError  := SB0020 OR SB0049 OR M1032 OR M1066;
+
+    M1208 := CCLink_OK;  (* RY8: AD Conversion Enable (St 1) *)
+    M1240 := CCLink_OK;  (* RY28: DA Conversion Enable (St 2) *)
+
+    (* 2. Doc 4 kenh Analog Input (AJ65SBT-64AD - Tram 1) *)
+    IF M1016 THEN (* RX8: AD Conversion Completed *)
+        ADC_CH1_Raw := D500;
+        ADC_CH2_Raw := D501;
+        ADC_CH3_Raw := D502;
+        ADC_CH4_Raw := D503;
+
+        ADC_CH1_Val := D500;
+        ADC_CH2_Val := D501;
+        ADC_CH3_Val := D502;
+        ADC_CH4_Val := D503;
+    END_IF;
+
+    (* 3. Ghi 8 kenh Analog Output DAC 0..4000 (AJ65VBTCU-68DAVN - Tram 2 & 3) *)
+    D524 := Set_Speed_T;   (* CH1: Speed Thu T (D524) *)
+    D525 := Set_Torque_T;  (* CH2: Torque Thu T (D525) *)
+    D526 := Set_Speed_X1;  (* CH3: Speed Xa X1 (D526) *)
+    D527 := Set_Speed_X2;  (* CH4: Speed Master X2 (D527) *)
+    D528 := Set_Speed_Ms;  (* CH5: Speed Ghep Ms (D528) *)
+    D529 := Set_Torque_M;  (* CH6: Torque Thang M (D529) *)
+    D530 := Set_Speed_S;   (* CH7: Speed Trang Dau S (D530) *)
+    D531 := Set_Speed_U;   (* CH8: Speed Xa U (D531) *)
+
+    (* 4. Xu ly Digital Remote I/O (AJ65SBTB1-16DT: X0..X7 = M1104..M1111 | Y8..YF = M1304..M1311) *)
+    DI_X0_State := M1104;  (* RX60 St 4: Servo Ready T *)
+    DI_X1_State := M1105;  (* RX61 St 4: Servo Ready X1 *)
+
+    (* 5. Reset loi *)
+    M1226 := ResetErr OR M1111; (* RY1A: Reset loi St 1 *)
+    M1258 := ResetErr OR M1111; (* RY3A: Reset loi St 2 *)
+
+END_IF;
+
+END_FUNCTION_BLOCK
+
+
+(* ============================================================================ *)
+(* PHẦN 3: CHƯƠNG TRÌNH CHÍNH VẬN HÀNH DÂY CHUYỀN (POU_01)                      *)
+(* ĐỒNG BỘ VẬN TỐC DÀI THEO TRỤC CHÍNH X2 + SPEED_RATIO CHO TỪNG TRỤC           *)
+(* ĐO CHIỀU DÀI MÀNG TỪ ENCODER X2 + 2 PHA GIẢM TỐC & DỪNG TỰ ĐỘNG              *)
+(* TÍCH HỢP CHẾ ĐỘ TEST RIÊNG BIỆT CHO TỪNG TRỤC (T, X1, X2, Ms, S, M, U)      *)
+(* ============================================================================ *)
+PROGRAM POU_01
 
 (* 0. KHỞI TẠO TỐC ĐỘ MAX RPM VÀ TỶ SỐ TRUYỀN HỘP SỐ *)
 IF Max_RPM_X2 <= 0 THEN Max_RPM_X2 := 1000; END_IF; (* Trục Master X2: Max 1000 RPM *)
@@ -407,3 +565,5 @@ IF Set_Target_Length > 0 AND State_Machine = 1 THEN
         Auto_Decel_Flag  := FALSE;
     END_IF;
 END_IF;
+
+END_PROGRAM
