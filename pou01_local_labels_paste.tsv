@@ -10,7 +10,6 @@ VAR	Base_Speed_X2	Double Word[Signed]				Toc do nen Master X2
 VAR	SP_Speed_X2	Double Word[Signed]				Toc do Setpoint Master X2
 VAR	SP_Speed_X1	Double Word[Signed]				Toc do Setpoint Xa X1
 VAR	SP_Speed_Ms	Double Word[Signed]				Toc do Setpoint Ghep Ms
-VAR	SP_Speed_S	Double Word[Signed]				Toc do Setpoint Trang Dau S
 VAR	SP_Speed_T	Double Word[Signed]				Toc do Setpoint Thu T
 VAR	Calc_Speed_X2	Double Word[Signed]				Toc do tinh toan Master X2
 VAR	Calc_Speed_T	Double Word[Signed]				Toc do tinh toan Thu T
