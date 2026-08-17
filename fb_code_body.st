@@ -14,29 +14,25 @@ IF Enable THEN
         ADC_CH3_Raw := D502;
         ADC_CH4_Raw := D503;
 
-        (* Quy doi sang 0..1000 (0.0% .. 100.0%) *)
-        ADC_CH1_Val := INT_TO_WORD(WORD_TO_INT(D500) * 1000 / 4000);
-        ADC_CH2_Val := INT_TO_WORD(WORD_TO_INT(D501) * 1000 / 4000);
-        ADC_CH3_Val := INT_TO_WORD(WORD_TO_INT(D502) * 1000 / 4000);
-        ADC_CH4_Val := INT_TO_WORD(WORD_TO_INT(D503) * 1000 / 4000);
+        ADC_CH1_Val := D500;
+        ADC_CH2_Val := D501;
+        ADC_CH3_Val := D502;
+        ADC_CH4_Val := D503;
     END_IF;
 
-    (* 3. Ghi 8 kenh Analog Output (AJ65VBTCU-68DAVN - Tram 2 & 3) *)
-    (* QUY ĐỔI LỆNH 0..1000 XUẤT RA DẢI DAC 0..4000 *)
-    D524 := INT_TO_WORD(WORD_TO_INT(Set_Speed_T)  * 4000 / 1000);
-    D525 := INT_TO_WORD(WORD_TO_INT(Set_Torque_T) * 4000 / 1000);
-    D526 := INT_TO_WORD(WORD_TO_INT(Set_Speed_X1) * 4000 / 1000);
-    D527 := INT_TO_WORD(WORD_TO_INT(Set_Speed_X2) * 4000 / 1000);
-    D528 := INT_TO_WORD(WORD_TO_INT(Set_Speed_Ms) * 4000 / 1000);
-    D529 := INT_TO_WORD(WORD_TO_INT(Set_Torque_M) * 4000 / 1000);
-    D530 := INT_TO_WORD(WORD_TO_INT(Set_Speed_S)  * 4000 / 1000);
-    D531 := INT_TO_WORD(WORD_TO_INT(Set_Speed_U)  * 4000 / 1000);
+    (* 3. Ghi 8 kenh Analog Output DAC 0..4000 (AJ65VBTCU-68DAVN - Tram 2 & 3) *)
+    D524 := Set_Speed_T;   (* CH1: Speed Thu T (D524) *)
+    D525 := Set_Torque_T;  (* CH2: Torque Thu T (D525) *)
+    D526 := Set_Speed_X1;  (* CH3: Speed Xa X1 (D526) *)
+    D527 := Set_Speed_X2;  (* CH4: Speed Master X2 (D527) *)
+    D528 := Set_Speed_Ms;  (* CH5: Speed Ghep Ms (D528) *)
+    D529 := Set_Torque_M;  (* CH6: Torque Thang M (D529) *)
+    D530 := Set_Speed_S;   (* CH7: Speed Trang Dau S (D530) *)
+    D531 := Set_Speed_U;   (* CH8: Speed Xa U (D531) *)
 
     (* 4. Xu ly Digital Remote I/O (AJ65SBTB1-16DT: X0..X7 = M1104..M1111 | Y8..YF = M1304..M1311) *)
     DI_X0_State := M1104;  (* RX60 St 4 *)
     DI_X1_State := M1105;  (* RX61 St 4 *)
-
-    (* Ngo ra Y8..YF (M1304..M1311) de HMI / User tu set ON/OFF truc tiep *)
 
     (* 5. Reset loi *)
     M1226 := ResetErr OR M1111; (* RY1A: Reset loi St 1 *)
