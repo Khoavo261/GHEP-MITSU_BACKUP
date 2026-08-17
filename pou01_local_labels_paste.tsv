@@ -2,7 +2,6 @@ VAR	pid_T	FB_TENSION_PID				Instance PID Truc Thu T
 VAR	pid_X1	FB_TENSION_PID				Instance PID Truc Xa Giay X1
 VAR	pid_M	FB_TENSION_PID				Instance PID Thang Tu M
 VAR	pid_U	FB_TENSION_PID				Instance PID Truc Xa Metalize U
-VAR	pid_S	FB_TENSION_PID				Instance PID Truc Trang Dau S
 VAR	fbCCLink	FFB_CCLINK_CONTROL				Instance Control CC-Link Master
 VAR	Calc_Speed_X2	Double Word[Signed]				Toc do tinh toan Master X2
 VAR	Calc_Speed_T	Double Word[Signed]				Toc do tinh toan Thu T
@@ -56,6 +55,5 @@ VAR	PID_Out_T	Double Word[Signed]				Output PID sau khi lay tu pid_T
 VAR	PID_Out_X1	Double Word[Signed]				Output PID sau khi lay tu pid_X1
 VAR	PID_Out_M	Double Word[Signed]				Output PID sau khi lay tu pid_M
 VAR	PID_Out_U	Double Word[Signed]				Output PID sau khi lay tu pid_U
-VAR	PID_Out_S	Double Word[Signed]				Output PID sau khi lay tu pid_S
 VAR	Trig_PID_10ms	Bit				Xung kich hoat PID moi 10ms (SM409)
 VAR	Prev_SM409	Bit				Trang thai SM409 vong scan truoc

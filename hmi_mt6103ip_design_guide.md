@@ -56,7 +56,6 @@ Trong phần mềm **EasyBuilder Pro**:
 | **Hệ số PID Trục X1** | 3 Numeric Inputs | - | `D626` (Kp), `D628` (Ki), `D630` (Kd) | x100 |
 | **Hệ số PID Thắng M** | 3 Numeric Inputs | - | `D682` (Kp), `D684` (Ki), `D686` (Kd) | x100 |
 | **Hệ số PID Trục Xả U**| 3 Numeric Inputs | - | `D688` (Kp), `D690` (Ki), `D692` (Kd) | x100 |
-| **Hệ số PID Trục Dầu S**| 3 Numeric Inputs | - | `D694` (Kp), `D696` (Ki), `D698` (Kd) | x100 |
 | **Tỷ lệ Tốc độ Trục S** | Numeric Input | - | `D762` (1000 = 100%, >1000 Nhanh, <1000 Chậm) | $0.1\%$ |
 | **Bù Tốc độ Trục S**   | Numeric Input | - | `D764` (Bù lệch tốc độ $\pm \Delta v$) | $0.1\text{ m/p}$ |
 | **Côn Lực Taper Tension T**| Numeric Input | - | `D666` (% Côn lực) | $0 \sim 100\%$ |
