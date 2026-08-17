@@ -3,95 +3,101 @@ name: mitsubishi-gxworks2-plc
 description: Guidelines, file formatting rules, and multi-axis control architectures for Mitsubishi Q-Series PLC programming using GX Works2.
 ---
 
-# Mitsubishi GX Works2 PLC Development & Code Import Skill
+# Mitsubishi GX Works2 PLC Development & Multi-Axis Control Skill
 
-This skill documents proven patterns, file formatting rules, and control architecture guidelines for programming Mitsubishi Q-Series PLCs (e.g. Q13UDEHCPU) on GX Works2.
+This skill documents proven patterns, compiler invariants, file formatting rules, and multi-axis machine control architecture guidelines for programming Mitsubishi Q-Series PLCs (e.g. Q02U, Q00UJ, Q13UDEH) on GX Works2.
 
-## 1. GX Works2 Import File Formats
+---
 
-### A. Global Device Comment CSV Format (`Read from CSV File...`)
+## 1. GX Works2 Import File Formats & Compiler Invariants
+
+### A. Label Scope & Declaration Rules (Preventing Errors `F1055` & `C1028`)
+1. **Zero Duplicate Declarations (Error `F1055`):**
+   - In GX Works2, a label declared in **Global Labels** (`VAR_GLOBAL` assigned to devices like `D766`, `M100`) MUST NEVER be declared in **Local Labels** (`VAR`) of any POU.
+   - Declaring the same variable in both scopes causes compile failure `F1055: The identical label name was declared in a global label and a local label`.
+2. **Full Label Synchronism (Error `C1028`):**
+   - Every variable introduced in Structured Text code MUST exist in either the Global or Local Label table.
+   - When generating code, always generate accompanying `.tsv` label files without headers for instant 1-click grid copy-pasting.
+
+### B. Global Device Comment CSV Format (`Read from CSV File...`)
 When creating CSV files for importing comments into GX Works2 Device Comment table, the header MUST be:
-`"Device Code","Device No.","Comment"`
-
-Example:
 ```csv
 "Device Code","Device No.","Comment"
-"X","80","Nút nhấn START"
-"Y","A0","Kích hoạt Servo ON"
-"D","500","Loadcell Trục Thu T"
+"X","50","Sensor tiem can dem 1 vong cuon M"
+"Y","8","Servo ON Truc Thu T"
+"D","510","Trong luong Luc cang thuc te T"
 ```
 
-### B. Global Label Grid Copy-Paste Rules
-When pasting variables into GX Works2 `Global_Variables` grid:
+### C. Global Label Grid Copy-Paste Rules
+When pasting variables into GX Works2 `Global_Variables` or `Local_Variables` grid:
 - Do NOT include header rows (`Class`, `Label Name`, `Device`), otherwise GX Works2 will throw compile errors: `C5046` (invalid class), `C5043` (invalid character), `C5003` (invalid device), `C5027` (invalid data type).
-- Use TAB-separated values (`.tsv`):
+- Format as TAB-separated values (`.tsv`):
   `Label_Name <TAB> Data_Type <TAB> Class <TAB> Constant <TAB> Device <TAB> Comment`
 
-### C. ASC File Import Format (`Read ASC Format File...`)
-GX Works2 `Read ASC Format File...` expects Instruction List (IL) / Mnemonic statements starting with `NOP`/`LD` and ending with `END`. It does NOT accept raw Structured Text (ST) files.
+### D. WDT & Scan Time Tuning for Real-Time Accuracy
+- On Q-Series CPUs (Q02U/Q00U), set **`Constant Scanning = 2.0 ms`** and **`WDT = 500 ms`** in `PLC Parameter -> PLC RAS`.
+- This stabilizes scan cycle jitter, prevents WDT timeout error `5010`, and guarantees reliable pulse detection on high-speed proximity inputs (`X50/X51`) even at line speeds $\ge 100\text{ m/min}$.
+
+### E. 32-Bit Arithmetic Overflow Protection
+- Always cast intermediate products to `Double Word[Signed]` (`DINT`) before multiplying large integers:
+  $$\text{Scaled} = \frac{\text{DINT\_Val} \times 4000}{\text{Max\_Limit}}$$
+- Performing $4000 \times 4000 = 16,000,000$ in 16-bit INT silently overflows ($> 32,767$) and produces negative/erratic DAC voltages.
 
 ---
 
 ## 2. Multi-Axis Paper + Metalize Laminating Machine Control Architecture
 
 ### Axis & Actuator Map:
-- **Master Speed Axis (X2)**: Sets the line speed reference ($0 \sim 100\text{ m/min}$).
-- **Feed Axis (X1)**: Identical mechanics as X2 ($300.5\text{ mm}$ roller, $8/1$ gear ratio). Takes Master X2 speed directly as base speed ($v_{\text{X1\_base}} = v_{\text{X2}}$) and applies a light PID tension offset ($\Delta v_{\text{PID\_X1}}$) to maintain paper tension `Weight_X1`.
-- **Laminating Nip Axis (Ms)**: 100% absolute line speed synchronization with Master X2 ($v_{\text{Ms}} = v_{\text{X2}}$) without PID speed feedback loop.
-- **Coating Roller Axis (S)**: Pure speed ratio (`Speed_Ratio_S`) & offset (`Speed_Offset_S`) synchronization with Master X2 ($v_{\text{S}} = v_{\text{X2}} \cdot \frac{\text{Ratio}}{1000} + \text{Offset}$) without PID tension feedback loop.
-- **Rewinder Axis (T)**: Core diameter expansion speed scaling ($v_{\text{T}} = v_{\text{X2}} \cdot \frac{D_{\text{real\_T}}}{D_{\text{core\_T}}} + \Delta v_{\text{PID\_T}}$).
-- **Metalize Film Unwinder (Brake M)**: Magnetic Brake Torque command with 3-Phase Dynamic Torque Scaling.
-- **Paper Unwinder Axis (U)**: Diameter uncoiling speed scaling ($v_{\text{U}} = v_{\text{X2}} \cdot \frac{D_{\text{max\_U}}}{D_{\text{real\_U}}} + \Delta v_{\text{PID\_U}}$).
+- **Master Speed Axis (X2 - 1000 RPM Max)**:
+  - Sets the line speed reference ($0 \sim 100\text{ m/min}$).
+  - Runs **`pid_X2` (Speed PID Loop)** to regulate line speed against load disturbances.
+- **Feed Axis (X1 - 1000 RPM Max)**:
+  - Synchronizes to Master X2 line speed + **`pid_X1` (Tension PID Loop)**:
+    $$v_{\text{X1}} = \left( v_{\text{X2}} \cdot \frac{\text{Speed\_Ratio\_X1}}{1000} \right) + \Delta v_{\text{PID\_X1}}$$
+- **Laminating Nip Axis (Ms - 3000 RPM Max)**:
+  - Synchronizes to Master X2 line speed + **`pid_Ms` (Speed PID Loop)**:
+    $$v_{\text{Ms}} = \left( \frac{v_{\text{X2}} \cdot D_{\text{Ms}}}{D_{\text{X2}}} \right) \cdot \frac{\text{Speed\_Ratio\_Ms}}{1000} + \Delta v_{\text{PID\_Ms}}$$
+- **Coating Roller Axis (S - 3000 RPM Max)**:
+  - Synchronizes to Master X2 line speed + **`pid_S` (Speed PID Loop)**:
+    $$v_{\text{S}} = \left( v_{\text{X2}} \cdot \frac{\text{Speed\_Ratio\_S}}{1000} \right) + \text{Speed\_Offset\_S} + \Delta v_{\text{PID\_S}}$$
+- **Rewinder Axis (T - 1500 RPM Max - Speed/Torque Mode)**:
+  - **Speed Reference:** Leads ahead ($105\% \sim 115\%$ via `Speed_Ratio_T = 1050`) based on expanding core diameter:
+    $$v_{\text{T\_ref}} = \left( v_{\text{X2}} \cdot \frac{D_{\text{real\_T}}}{D_{\text{core\_T}}} \right) \cdot \frac{\text{Speed\_Ratio\_T}}{1000}$$
+  - **Torque Limit Reference:** Controlled dynamically via Tension PID `pid_T` + Taper tension curve ($0 \sim 100\%$) to maintain constant tension across expanding roll diameters without web tearing.
+- **Metalize Film Unwinder (Brake M)**:
+  - Magnetic Brake Torque command with 3-Phase Dynamic Torque Scaling + Loadcell Tension PID `pid_M`.
+- **Paper Unwinder Axis (U)**:
+  - Diameter uncoiling speed scaling ($v_{\text{U}} = v_{\text{X2}} \cdot \frac{D_{\text{max\_U}}}{D_{\text{real\_U}}} + \Delta v_{\text{PID\_U}}$).
 
-### Hardware Configuration (Q-Series Base Rack):
-- **Slot 0**: CC-Link Master (`QJ61BT11N`, `H0000`)
-  - **Station 1 (Remote ADC AJ65SBT-64AD - 1 Station)**: Reads 4 loadcell tension sensors (`D500..D503`), Handshake (`M1016` RX8, `M1208` RY8, `M1226` RY1A).
-  - **Station 2 & 3 (Remote DAC AJ65VBTCU-68DAVN - 2 Stations)**: 8 Channels DAC outputting speed/torque commands (`D524..D531`), Handshake (`M1064` RX38, `M1240` RY28, `M1258` RY3A).
-  - **Station 4 (Remote IO AJ65SBTB1-16DT - 1 Station)**: 
-    - 8 Remote Inputs `X0..X7`: `M1104` to `M1111` (`RX60` to `RX67`).
-    - 8 Remote Outputs `Y8..YF`: `M1304` to `M1311` (`RY68` to `RY6F`) - on module faceplate labeled `8 9 A B C D E F`.
-- **Slot 1, 2, 3**: High Speed Counter modules (`QD62`) reading 5 encoders (T, X1, X2, M, S) on Start XY `0020`, `0030`, `0040`.
-- **Slot 4 & 5**: Digital Input `QX40` (`X50` Metalize proximity sensor, `X51` Paper unwinder proximity sensor on Start XY `0050`) and Digital Output `QY40P` (`Y60..Y67` on Start XY `0060` including Pen Solenoid Valves `Y66, Y67`).
+---
 
-### Key Control & Timing Best Practices:
-1. **CC-Link Link Special Relay (SB) Polarity:**
-   - In Mitsubishi CC-Link: `SB0020 = 0 (OFF)` and `SB0049 = 0 (OFF)` is **NORMAL OPERATION**.
-   - `SB0020 = 1` or `SB0049 = 1` is **ERROR/FAULT**.
-   - Condition for CC-Link OK: `CCLink_OK := (NOT SB0020) AND (NOT SB0049);`.
+## 3. High-Precision Length Tracking & 2-Phase Auto Stop
 
-2. **10ms Pulse Triggered PID Execution (`SM409`) with High-Speed Main Scan:**
-   - `POU_01` runs in free Main Scan cycle (~0.5ms - 1ms) so that proximity sensor inputs `X50` (Rev Roll M) and `X51` (Rev Roll U) capture narrow pulse flags at 100 m/min without missing pulses.
-   - All 4 tension PID Function Blocks (`pid_T`, `pid_X1`, `pid_M`, `pid_U`) are executed inside a 10ms pulse guard:
-     ```iecst
-     Trig_PID_10ms := SM409 AND NOT(Prev_SM409);
-     Prev_SM409 := SM409;
-     IF Trig_PID_10ms THEN
-         pid_T(...); pid_X1(...); pid_M(...); pid_U(...);
-     END_IF;
-     ```
+1. **Differential Pulse Accumulation:**
+   - Measure encoder pulse difference each scan: $\Delta \text{Pulse\_X2} = \text{Curr\_Pulse\_X2} - \text{Last\_Pulse\_X2}$.
+   - Calculate exact travel distance in mm:
+     $$\Delta \text{Length\_mm} = \frac{\Delta \text{Pulse\_X2} \cdot \pi \cdot D_{\text{X2}}}{8000 \cdot \text{Gear\_Ratio\_X2}}$$
+   - Accumulate and increment `Total_Length_Meters` (`D708`) every $1000\text{ mm}$.
+2. **2-Phase Target Length Deceleration & Auto-Stop:**
+   - **Phase 1 (Early Decel):** When $\text{Total\_Length\_Meters} \ge \text{Set\_Target\_Length} - \text{Decel\_Distance\_Meters}$ $\rightarrow$ Set `Auto_Decel_Flag = TRUE` and automatically ramp down line speed to `Min_Speed_MPM` ($2.0\text{ m/min}$).
+   - **Phase 2 (Safe Stop):** When $\text{Total\_Length\_Meters} \ge \text{Set\_Target\_Length}$ $\rightarrow$ Set `State_Machine = 0` (Stop line, automatically release nip pens `M1309/M1310`, and activate holding torque).
 
-3. **3-Phase Dynamic Uncoiling Torque Scaling (Brake M & Unwind U):**
-   - **Phase 1 (0..5 Revolutions):** Lock diameter calculation and output a fixed Pre-Tension Initial Holding Torque (`Init_Holding_Torque`) to prevent false sensor pulses/eccentricity from snapping the web on new roll startup.
-   - **Phase 2 (>5 Revolutions):** Unlock diameter calculation and pass raw pulse readings through an IIR Low-Pass Filter:
-     $$\text{Real\_Dia}(k) = \text{Real\_Dia}(k-1) + \frac{\text{Raw\_Dia}(k) - \text{Real\_Dia}(k-1)}{5}$$
-   - **Phase 3 (Linear Interpolation + PID):** Dynamically scale holding torque between `Min_Torque` (at core diameter) and `Max_Torque` (at full roll diameter), then add Loadcell PID output.
+---
 
-4. **Machine Stop State Controls:**
-   - **Hold Torque When Stopped:** Optional holding torque flags (`Hold_Torque_Stop_M` / `Hold_Torque_Stop_U`) to maintain tension on Brake M and Unwinder U when the line stops, preventing web slack/sag.
-   - **Anti-Drying Slow Crawl:** Optional crawl flags (`Anti_Dry_Rotate_S` / `Anti_Dry_Rotate_Ms`) to rotate Coating Roller S and Laminating Roller Ms at low creep speed (e.g., $1.0\text{ m/min}$) when the line is stopped, preventing chemical/glue drying on roller surfaces.
+## 4. Manual / Jog Test Architecture for Commissioning
 
-5. **QX40 Response Filter for Narrow Pulse Flags:**
-   - When high-speed proximity sensor flags are narrow (e.g. 10mm width at 100 m/min $\rightarrow$ 6ms pulse width), the QX40 input response filter MUST be changed from 10ms default to **1ms** (or 0.2ms / 0.5ms) in GX Works2 `PLC Parameter` $\rightarrow$ `I/O Assignment` $\rightarrow$ `Switch Setting`.
+Provide dedicated test flags and independent speed/torque registers so engineers can test and commission each axis independently when the main line is stopped (`State_Machine = 0`):
+- `HMI_Test_T` (`M170`) $\rightarrow$ Speed `D800` & Torque `D801`
+- `HMI_Test_X1` (`M171`) $\rightarrow$ Speed `D802`
+- `HMI_Test_X2` (`M172`) $\rightarrow$ Speed `D804`
+- `HMI_Test_Ms` (`M173`) $\rightarrow$ Speed `D806`
+- `HMI_Test_S` (`M174`) $\rightarrow$ Speed `D808`
+- `HMI_Test_M` (`M175`) $\rightarrow$ Torque `D810`
+- `HMI_Test_U` (`M176`) $\rightarrow$ Speed `D812`
 
-6. **Constant Scanning = 2.0ms (Fix for Error 5010 PRG. TIME OVER):**
-   - On Q02U CPU, standard program execution time with CC-Link refresh is $\approx 0.5\text{ms} \sim 1.155\text{ms}$.
-   - Setting `PLC Parameter -> PLC RAS -> Constant Scanning = 2.0 ms` fixes the scan rate at exactly $2.0\text{ms}$ ($500\text{ scans/second}$), preventing Watchdog / Constant Scan Over error `5010` while guaranteeing 6~10 scan hits per proximity flag pulse at $100\text{ m/min}$.
+---
 
-7. **16DT Symmetric Channel Map (`T, X1, X2, Ms, S, Pen1, Pen2`):**
-   - Remote Inputs `X0..X7` (`M1104..M1111`): Servo Ready (T, X1, X2, Ms, S), Pen 1, Pen 2, System Reset.
-   - Remote Outputs `Y8..YF` (`M1304..M1311`): Servo ON (T, X1, X2, Ms, S), Solenoid Pen 1, Solenoid Pen 2, Alarm/Spare.
+## 5. Weintek EasyBuilder Pro HMI Integration
 
-8. **16-Bit Integer Arithmetic Overflow Protection:**
-   - Avoid `WORD_TO_INT(x) * 4000 / 1000` which produces $16,000,000 > 32767$ (overflowing 16-bit INT and causing `4100 OPERATION ERROR`). Assign DAC registers directly using full 0..4000 DINT/WORD scaling.
-
-
+1. **Device Driver:** Select `Mitsubishi Q00/Q00UJ/Q01/QJ71` (RS-232 / COM1: 19200, O, 8, 1 or Ethernet).
+2. **Address Tag Library Import:** Pre-generate `weintek_easybuilder_tags_import.csv` with columns `"Name","Device","Address","Data Type","Description"` for 1-click tag import into EasyBuilder Pro.
