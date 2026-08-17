@@ -1,0 +1,16 @@
+VAR_INPUT	Enable	Bit		Cho phep PID hoat dong
+VAR_INPUT	Reset	Bit		Reset tich luy I
+VAR_INPUT	Setpoint	Double Word[Signed]		Gia tri luc cang cai dat
+VAR_INPUT	Feedback	Double Word[Signed]		Tai trong phan hoi tu Loadcell Net
+VAR_INPUT	Kp	Double Word[Signed]		He so Kp (x100)
+VAR_INPUT	Ki	Double Word[Signed]		He so Ki (x100)
+VAR_INPUT	Kd	Double Word[Signed]		He so Kd (x100)
+VAR_INPUT	Deadband	Double Word[Signed]		Vung chet khong chinh
+VAR_INPUT	Out_Min	Double Word[Signed]		Gioi han dau ra toi thieu
+VAR_INPUT	Out_Max	Double Word[Signed]		Gioi han dau ra toi da
+VAR_OUTPUT	PID_Output	Double Word[Signed]		Gia tri bu toc do torque cho DAC
+VAR_OUTPUT	Error	Double Word[Signed]		Do lech e(k)
+VAR	Error_Prev	Double Word[Signed]		Do lech vong truoc
+VAR	I_Term	Double Word[Signed]		Thanh phan Tich phan I
+VAR	P_Term	Double Word[Signed]		Thanh phan Ty le P
+VAR	D_Term	Double Word[Signed]		Thanh phan Dao ham D

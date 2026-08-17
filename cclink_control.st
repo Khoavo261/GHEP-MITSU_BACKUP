@@ -5,8 +5,8 @@
 (* ============================================================================ *)
 
 (* --- 1. CC-LINK NETWORK MONITOR & HANDSHAKE INITIALIZATION --- *)
-(* Cờ SB0020 = TRUE: Mạng truyền thông CC-Link hoạt động bình thường *)
-IF SB0020 THEN
+(* SB0020=FALSE (0) và SB0049=FALSE (0): Mạng truyền thông CC-Link hoạt động bình thường *)
+IF (NOT SB0020) AND (NOT SB0049) THEN
 
     (* Kích hoạt cho phép chuyển đổi A/D kênh 1..4 trên AJ65SBT-64AD (Trạm 1) *)
     M1208 := TRUE;  (* RY8: AD Conversion Enable (M1200 + 8) *)
@@ -67,18 +67,18 @@ D530 := INT_TO_WORD(WORD_TO_INT(D616) * 4000 / 1000);
 (* CH8 Analog Output Command *)
 D531 := INT_TO_WORD(WORD_TO_INT(D617) * 4000 / 1000);
 
-(* --- 4. ĐIỀU KHIỂN REMOTE DIGITAL I/O (AJ65SBT-16DT - TRẠM 4) --- *)
-(* Đọc 8 bit Remote Input M1104..M1111 *)
-(* Ghi 8 bit Remote Output M1296..M1303 *)
+(* --- 4. ĐIỀU KHIỂN REMOTE DIGITAL I/O (AJ65SBTB1-16DT - TRẠM 4) --- *)
+(* Đọc 8 bit Remote Input: M1104..M1111 (X0..X7) *)
+(* Ghi 8 bit Remote Output: M1304..M1311 (Y8..YF) *)
 
-(* Bật ngõ ra Y0 (M1296) khi nút nhấn X0 (M1104) được ấn và truyền thông OK *)
-M1296 := M1104 AND SB0020;
+(* Bật ngõ ra Y8 (M1304 - Cọc ra 1) khi nút nhấn X0 (M1104) được ấn và truyền thông OK *)
+M1304 := M1104 AND (NOT SB0020) AND (NOT SB0049);
 
-(* Bật ngõ ra Y1 (M1297) theo trạng thái nút nhấn X1 (M1105) *)
-M1297 := M1105 AND SB0020;
+(* Bật ngõ ra Y9 (M1305 - Cọc ra 2) theo trạng thái nút nhấn X1 (M1105) *)
+M1305 := M1105 AND (NOT SB0020) AND (NOT SB0049);
 
-(* Bật đèn báo lỗi (M1303 - Y7) nếu CC-Link có lỗi hoặc module báo lỗi *)
-M1303 := NOT(SB0020) OR M1032 OR M1066;
+(* Báo lỗi (M1303) nếu CC-Link có lỗi hoặc module báo lỗi *)
+M1303 := SB0020 OR SB0049 OR M1032 OR M1066;
 
 (* --- 5. RESET LỖI KHI BẤM NÚT RESET (M1111 - X7) --- *)
 IF M1111 THEN

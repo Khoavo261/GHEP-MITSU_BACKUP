@@ -1,0 +1,125 @@
+Tag name,Device name,Device type,Address,Data format,Comment
+X40_Servo_Ready_T,MELSEC-Q,X,40,Bit,Physical Input Servo Ready Thu T
+X41_Servo_Ready_X1,MELSEC-Q,X,41,Bit,Physical Input Servo Ready Xa X1
+X42_Servo_Ready_X2,MELSEC-Q,X,42,Bit,Physical Input Servo Ready Master X2
+X43_Servo_Ready_Ms,MELSEC-Q,X,43,Bit,Physical Input Servo Ready Ghep Ms
+X44_Servo_Ready_S,MELSEC-Q,X,44,Bit,Physical Input Servo Ready Trang Dau S
+X45_Switch_Hold_M,MELSEC-Q,X,45,Bit,Physical Switch Hold Torque Thang M
+X46_Switch_Hold_U,MELSEC-Q,X,46,Bit,Physical Switch Hold Torque Xa U
+X47_Switch_Wash_Ms,MELSEC-Q,X,47,Bit,Physical Switch Wash Crawl Ms
+X48_Switch_Wash_S,MELSEC-Q,X,48,Bit,Physical Switch Wash Crawl S
+X49_Physical_Start,MELSEC-Q,X,49,Bit,Physical Push Button START
+X4A_Physical_Stop,MELSEC-Q,X,4A,Bit,Physical Push Button STOP
+X4B_Physical_Inc,MELSEC-Q,X,4B,Bit,Physical Push Button INC Tang Toc
+X4C_Physical_Dec,MELSEC-Q,X,4C,Bit,Physical Push Button DEC Giam Toc
+X50_Sensor_Rev_M,MELSEC-Q,X,50,Bit,Proximity Sensor 1 Rev Roll M
+X51_Sensor_Rev_U,MELSEC-Q,X,51,Bit,Proximity Sensor 1 Rev Roll U
+X52_Pen1_Toggle_PB,MELSEC-Q,X,52,Bit,Physical Push Button Toggle Pen 1
+X53_Pen2_Toggle_PB,MELSEC-Q,X,53,Bit,Physical Push Button Toggle Pen 2
+Y47_Servo_ON_T,MELSEC-Q,Y,47,Bit,Servo ON Output Thu T
+Y48_Servo_ON_X1,MELSEC-Q,Y,48,Bit,Servo ON Output Xa X1
+Y49_Servo_ON_X2,MELSEC-Q,Y,49,Bit,Servo ON Output Master X2
+Y4A_Servo_ON_Ms,MELSEC-Q,Y,4A,Bit,Servo ON Output Ghep Ms
+Y4B_Servo_ON_S,MELSEC-Q,Y,4B,Bit,Servo ON Output Trang Dau S
+Y66_Pen1_Output,MELSEC-Q,Y,66,Bit,Solenoid Valve Output Pen 1
+Y67_Pen2_Output,MELSEC-Q,Y,67,Bit,Solenoid Valve Output Pen 2
+HMI_Auto_Mode,MELSEC-Q,M,100,Bit,Che do Auto / Manual
+HMI_Reset_Error,MELSEC-Q,M,101,Bit,Reset loi he thong
+HMI_Start,MELSEC-Q,M,102,Bit,Nut Start HMI
+HMI_Stop,MELSEC-Q,M,103,Bit,Nut Stop HMI
+HMI_Reset_Length,MELSEC-Q,M,104,Bit,Reset tong chieu dai met hang
+HMI_Reset_Roll_T,MELSEC-Q,M,105,Bit,Nap lai duong kinh cuon moi T
+HMI_Reset_Roll_M,MELSEC-Q,M,106,Bit,Nap lai duong kinh cuon moi M
+HMI_Reset_Roll_U,MELSEC-Q,M,107,Bit,Nap lai duong kinh cuon moi U
+HMI_PID_Enable,MELSEC-Q,M,108,Bit,Bat tat che do PID
+HMI_Inc_Hold,MELSEC-Q,M,109,Bit,Phim INC tang toc HMI
+HMI_Dec_Hold,MELSEC-Q,M,114,Bit,Phim DEC giam toc HMI
+HMI_Pen1_Cmd,MELSEC-Q,M,115,Bit,Lenh ON/OFF Pen 1 tu HMI
+HMI_Pen2_Cmd,MELSEC-Q,M,116,Bit,Lenh ON/OFF Pen 2 tu HMI
+Zero_Set_T,MELSEC-Q,M,110,Bit,Nut Set Zero Tare T
+Zero_Set_X1,MELSEC-Q,M,111,Bit,Nut Set Zero Tare X1
+Zero_Set_M,MELSEC-Q,M,112,Bit,Nut Set Zero Tare M
+Zero_Set_U,MELSEC-Q,M,113,Bit,Nut Set Zero Tare U
+Calib_Set_T,MELSEC-Q,M,120,Bit,Nut Calib Span T
+Calib_Set_X1,MELSEC-Q,M,121,Bit,Nut Calib Span X1
+Calib_Set_M,MELSEC-Q,M,122,Bit,Nut Calib Span M
+Calib_Set_U,MELSEC-Q,M,123,Bit,Nut Calib Span U
+Lift_Up_T,MELSEC-Q,M,140,Bit,Nang ben ben cuon T
+Lift_Down_T,MELSEC-Q,M,141,Bit,Ha ben ben cuon T
+Lift_Up_M,MELSEC-Q,M,142,Bit,Nang ben ben cuon M
+Lift_Down_M,MELSEC-Q,M,143,Bit,Ha ben ben cuon M
+Lift_Up_U,MELSEC-Q,M,144,Bit,Nang ben ben cuon U
+Lift_Down_U,MELSEC-Q,M,145,Bit,Ha ben ben cuon U
+Hold_Torque_Stop_M,MELSEC-Q,M,130,Bit,Cơ giu Torque Thang M khi dung
+Hold_Torque_Stop_U,MELSEC-Q,M,131,Bit,Cơ giu Torque Xa U khi dung
+Anti_Dry_Rotate_S,MELSEC-Q,M,132,Bit,Cơ rua may S khi dung
+Anti_Dry_Rotate_Ms,MELSEC-Q,M,133,Bit,Cơ rua may Ms khi dung
+Servo_Not_Ready_Fault,MELSEC-Q,M,134,Bit,Bao loi Servo No Ready ngat dung may
+Gear_Ratio_T,MELSEC-Q,D,620,32-bit Signed,Ty so truyen Hop so Thu T (x1000)
+Gear_Ratio_X1,MELSEC-Q,D,622,32-bit Signed,Ty so truyen Hop so Xa X1 (x1000)
+Gear_Ratio_X2,MELSEC-Q,D,624,32-bit Signed,Ty so truyen Hop so Master X2 (x1000)
+Gear_Ratio_Ms,MELSEC-Q,D,626,32-bit Signed,Ty so truyen Hop so Ghep Ms (x1000)
+Gear_Ratio_S,MELSEC-Q,D,628,32-bit Signed,Ty so truyen Hop so Trang Dau S (x1000)
+Gear_Ratio_U,MELSEC-Q,D,630,32-bit Signed,Ty so truyen Hop so Xa U (x1000)
+Speed_Ratio_Ms,MELSEC-Q,D,640,32-bit Signed,Ty le dong bo toc do Truc Ms (x10)
+Speed_Ratio_S,MELSEC-Q,D,642,32-bit Signed,Ty le toc do Truc S (x10)
+Speed_Offset_S,MELSEC-Q,D,644,32-bit Signed,Bu toc do Truc S
+ADC_Zero_T,MELSEC-Q,D,650,32-bit Signed,Gia tri ADC Zero T
+Calib_Weight_T_kg,MELSEC-Q,D,651,32-bit Signed,Qua can chuan T (kg x10)
+ADC_Zero_X1,MELSEC-Q,D,652,32-bit Signed,Gia tri ADC Zero X1
+Calib_Weight_X1_kg,MELSEC-Q,D,653,32-bit Signed,Qua can chuan X1 (kg x10)
+ADC_Zero_M,MELSEC-Q,D,654,32-bit Signed,Gia tri ADC Zero M
+Calib_Weight_M_kg,MELSEC-Q,D,655,32-bit Signed,Qua can chuan M (kg x10)
+ADC_Zero_U,MELSEC-Q,D,656,32-bit Signed,Gia tri ADC Zero U
+Calib_Weight_U_kg,MELSEC-Q,D,657,32-bit Signed,Qua can chuan U (kg x10)
+Calib_Gain_T,MELSEC-Q,D,658,32-bit Signed,He so Calib Gain T (x1000)
+Calib_Gain_X1,MELSEC-Q,D,659,32-bit Signed,He so Calib Gain X1 (x1000)
+Calib_Gain_M,MELSEC-Q,D,661,32-bit Signed,He so Calib Gain M (x1000)
+Calib_Gain_U,MELSEC-Q,D,663,32-bit Signed,He so Calib Gain U (x1000)
+Weight_Net_T,MELSEC-Q,D,510,32-bit Signed,Trong luong Luc cang thuc te T (kg/N x10)
+Weight_Net_X1,MELSEC-Q,D,512,32-bit Signed,Trong luong Luc cang thuc te X1 (kg/N x10)
+Weight_Net_M,MELSEC-Q,D,514,32-bit Signed,Trong luong Luc cang thuc te M (kg/N x10)
+Weight_Net_U,MELSEC-Q,D,516,32-bit Signed,Trong luong Luc cang thuc te U (kg/N x10)
+SP_Tension_T,MELSEC-Q,D,660,32-bit Signed,Luc cang SP Truc T
+SP_Tension_X1,MELSEC-Q,D,662,32-bit Signed,Luc cang SP Truc X1
+SP_Tension_M,MELSEC-Q,D,664,32-bit Signed,Luc cang SP Truc M
+SP_Tension_U,MELSEC-Q,D,668,32-bit Signed,Luc cang SP Truc U
+Taper_Percent_T,MELSEC-Q,D,666,32-bit Signed,Ty le Con luc giam cang cuon thu T (%)
+Kp_T,MELSEC-Q,D,670,32-bit Signed,He so Kp PID Truc T
+Ki_T,MELSEC-Q,D,672,32-bit Signed,He so Ki PID Truc T
+Kd_T,MELSEC-Q,D,674,32-bit Signed,He so Kd PID Truc T
+Kp_X1,MELSEC-Q,D,676,32-bit Signed,He so Kp PID Truc X1
+Ki_X1,MELSEC-Q,D,678,32-bit Signed,He so Ki PID Truc X1
+Kd_X1,MELSEC-Q,D,680,32-bit Signed,He so Kd PID Truc X1
+Kp_M,MELSEC-Q,D,682,32-bit Signed,He so Kp PID Truc M
+Ki_M,MELSEC-Q,D,684,32-bit Signed,He so Ki PID Truc M
+Kd_M,MELSEC-Q,D,686,32-bit Signed,He so Kd PID Truc M
+Kp_U,MELSEC-Q,D,688,32-bit Signed,He so Kp PID Truc U
+Ki_U,MELSEC-Q,D,690,32-bit Signed,He so Ki PID Truc U
+Kd_U,MELSEC-Q,D,692,32-bit Signed,He so Kd PID Truc U
+Set_Target_Length,MELSEC-Q,D,700,32-bit Signed,Chieu dai met hang cai dat tu dung (m)
+Decel_Distance_Meters,MELSEC-Q,D,702,32-bit Signed,Khoang cach bao giam toc truoc khi dung (m)
+Ramp_Accel_Rate,MELSEC-Q,D,704,32-bit Signed,Thanh ghi gia toc ACC (m/p/s)
+Ramp_Decel_Rate,MELSEC-Q,D,706,32-bit Signed,Thanh ghi giam toc DEC (m/p/s)
+Total_Length_Meters,MELSEC-Q,D,708,32-bit Signed,Tong so met hang da ghep (m)
+Release_Pen_Speed_MPM,MELSEC-Q,D,710,32-bit Signed,Toc do nhan bi 2 Pen ep mang (m/p x10)
+Real_Dia_T_mm,MELSEC-Q,D,724,32-bit Signed,Duong kinh thuc cuon T (mm)
+Real_Dia_M_mm,MELSEC-Q,D,722,32-bit Signed,Duong kinh thuc cuon M (mm)
+Real_Dia_U_mm,MELSEC-Q,D,720,32-bit Signed,Duong kinh thuc cuon U (mm)
+Core_Dia_T_mm,MELSEC-Q,D,740,32-bit Signed,Duong kinh loi cuon T (mm)
+Core_Dia_M_mm,MELSEC-Q,D,742,32-bit Signed,Duong kinh loi cuon M (mm)
+Core_Dia_U_mm,MELSEC-Q,D,744,32-bit Signed,Duong kinh loi cuon U (mm)
+Max_Dia_T_mm,MELSEC-Q,D,750,32-bit Signed,Duong kinh Max cuon T (mm)
+Max_Dia_M_mm,MELSEC-Q,D,752,32-bit Signed,Duong kinh Max cuon M (mm)
+Max_Dia_U_mm,MELSEC-Q,D,754,32-bit Signed,Duong kinh Max cuon U (mm)
+Current_Line_MPM,MELSEC-Q,D,730,32-bit Signed,Toc do hien tai (m/p x10)
+Target_Line_MPM,MELSEC-Q,D,732,32-bit Signed,Toc do muc tieu (m/p x10)
+Max_Speed_MPM,MELSEC-Q,D,734,32-bit Signed,Toc do Max (100.0 m/p)
+Min_Speed_MPM,MELSEC-Q,D,736,32-bit Signed,Toc do Min (2.0 m/p)
+Anti_Dry_Crawl_Speed,MELSEC-Q,D,738,32-bit Signed,Toc do bo cham rua may (1.0 m/p)
+Min_Torque_M,MELSEC-Q,D,760,32-bit Signed,Torque Min Thang M
+Max_Torque_M,MELSEC-Q,D,762,32-bit Signed,Torque Max Thang M
+Init_Holding_Torque_M,MELSEC-Q,D,764,32-bit Signed,Torque ban dau Thang M
+Init_Holding_Torque_U,MELSEC-Q,D,766,32-bit Signed,Torque ban dau Cuon U
+Dia_Ms_Roller_mm,MELSEC-Q,D,770,32-bit Signed,Duong kinh lo lo ghep Ms (mm x10)
+Dia_X2_Roller_mm,MELSEC-Q,D,772,32-bit Signed,Duong kinh lo lo Master X2 (mm x10)

@@ -8,8 +8,8 @@ VAR_INPUT	DAC_CH5_Set	WORD		Cai dat DAC CH5 (0..1000)
 VAR_INPUT	DAC_CH6_Set	WORD		Cai dat DAC CH6 (0..1000)
 VAR_INPUT	DAC_CH7_Set	WORD		Cai dat DAC CH7 (0..1000)
 VAR_INPUT	DAC_CH8_Set	WORD		Cai dat DAC CH8 (0..1000)
-VAR_INPUT	DO_Y0_Cmd	BOOL		Lenh ngo ra Y0 St 4 (M1296)
-VAR_INPUT	DO_Y1_Cmd	BOOL		Lenh ngo ra Y1 St 4 (M1297)
+VAR_INPUT	DO_Y8_Cmd	BOOL		Lenh ngo ra Y8 St 4 (M1304)
+VAR_INPUT	DO_Y9_Cmd	BOOL		Lenh ngo ra Y9 St 4 (M1305)
 VAR_OUTPUT	CCLink_OK	BOOL		Trang thai mang CC-Link OK
 VAR_OUTPUT	HasError	BOOL		Bao loi tong truyen thong module
 VAR_OUTPUT	ADC_CH1_Val	WORD		Gia tri % ADC CH1 (0..1000)

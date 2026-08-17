@@ -39,12 +39,12 @@ DI_X1_State     BOOL        FALSE           Trạng thái ngõ vào X1 St 4 (M11
 
 IF Enable THEN
 
-    (* 1. Kiểm tra trạng thái mạng CC-Link & Ghi 1 lần tránh cảnh báo C9300 *)
-    CCLink_OK := SB0020;
-    HasError  := NOT(SB0020) OR M1032 OR M1066;
+    (* 1. Kiểm tra trạng thái mạng CC-Link (SB0020=0 và SB0049=0 là mạng bình thường) *)
+    CCLink_OK := (NOT SB0020) AND (NOT SB0049);
+    HasError  := SB0020 OR SB0049 OR M1032 OR M1066;
 
-    M1208 := SB0020;  (* RY8: AD Conversion Enable *)
-    M1240 := SB0020;  (* RY28: DA Conversion Enable *)
+    M1208 := CCLink_OK;  (* RY8: AD Conversion Enable *)
+    M1240 := CCLink_OK;  (* RY28: DA Conversion Enable *)
 
     (* 2. Đọc 4 kênh Analog Input (AJ65SBT-64AD) *)
     IF M1016 THEN (* RX8: AD Conversion Completed *)
@@ -61,22 +61,21 @@ IF Enable THEN
     END_IF;
 
     (* 3. Ghi 8 kênh Analog Output (AJ65VBTCU-68DAVN) *)
-    D524 := INT_TO_WORD(WORD_TO_INT(DAC_CH1_Set) * 4000 / 1000);
-    D525 := INT_TO_WORD(WORD_TO_INT(DAC_CH2_Set) * 4000 / 1000);
-    D526 := INT_TO_WORD(WORD_TO_INT(DAC_CH3_Set) * 4000 / 1000);
-    D527 := INT_TO_WORD(WORD_TO_INT(DAC_CH4_Set) * 4000 / 1000);
-    D528 := INT_TO_WORD(WORD_TO_INT(DAC_CH5_Set) * 4000 / 1000);
-    D529 := INT_TO_WORD(WORD_TO_INT(DAC_CH6_Set) * 4000 / 1000);
-    D530 := INT_TO_WORD(WORD_TO_INT(DAC_CH7_Set) * 4000 / 1000);
-    D531 := INT_TO_WORD(WORD_TO_INT(DAC_CH8_Set) * 4000 / 1000);
+    (* Quy đổi lệnh 0..1000 sang dải DAC 0..4000 *)
+    D524 := INT_TO_WORD(WORD_TO_INT(Set_Speed_T)  * 4000 / 1000);
+    D525 := INT_TO_WORD(WORD_TO_INT(Set_Torque_T) * 4000 / 1000);
+    D526 := INT_TO_WORD(WORD_TO_INT(Set_Speed_X1) * 4000 / 1000);
+    D527 := INT_TO_WORD(WORD_TO_INT(Set_Speed_X2) * 4000 / 1000);
+    D528 := INT_TO_WORD(WORD_TO_INT(Set_Speed_Ms) * 4000 / 1000);
+    D529 := INT_TO_WORD(WORD_TO_INT(Set_Torque_M) * 4000 / 1000);
+    D530 := INT_TO_WORD(WORD_TO_INT(Set_Speed_S)  * 4000 / 1000);
+    D531 := INT_TO_WORD(WORD_TO_INT(Set_Speed_U)  * 4000 / 1000);
 
-    (* 4. Xử lý Digital Remote I/O (AJ65SBT-16DT) *)
+    (* 4. XỬ LÝ DIGITAL REMOTE I/O (AJ65SBTB1-16DT: X0..X7 = M1104..M1111 | Y8..YF = M1304..M1311) *)
     DI_X0_State := M1104;
     DI_X1_State := M1105;
 
-    M1296 := DO_Y0_Cmd AND SB0020;
-    M1297 := DO_Y1_Cmd AND SB0020;
-    M1303 := HasError;
+    (* Ngõ ra Y8..YF (M1304..M1311) để HMI / User tự set ON/OFF trực tiếp *)
 
     (* 5. Reset lỗi (Ghi 1 lần tránh cảnh báo C9300) *)
     M1226 := ResetErr OR M1111; (* RY1A: Reset lỗi AJ65SBT-64AD *)

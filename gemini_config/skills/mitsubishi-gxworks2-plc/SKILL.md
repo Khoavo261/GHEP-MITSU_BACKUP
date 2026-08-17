@@ -45,24 +45,41 @@ GX Works2 `Read ASC Format File...` expects Instruction List (IL) / Mnemonic sta
 
 ### Hardware Configuration (Q-Series Base Rack):
 - **Slot 0**: CC-Link Master (`QJ61BT11N`, `H0000`)
-  - **Station 1 (Remote ADC AJ65SBT-64AD)**: Reads 4 loadcell tension sensors (`RWr0..RWr3`).
-  - **Station 2 & 3 (Remote DAC AJ65VBTCU-68DAVN)**: 8 Channels $-10\text{V} \sim 10\text{V}$ outputting speed/torque commands (`RWw4..RWw11`).
-  - **Station 4 (Remote IO AJ65SBT-16DT)**: 5 Servo Ready (`RX60..RX64`) & Servo ON (`RY60..RY64`) bits.
-- **Slot 1, 2, 3**: High Speed Counter modules (`QD62`) reading 5 encoders (T, X1, X2, M, S).
-- **Slot 4 & 5**: Digital Input `QX40` (`X50` Metalize proximity sensor, `X51` Paper unwinder proximity sensor) and Digital Output `QY40P` (`Y60..Y65` Roll Lifter Solenoid Valves).
+  - **Station 1 (Remote ADC AJ65SBT-64AD - 1 Station)**: Reads 4 loadcell tension sensors (`D500..D503`), Handshake (`M1016` RX8, `M1208` RY8, `M1226` RY1A).
+  - **Station 2 & 3 (Remote DAC AJ65VBTCU-68DAVN - 2 Stations)**: 8 Channels DAC outputting speed/torque commands (`D524..D531`), Handshake (`M1064` RX38, `M1240` RY28, `M1258` RY3A).
+  - **Station 4 (Remote IO AJ65SBTB1-16DT - 1 Station)**: 
+    - 8 Remote Inputs `X0..X7`: `M1104` to `M1111` (`RX60` to `RX67`).
+    - 8 Remote Outputs `Y8..YF`: `M1304` to `M1311` (`RY68` to `RY6F`) - on module faceplate labeled `8 9 A B C D E F`.
+- **Slot 1, 2, 3**: High Speed Counter modules (`QD62`) reading 5 encoders (T, X1, X2, M, S) on Start XY `0020`, `0030`, `0040`.
+- **Slot 4 & 5**: Digital Input `QX40` (`X50` Metalize proximity sensor, `X51` Paper unwinder proximity sensor on Start XY `0050`) and Digital Output `QY40P` (`Y60..Y67` on Start XY `0060` including Pen Solenoid Valves `Y66, Y67`).
 
 ### Key Control & Timing Best Practices:
-1. **3-Phase Dynamic Uncoiling Torque Scaling (Brake M & Unwind U):**
+1. **CC-Link Link Special Relay (SB) Polarity:**
+   - In Mitsubishi CC-Link: `SB0020 = 0 (OFF)` and `SB0049 = 0 (OFF)` is **NORMAL OPERATION**.
+   - `SB0020 = 1` or `SB0049 = 1` is **ERROR/FAULT**.
+   - Condition for CC-Link OK: `CCLink_OK := (NOT SB0020) AND (NOT SB0049);`.
+
+2. **10ms Pulse Triggered PID Execution (`SM409`) with High-Speed Main Scan:**
+   - `POU_01` runs in free Main Scan cycle (~0.5ms - 1ms) so that proximity sensor inputs `X50` (Rev Roll M) and `X51` (Rev Roll U) capture narrow pulse flags at 100 m/min without missing pulses.
+   - All 4 tension PID Function Blocks (`pid_T`, `pid_X1`, `pid_M`, `pid_U`) are executed inside a 10ms pulse guard:
+     ```iecst
+     Trig_PID_10ms := SM409 AND NOT(Prev_SM409);
+     Prev_SM409 := SM409;
+     IF Trig_PID_10ms THEN
+         pid_T(...); pid_X1(...); pid_M(...); pid_U(...);
+     END_IF;
+     ```
+
+3. **3-Phase Dynamic Uncoiling Torque Scaling (Brake M & Unwind U):**
    - **Phase 1 (0..5 Revolutions):** Lock diameter calculation and output a fixed Pre-Tension Initial Holding Torque (`Init_Holding_Torque`) to prevent false sensor pulses/eccentricity from snapping the web on new roll startup.
    - **Phase 2 (>5 Revolutions):** Unlock diameter calculation and pass raw pulse readings through an IIR Low-Pass Filter:
      $$\text{Real\_Dia}(k) = \text{Real\_Dia}(k-1) + \frac{\text{Raw\_Dia}(k) - \text{Real\_Dia}(k-1)}{5}$$
    - **Phase 3 (Linear Interpolation + PID):** Dynamically scale holding torque between `Min_Torque` (at core diameter) and `Max_Torque` (at full roll diameter), then add Loadcell PID output.
 
-2. **Machine Stop State Controls:**
+4. **Machine Stop State Controls:**
    - **Hold Torque When Stopped:** Optional holding torque flags (`Hold_Torque_Stop_M` / `Hold_Torque_Stop_U`) to maintain tension on Brake M and Unwinder U when the line stops, preventing web slack/sag.
    - **Anti-Drying Slow Crawl:** Optional crawl flags (`Anti_Dry_Rotate_S` / `Anti_Dry_Rotate_Ms`) to rotate Coating Roller S and Laminating Roller Ms at low creep speed (e.g., $1.0\text{ m/min}$) when the line is stopped, preventing chemical/glue drying on roller surfaces.
 
-3. **Fixed Scan PID Execution & QX40 Input Filter Tuning:**
-   - **10ms Fixed Scan PID Loop (`I28`):** All tension PID Function Blocks MUST be executed inside a Fixed Scan 10ms POU (`I28`) to eliminate sampling time jitter ($\Delta t$) in $I$ and $D$ terms.
-   - **QX40 Response Filter for Narrow Pulse Flags:** When high-speed proximity sensor flags are narrow (e.g. 10mm width at 100 m/min $\rightarrow$ 6ms pulse width), the QX40 input response filter MUST be changed from 10ms default to **1ms** (or 0.2ms / 0.5ms) in GX Works2 `PLC Parameter` $\rightarrow$ `I/O Assignment` $\rightarrow$ `Switch Setting`.
+5. **QX40 Response Filter for Narrow Pulse Flags:**
+   - When high-speed proximity sensor flags are narrow (e.g. 10mm width at 100 m/min $\rightarrow$ 6ms pulse width), the QX40 input response filter MUST be changed from 10ms default to **1ms** (or 0.2ms / 0.5ms) in GX Works2 `PLC Parameter` $\rightarrow$ `I/O Assignment` $\rightarrow$ `Switch Setting`.
 

@@ -86,7 +86,7 @@ Bạn có thể import file [`hmi_weintek_tags.csv`](file:///d:/data-2026/GHEP-M
 
 | Tên Biến HMI (Tag Name) | Địa Chỉ PLC | Kiểu Dữ Liệu | Chức Năng Trên Giao Diện HMI |
 | :--- | :--- | :--- | :--- |
-| `CCLink_Status` | `SB0020` | Bit (BOOL) | Đèn báo trạng thái mạng CC-Link (Xanh=OK, Đỏ=Lỗi) |
+| `CCLink_Status` | `M1303` hoặc `SB0020` | Bit (BOOL) | Đèn báo lỗi CC-Link (0 = Xanh/Bình thường, 1 = Đỏ/Có lỗi) |
 | `CCLink_ErrCode` | `SW0000` | Word (16-bit) | Hiển thị mã lỗi truyền thông CC-Link |
 | `ADC_CH1_Display` | `D600` | Unsigned Word | Hiển thị giá trị % Analog Input Kênh 1 (0.0% ~ 100.0%) |
 | `ADC_CH2_Display` | `D601` | Unsigned Word | Hiển thị giá trị % Analog Input Kênh 2 |
@@ -98,6 +98,11 @@ Bạn có thể import file [`hmi_weintek_tags.csv`](file:///d:/data-2026/GHEP-M
 | `DAC_CH4_SetVal` | `D613` | Unsigned Word | Ô nhập giá trị cài đặt Analog Output CH4 |
 | `Remote_DI0` | `M1104` | Bit (BOOL) | Đèn báo trạng thái ngõ vào X0 Trạm 4 |
 | `Remote_DI1` | `M1105` | Bit (BOOL) | Đèn báo trạng thái ngõ vào X1 Trạm 4 |
-| `Remote_DO0_Btn` | `M1296` | Bit (BOOL) | Nút bấm bật ngõ ra Y0 Trạm 4 |
-| `Remote_DO1_Btn` | `M1297` | Bit (BOOL) | Nút bấm bật ngõ ra Y1 Trạm 4 |
+| `Remote_DO_Y8_Servo_T` | `M1304` | Bit (BOOL) | Servo ON Trục Thu T (Cọc 1 Y8) |
+| `Remote_DO_Y9_Servo_X1` | `M1305` | Bit (BOOL) | Servo ON Trục Xả X1 (Cọc 2 Y9) |
+| `Remote_DO_YA_Servo_X2` | `M1306` | Bit (BOOL) | Servo ON Trục Master X2 (Cọc 3 YA) |
+| `Remote_DO_YB_Servo_Ms` | `M1307` | Bit (BOOL) | Servo ON Trục Ghép Ms (Cọc 4 YB) |
+| `Remote_DO_YC_Servo_S` | `M1308` | Bit (BOOL) | Servo ON Trục Tráng Dầu S (Cọc 5 YC) |
+| `Remote_DO_YD_Pen1` | `M1309` | Bit (BOOL) | Ngõ ra Van Solenoid Pen 1 (Cọc 6 YD) |
+| `Remote_DO_YE_Pen2` | `M1310` | Bit (BOOL) | Ngõ ra Van Solenoid Pen 2 (Cọc 7 YE) |
 | `Reset_Fault_Btn` | `M1111` | Bit (BOOL) | Nút bấm Reset lỗi hệ thống |

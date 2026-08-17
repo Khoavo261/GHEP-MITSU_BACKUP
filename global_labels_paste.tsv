@@ -1,0 +1,124 @@
+VAR_GLOBAL	Servo_Ready_T	Bit		X40		Cam bien Servo Ready Truc Thu T (X40)
+VAR_GLOBAL	Servo_Ready_X1	Bit		X41		Cam bien Servo Ready Truc Xa X1 (X41)
+VAR_GLOBAL	Servo_Ready_X2	Bit		X42		Cam bien Servo Ready Truc Master X2 (X42)
+VAR_GLOBAL	Servo_Ready_Ms	Bit		X43		Cam bien Servo Ready Truc Ghep Ms (X43)
+VAR_GLOBAL	Servo_Ready_S	Bit		X44		Cam bien Servo Ready Truc Trang Dau S (X44)
+VAR_GLOBAL	Switch_Hold_M	Bit		X45		Cong tac giu Torque Thang M khi dung (X45)
+VAR_GLOBAL	Switch_Hold_U	Bit		X46		Cong tac giu Torque Xa U khi dung (X46)
+VAR_GLOBAL	Switch_Wash_Ms	Bit		X47		Cong tac quay rua may bo cham Ms khi dung (X47)
+VAR_GLOBAL	Switch_Wash_S	Bit		X48		Cong tac quay rua may bo cham S khi dung (X48)
+VAR_GLOBAL	Physical_Start_PB	Bit		X49		Nut nhan vat ly START QX40 (X49)
+VAR_GLOBAL	Physical_Stop_PB	Bit		X4A		Nut nhan vat ly STOP QX40 (X4A)
+VAR_GLOBAL	Physical_Inc_PB	Bit		X4B		Nut nhan vat ly TANG TOC INC QX40 (X4B)
+VAR_GLOBAL	Physical_Dec_PB	Bit		X4C		Nut nhan vat ly GIAM TOC DEC QX40 (X4C)
+VAR_GLOBAL	Sensor_Rev_M	Bit		X50		Cam bien tiem can dem 1 vong cuon M (X50)
+VAR_GLOBAL	Sensor_Rev_U	Bit		X51		Cam bien tiem can dem 1 vong cuon U (X51)
+VAR_GLOBAL	Pen1_Toggle_PB	Bit		X52		Nut nhan Toggle Pen 1 QX40 (X52)
+VAR_GLOBAL	Pen2_Toggle_PB	Bit		X53		Nut nhan Toggle Pen 2 QX40 (X53)
+VAR_GLOBAL	Servo_ON_T	Bit		Y47		Ngo ra Servo ON Truc Thu T (Y47)
+VAR_GLOBAL	Servo_ON_X1	Bit		Y48		Ngo ra Servo ON Truc Xa X1 (Y48)
+VAR_GLOBAL	Servo_ON_X2	Bit		Y49		Ngo ra Servo ON Truc Master X2 (Y49)
+VAR_GLOBAL	Servo_ON_Ms	Bit		Y4A		Ngo ra Servo ON Truc Ghep Ms (Y4A)
+VAR_GLOBAL	Servo_ON_S	Bit		Y4B		Ngo ra Servo ON Truc Trang Dau S (Y4B)
+VAR_GLOBAL	Pen1_Output_Y66	Bit		Y66		Ngo ra Ben Ep Pen 1 QY40 (Y66)
+VAR_GLOBAL	Pen2_Output_Y67	Bit		Y67		Ngo ra Ben Ep Pen 2 QY40 (Y67)
+VAR_GLOBAL	HMI_Auto_Mode	Bit		M100		Che do Auto / Manual
+VAR_GLOBAL	HMI_Reset_Error	Bit		M101		Reset loi he thong
+VAR_GLOBAL	HMI_Start	Bit		M102		Nut Start khoi dong HMI
+VAR_GLOBAL	HMI_Stop	Bit		M103		Nut Stop dung may HMI
+VAR_GLOBAL	HMI_Reset_Length	Bit		M104		Reset tong chieu dai met hang
+VAR_GLOBAL	HMI_Reset_Roll_T	Bit		M105		Nap lai duong kinh cuon moi T
+VAR_GLOBAL	HMI_Reset_Roll_M	Bit		M106		Nap lai duong kinh cuon moi M
+VAR_GLOBAL	HMI_Reset_Roll_U	Bit		M107		Nap lai duong kinh cuon moi U
+VAR_GLOBAL	HMI_PID_Enable	Bit		M108		Bat tat che do PID
+VAR_GLOBAL	HMI_Inc_Hold	Bit		M109		Phim INC tang toc HMI
+VAR_GLOBAL	HMI_Dec_Hold	Bit		M114		Phim DEC giam toc HMI
+VAR_GLOBAL	HMI_Pen1_Cmd	Bit		M115		Lenh ON/OFF Pen 1 tu HMI
+VAR_GLOBAL	HMI_Pen2_Cmd	Bit		M116		Lenh ON/OFF Pen 2 tu HMI
+VAR_GLOBAL	Zero_Set_T	Bit		M110		Nut Set Zero Loadcell T
+VAR_GLOBAL	Zero_Set_X1	Bit		M111		Nut Set Zero Loadcell X1
+VAR_GLOBAL	Zero_Set_M	Bit		M112		Nut Set Zero Loadcell M
+VAR_GLOBAL	Zero_Set_U	Bit		M113		Nut Set Zero Loadcell U
+VAR_GLOBAL	Calib_Set_T	Bit		M120		Nut Calib Span Loadcell T
+VAR_GLOBAL	Calib_Set_X1	Bit		M121		Nut Calib Span Loadcell X1
+VAR_GLOBAL	Calib_Set_M	Bit		M122		Nut Calib Span Loadcell M
+VAR_GLOBAL	Calib_Set_U	Bit		M123		Nut Calib Span Loadcell U
+VAR_GLOBAL	Lift_Up_T	Bit		M140		Lenh nang ben cuon T
+VAR_GLOBAL	Lift_Down_T	Bit		M141		Lenh ha ben cuon T
+VAR_GLOBAL	Lift_Up_M	Bit		M142		Lenh nang ben cuon M
+VAR_GLOBAL	Lift_Down_M	Bit		M143		Lenh ha ben cuon M
+VAR_GLOBAL	Lift_Up_U	Bit		M144		Lenh nang ben cuon U
+VAR_GLOBAL	Lift_Down_U	Bit		M145		Lenh ha ben cuon U
+VAR_GLOBAL	Servo_Not_Ready_Fault	Bit		M134		Cơ bao loi Servo No Ready ngat dung may
+VAR_GLOBAL	Hold_Torque_Stop_M	Bit		M130		Giu Torque M khi dung may
+VAR_GLOBAL	Hold_Torque_Stop_U	Bit		M131		Giu Torque U khi dung may
+VAR_GLOBAL	Anti_Dry_Rotate_S	Bit		M132		Bo cham S khi dung may
+VAR_GLOBAL	Anti_Dry_Rotate_Ms	Bit		M133		Bo cham Ms khi dung may
+VAR_GLOBAL	Gear_Ratio_T	Double Word[Signed]		D620		Ty so truyen Hop so Thu T (x1000)
+VAR_GLOBAL	Gear_Ratio_X1	Double Word[Signed]		D622		Ty so truyen Hop so Xa X1 (x1000)
+VAR_GLOBAL	Gear_Ratio_X2	Double Word[Signed]		D624		Ty so truyen Hop so Master X2 (x1000)
+VAR_GLOBAL	Gear_Ratio_Ms	Double Word[Signed]		D626		Ty so truyen Hop so Ghep Ms (x1000)
+VAR_GLOBAL	Gear_Ratio_S	Double Word[Signed]		D628		Ty so truyen Hop so Trang Dau S (x1000)
+VAR_GLOBAL	Gear_Ratio_U	Double Word[Signed]		D630		Ty so truyen Hop so Xa U (x1000)
+VAR_GLOBAL	Speed_Ratio_Ms	Double Word[Signed]		D640		Ty le dong bo toc do Truc Ms (x10)
+VAR_GLOBAL	Speed_Ratio_S	Double Word[Signed]		D642		Ty le toc do Truc S (x10)
+VAR_GLOBAL	Speed_Offset_S	Double Word[Signed]		D644		Bu toc do Truc S
+VAR_GLOBAL	ADC_Zero_T	Double Word[Signed]		D650		Gia tri ADC Zero T
+VAR_GLOBAL	Calib_Weight_T_kg	Double Word[Signed]		D651		Qua can chuan T (kg x10)
+VAR_GLOBAL	ADC_Zero_X1	Double Word[Signed]		D652		Gia tri ADC Zero X1
+VAR_GLOBAL	Calib_Weight_X1_kg	Double Word[Signed]		D653		Qua can chuan X1 (kg x10)
+VAR_GLOBAL	ADC_Zero_M	Double Word[Signed]		D654		Gia tri ADC Zero M
+VAR_GLOBAL	Calib_Weight_M_kg	Double Word[Signed]		D655		Qua can chuan M (kg x10)
+VAR_GLOBAL	ADC_Zero_U	Double Word[Signed]		D656		Gia tri ADC Zero U
+VAR_GLOBAL	Calib_Weight_U_kg	Double Word[Signed]		D657		Qua can chuan U (kg x10)
+VAR_GLOBAL	Calib_Gain_T	Double Word[Signed]		D658		He so Calib Gain T (x1000)
+VAR_GLOBAL	Calib_Gain_X1	Double Word[Signed]		D659		He so Calib Gain X1 (x1000)
+VAR_GLOBAL	Calib_Gain_M	Double Word[Signed]		D661		He so Calib Gain M (x1000)
+VAR_GLOBAL	Calib_Gain_U	Double Word[Signed]		D663		He so Calib Gain U (x1000)
+VAR_GLOBAL	Weight_Net_T	Double Word[Signed]		D510		Trong luong Luc cang thuc te T (kg/N x10)
+VAR_GLOBAL	Weight_Net_X1	Double Word[Signed]		D512		Trong luong Luc cang thuc te X1 (kg/N x10)
+VAR_GLOBAL	Weight_Net_M	Double Word[Signed]		D514		Trong luong Luc cang thuc te M (kg/N x10)
+VAR_GLOBAL	Weight_Net_U	Double Word[Signed]		D516		Trong luong Luc cang thuc te U (kg/N x10)
+VAR_GLOBAL	SP_Tension_T	Double Word[Signed]		D660		Luc cang SP Truc T
+VAR_GLOBAL	SP_Tension_X1	Double Word[Signed]		D662		Luc cang SP Truc X1
+VAR_GLOBAL	SP_Tension_M	Double Word[Signed]		D664		Luc cang SP Truc M
+VAR_GLOBAL	SP_Tension_U	Double Word[Signed]		D668		Luc cang SP Truc U
+VAR_GLOBAL	Taper_Percent_T	Double Word[Signed]		D666		Ty le Con luc giam cang cuon thu T (%)
+VAR_GLOBAL	Kp_T	Double Word[Signed]		D670		He so Kp PID Truc T
+VAR_GLOBAL	Ki_T	Double Word[Signed]		D672		He so Ki PID Truc T
+VAR_GLOBAL	Kd_T	Double Word[Signed]		D674		He so Kd PID Truc T
+VAR_GLOBAL	Kp_X1	Double Word[Signed]		D676		He so Kp PID Truc X1
+VAR_GLOBAL	Ki_X1	Double Word[Signed]		D678		He so Ki PID Truc X1
+VAR_GLOBAL	Kd_X1	Double Word[Signed]		D680		He so Kd PID Truc X1
+VAR_GLOBAL	Kp_M	Double Word[Signed]		D682		He so Kp PID Truc M
+VAR_GLOBAL	Ki_M	Double Word[Signed]		D684		He so Ki PID Truc M
+VAR_GLOBAL	Kd_M	Double Word[Signed]		D686		He so Kd PID Truc M
+VAR_GLOBAL	Kp_U	Double Word[Signed]		D688		He so Kp PID Truc U
+VAR_GLOBAL	Ki_U	Double Word[Signed]		D690		He so Ki PID Truc U
+VAR_GLOBAL	Kd_U	Double Word[Signed]		D692		He so Kd PID Truc U
+VAR_GLOBAL	Set_Target_Length	Double Word[Signed]		D700		Chieu dai met hang cai dat tu dung (m)
+VAR_GLOBAL	Decel_Distance_Meters	Double Word[Signed]		D702		Khoang cach bao giam toc truoc khi dung (m)
+VAR_GLOBAL	Ramp_Accel_Rate	Double Word[Signed]		D704		Thanh ghi gia toc ACC (m/p/s)
+VAR_GLOBAL	Ramp_Decel_Rate	Double Word[Signed]		D706		Thanh ghi giam toc DEC (m/p/s)
+VAR_GLOBAL	Total_Length_Meters	Double Word[Signed]		D708		Tong so met hang da ghep (m)
+VAR_GLOBAL	Release_Pen_Speed_MPM	Double Word[Signed]		D710		Toc do nhan bi 2 Pen ep mang (m/p x10)
+VAR_GLOBAL	Real_Dia_T_mm	Double Word[Signed]		D724		Duong kinh thuc cuon T (mm)
+VAR_GLOBAL	Real_Dia_M_mm	Double Word[Signed]		D722		Duong kinh thuc cuon M (mm)
+VAR_GLOBAL	Real_Dia_U_mm	Double Word[Signed]		D720		Duong kinh thuc cuon U (mm)
+VAR_GLOBAL	Core_Dia_T_mm	Double Word[Signed]		D740		Duong kinh loi cuon T (mm)
+VAR_GLOBAL	Core_Dia_M_mm	Double Word[Signed]		D742		Duong kinh loi cuon M (mm)
+VAR_GLOBAL	Core_Dia_U_mm	Double Word[Signed]		D744		Duong kinh loi cuon U (mm)
+VAR_GLOBAL	Max_Dia_T_mm	Double Word[Signed]		D750		Duong kinh Max cuon T (mm)
+VAR_GLOBAL	Max_Dia_M_mm	Double Word[Signed]		D752		Duong kinh Max cuon M (mm)
+VAR_GLOBAL	Max_Dia_U_mm	Double Word[Signed]		D754		Duong kinh Max cuon U (mm)
+VAR_GLOBAL	Current_Line_MPM	Double Word[Signed]		D730		Toc do hien tai (m/p x10)
+VAR_GLOBAL	Target_Line_MPM	Double Word[Signed]		D732		Toc do muc tieu (m/p x10)
+VAR_GLOBAL	Max_Speed_MPM	Double Word[Signed]		D734		Toc do Max (100.0 m/p)
+VAR_GLOBAL	Min_Speed_MPM	Double Word[Signed]		D736		Toc do Min (2.0 m/p)
+VAR_GLOBAL	Anti_Dry_Crawl_Speed	Double Word[Signed]		D738		Toc do bo cham rua may (1.0 m/p)
+VAR_GLOBAL	Min_Torque_M	Double Word[Signed]		D760		Torque Min Thang M
+VAR_GLOBAL	Max_Torque_M	Double Word[Signed]		D762		Torque Max Thang M
+VAR_GLOBAL	Init_Holding_Torque_M	Double Word[Signed]		D764		Torque ban dau Thang M
+VAR_GLOBAL	Init_Holding_Torque_U	Double Word[Signed]		D766		Torque ban dau Cuon U
+VAR_GLOBAL	Dia_Ms_Roller_mm	Double Word[Signed]		D770		Duong kinh lo lo ghep Ms (mm x10)
+VAR_GLOBAL	Dia_X2_Roller_mm	Double Word[Signed]		D772		Duong kinh lo lo Master X2 (mm x10)

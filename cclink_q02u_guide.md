@@ -63,6 +63,6 @@ Vào **`Network Parameter`** $\rightarrow$ **`CC-Link`**:
 - `M1258` (`RY3A`): Bit Reset lỗi DAC
 - `D524` ~ `D531` (`RWw4`~`RWwB`): Xuất giá trị 8 kênh DAC
 
-### C. AJ65SBT-16DT (Trạm 4 - Remote Digital I/O)
-- **Ngõ vào Digital Remote (`RX60`~`RX67`):** **`M1104` ~ `M1111`** (Nút nhấn/Cảm biến X0~X7)
-- **Ngõ ra Digital Remote (`RY60`~`RY67`):** **`M1296` ~ `M1303`** (Cuộn hút/Đèn Y0~Y7)
+### C. AJ65SBTB1-16DT (Trạm 4 - Remote Digital 8 In / 8 Out)
+- **Ngõ vào Digital Remote (`RX60`~`RX67`):** **`M1104` ~ `M1111`** (Nút nhấn / Cảm biến X0~X7)
+- **Ngõ ra Digital Remote (`RY68`~`RY6F`):** **`M1304` ~ `M1311`** (Cuộn hút / Đèn Y8~YF)

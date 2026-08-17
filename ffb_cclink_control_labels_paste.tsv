@@ -1,0 +1,25 @@
+VAR_INPUT	Enable	Bit		Cho phep FB hoat dong
+VAR_INPUT	ResetErr	Bit		Nut reset loi he thong
+VAR_INPUT	Auto_Mode	Bit		Che do Auto / Manual
+VAR_INPUT	Set_Speed_T	Word[Unsigned]/Bit String[16-bit]		CH1 Speed Thu T
+VAR_INPUT	Set_Torque_T	Word[Unsigned]/Bit String[16-bit]		CH2 Torque Thu T
+VAR_INPUT	Set_Speed_X1	Word[Unsigned]/Bit String[16-bit]		CH3 Speed Xa X1
+VAR_INPUT	Set_Speed_X2	Word[Unsigned]/Bit String[16-bit]		CH4 Speed Master X2
+VAR_INPUT	Set_Speed_Ms	Word[Unsigned]/Bit String[16-bit]		CH5 Speed Ghep Ms
+VAR_INPUT	Set_Torque_M	Word[Unsigned]/Bit String[16-bit]		CH6 Torque Thang M
+VAR_INPUT	Set_Speed_S	Word[Unsigned]/Bit String[16-bit]		CH7 Speed Trang Dau S
+VAR_INPUT	Set_Speed_U	Word[Unsigned]/Bit String[16-bit]		CH8 Speed Xa U
+VAR_INPUT	DO_Y8_Cmd	Bit		Lenh ngo ra Y8 St 4 (M1304)
+VAR_INPUT	DO_Y9_Cmd	Bit		Lenh ngo ra Y9 St 4 (M1305)
+VAR_OUTPUT	CCLink_OK	Bit		Trang thai mang CC-Link OK
+VAR_OUTPUT	HasError	Bit		Bao loi tong truyen thong module
+VAR_OUTPUT	ADC_CH1_Val	Word[Unsigned]/Bit String[16-bit]		Gia tri % ADC CH1 (0..1000)
+VAR_OUTPUT	ADC_CH2_Val	Word[Unsigned]/Bit String[16-bit]		Gia tri % ADC CH2 (0..1000)
+VAR_OUTPUT	ADC_CH3_Val	Word[Unsigned]/Bit String[16-bit]		Gia tri % ADC CH3 (0..1000)
+VAR_OUTPUT	ADC_CH4_Val	Word[Unsigned]/Bit String[16-bit]		Gia tri % ADC CH4 (0..1000)
+VAR_OUTPUT	ADC_CH1_Raw	Word[Unsigned]/Bit String[16-bit]		Gia tri tho D500 ADC CH1
+VAR_OUTPUT	ADC_CH2_Raw	Word[Unsigned]/Bit String[16-bit]		Gia tri tho D501 ADC CH2
+VAR_OUTPUT	ADC_CH3_Raw	Word[Unsigned]/Bit String[16-bit]		Gia tri tho D503 ADC CH3
+VAR_OUTPUT	ADC_CH4_Raw	Word[Unsigned]/Bit String[16-bit]		Gia tri tho D504 ADC CH4
+VAR_OUTPUT	DI_X0_State	Bit		Trang thai ngo vao X0 St 4
+VAR_OUTPUT	DI_X1_State	Bit		Trang thai ngo vao X1 St 4

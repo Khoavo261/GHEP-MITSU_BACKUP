@@ -110,12 +110,12 @@ END_VAR
 
 IF Enable THEN
 
-    (* 1. KIỂM TRA MẠNG CC-LINK *)
-    CCLink_OK := SB0020;
-    HasError  := NOT(SB0020) OR M1032 OR M1066;
+    (* 1. KIỂM TRA MẠNG CC-LINK (SB0020=0 và SB0049=0 là mạng bình thường) *)
+    CCLink_OK := (NOT SB0020) AND (NOT SB0049);
+    HasError  := SB0020 OR SB0049 OR M1032 OR M1066;
 
-    M1208 := SB0020; (* RY8: Kick ADC Tram 1 *)
-    M1240 := SB0020; (* RY28: Kick DAC Tram 2 *)
+    M1208 := CCLink_OK; (* RY8: Kick ADC Tram 1 *)
+    M1240 := CCLink_OK; (* RY28: Kick DAC Tram 2 *)
 
     (* 2. ĐỌC VÀ HIỆU CHUẨN (CALIB & ZERO) 4 KÊNH LOADCELL (TRẠM 1 - AJ65SBT-64AD) *)
     IF M1016 THEN (* RX8 *)
@@ -146,11 +146,11 @@ IF Enable THEN
         Target_D530 := WORD_TO_INT(Set_Speed_S)  / 2;
         Target_D531 := WORD_TO_INT(Set_Speed_U)  / 2;
 
-        S_ON_T_Out  := Auto_Son_T  AND SB0020;
-        S_ON_X1_Out := Auto_Son_X1 AND SB0020;
-        S_ON_X2_Out := Auto_Son_X2 AND SB0020;
-        S_ON_M_Out  := Auto_Son_M  AND SB0020;
-        S_ON_S_Out  := Auto_Son_S  AND SB0020;
+        S_ON_T_Out  := Auto_Son_T  AND CCLink_OK;
+        S_ON_X1_Out := Auto_Son_X1 AND CCLink_OK;
+        S_ON_X2_Out := Auto_Son_X2 AND CCLink_OK;
+        S_ON_M_Out  := Auto_Son_M  AND CCLink_OK;
+        S_ON_S_Out  := Auto_Son_S  AND CCLink_OK;
     ELSE
         Target_D524 := WORD_TO_INT(Test_Speed_T)  / 2;
         Target_D525 := 0;
@@ -161,11 +161,11 @@ IF Enable THEN
         Target_D530 := WORD_TO_INT(Test_Speed_S)  / 2;
         Target_D531 := WORD_TO_INT(Test_Speed_U)  / 2;
 
-        S_ON_T_Out  := Test_Son_T  AND SB0020;
-        S_ON_X1_Out := Test_Son_X1 AND SB0020;
-        S_ON_X2_Out := Test_Son_X2 AND SB0020;
-        S_ON_M_Out  := Test_Son_M  AND SB0020;
-        S_ON_S_Out  := Test_Son_S  AND SB0020;
+        S_ON_T_Out  := Test_Son_T  AND CCLink_OK;
+        S_ON_X1_Out := Test_Son_X1 AND CCLink_OK;
+        S_ON_X2_Out := Test_Son_X2 AND CCLink_OK;
+        S_ON_M_Out  := Test_Son_M  AND CCLink_OK;
+        S_ON_S_Out  := Test_Son_S  AND CCLink_OK;
     END_IF;
 
     (* RAMPING TĂNG GIẢM TỐC CHỐNG ĐỨT MÀNG (ACCEL/DECEL RAMP) *)
