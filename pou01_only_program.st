@@ -205,17 +205,19 @@ IF Effective_SP_T < 0 THEN Effective_SP_T := 0; END_IF;
 Trig_PID_10ms := SM409 AND NOT(Prev_SM409);
 Prev_SM409 := SM409;
 
-(* 10. GỌI RUN 4 INSTANCE PID MỖI CHU KỲ 10MS ĐỂ TRÁNH TRÔI TÍCH PHÂN & BẢO ĐẢM TỐC ĐỘ QUÉT X50/X51 *)
+(* 10. GỌI RUN 5 INSTANCE PID MỖI CHU KỲ 10MS ĐỂ TRÁNH TRÔI TÍCH PHÂN & BẢO ĐẢM TỐC ĐỘ QUÉT X50/X51 *)
 IF Trig_PID_10ms THEN
     pid_T(Enable := HMI_PID_Enable, Setpoint := Effective_SP_T, Feedback := Weight_Net_T, Kp := Kp_T, Ki := Ki_T, Kd := Kd_T);
     pid_X1(Enable := HMI_PID_Enable, Setpoint := SP_Tension_X1, Feedback := Weight_Net_X1, Kp := Kp_X1, Ki := Ki_X1, Kd := Kd_X1);
     pid_M(Enable := HMI_PID_Enable, Setpoint := SP_Tension_M, Feedback := Weight_Net_M, Kp := Kp_M, Ki := Ki_M, Kd := Kd_M);
     pid_U(Enable := HMI_PID_Enable, Setpoint := SP_Tension_U, Feedback := Weight_Net_U, Kp := Kp_U, Ki := Ki_U, Kd := Kd_U);
+    pid_S(Enable := HMI_PID_Enable, Setpoint := SP_Tension_S, Feedback := Weight_Net_S, Kp := Kp_S, Ki := Ki_S, Kd := Kd_S);
 
     PID_Out_T  := pid_T.PID_Output;
     PID_Out_X1 := pid_X1.PID_Output;
     PID_Out_M  := pid_M.PID_Output;
     PID_Out_U  := pid_U.PID_Output;
+    PID_Out_S  := pid_S.PID_Output;
 END_IF;
 
 (* 11. TÍNH TOÁN CÁC GIÁ TRỊ TỐC ĐỘ VÀ TORQUE TỪ BIẾN LOCAL PID *)
@@ -261,7 +263,9 @@ ELSE
     END_IF;
 
     Calc_Speed_X1 := Calc_Speed_X2 + PID_Out_X1;
-    Calc_Speed_S  := ((Calc_Speed_X2 * Speed_Ratio_S) / 1000) + Speed_Offset_S;
+    Calc_Speed_S  := ((Calc_Speed_X2 * Speed_Ratio_S) / 1000) + Speed_Offset_S + PID_Out_S;
+    IF Calc_Speed_S < 0 THEN Calc_Speed_S := 0; END_IF;
+    IF Calc_Speed_S > 4000 THEN Calc_Speed_S := 4000; END_IF;
 
     IF Real_Dia_U_mm > 0 THEN 
         Calc_Speed_U := ((Calc_Speed_X2 * Max_Dia_U_mm) / Real_Dia_U_mm) + PID_Out_U; 

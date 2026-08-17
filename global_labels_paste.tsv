@@ -81,10 +81,12 @@ VAR_GLOBAL	Weight_Net_T	Double Word[Signed]		D510		Trong luong Luc cang thuc te 
 VAR_GLOBAL	Weight_Net_X1	Double Word[Signed]		D512		Trong luong Luc cang thuc te X1 (kg/N x10)
 VAR_GLOBAL	Weight_Net_M	Double Word[Signed]		D514		Trong luong Luc cang thuc te M (kg/N x10)
 VAR_GLOBAL	Weight_Net_U	Double Word[Signed]		D516		Trong luong Luc cang thuc te U (kg/N x10)
+VAR_GLOBAL	Weight_Net_S	Double Word[Signed]		D518		Phan hoi toc do / luc cang Truc S
 VAR_GLOBAL	SP_Tension_T	Double Word[Signed]		D660		Luc cang SP Truc T
 VAR_GLOBAL	SP_Tension_X1	Double Word[Signed]		D662		Luc cang SP Truc X1
 VAR_GLOBAL	SP_Tension_M	Double Word[Signed]		D664		Luc cang SP Truc M
 VAR_GLOBAL	SP_Tension_U	Double Word[Signed]		D668		Luc cang SP Truc U
+VAR_GLOBAL	SP_Tension_S	Double Word[Signed]		D669		Luc cang SP Truc S
 VAR_GLOBAL	Taper_Percent_T	Double Word[Signed]		D666		Ty le Con luc giam cang cuon thu T (%)
 VAR_GLOBAL	Kp_T	Double Word[Signed]		D670		He so Kp PID Truc T
 VAR_GLOBAL	Ki_T	Double Word[Signed]		D672		He so Ki PID Truc T
@@ -98,6 +100,9 @@ VAR_GLOBAL	Kd_M	Double Word[Signed]		D686		He so Kd PID Truc M
 VAR_GLOBAL	Kp_U	Double Word[Signed]		D688		He so Kp PID Truc U
 VAR_GLOBAL	Ki_U	Double Word[Signed]		D690		He so Ki PID Truc U
 VAR_GLOBAL	Kd_U	Double Word[Signed]		D692		He so Kd PID Truc U
+VAR_GLOBAL	Kp_S	Double Word[Signed]		D694		He so Kp PID Truc Trang Dau S
+VAR_GLOBAL	Ki_S	Double Word[Signed]		D696		He so Ki PID Truc Trang Dau S
+VAR_GLOBAL	Kd_S	Double Word[Signed]		D698		He so Kd PID Truc Trang Dau S
 VAR_GLOBAL	Set_Target_Length	Double Word[Signed]		D700		Chieu dai met hang cai dat tu dung (m)
 VAR_GLOBAL	Decel_Distance_Meters	Double Word[Signed]		D702		Khoang cach bao giam toc truoc khi dung (m)
 VAR_GLOBAL	Ramp_Accel_Rate	Double Word[Signed]		D704		Thanh ghi gia toc ACC (m/p/s)

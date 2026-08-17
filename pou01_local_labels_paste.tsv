@@ -2,6 +2,7 @@ VAR	pid_T	FB_TENSION_PID				Instance PID Truc Thu T
 VAR	pid_X1	FB_TENSION_PID				Instance PID Truc Xa Giay X1
 VAR	pid_M	FB_TENSION_PID				Instance PID Thang Tu M
 VAR	pid_U	FB_TENSION_PID				Instance PID Truc Xa Metalize U
+VAR	pid_S	FB_TENSION_PID				Instance PID Truc Trang Dau S
 VAR	fbCCLink	FFB_CCLINK_CONTROL				Instance Control CC-Link Master
 VAR	Calc_Speed_X2	Double Word[Signed]				Toc do tinh toan Master X2
 VAR	Calc_Speed_T	Double Word[Signed]				Toc do tinh toan Thu T
@@ -22,10 +23,10 @@ VAR	ADC_Filter_T	Double Word[Signed]				Bo loc nhieu trung binh dong Loadcell T
 VAR	ADC_Filter_X1	Double Word[Signed]				Bo loc nhieu trung binh dong Loadcell X1
 VAR	ADC_Filter_M	Double Word[Signed]				Bo loc nhieu trung binh dong Loadcell M
 VAR	ADC_Filter_U	Double Word[Signed]				Bo loc nhieu trung binh dong Loadcell U
-VAR	Cmd_Start	Bit				Lenh Tong Start (HMI + Nut vat ly X49)
-VAR	Cmd_Stop	Bit				Lenh Tong Stop (HMI + Nut vat ly X4A)
-VAR	Cmd_Inc	Bit				Lenh Tong INC Tang toc (HMI + Nut vat ly X4B)
-VAR	Cmd_Dec	Bit				Lenh Tong DEC Giam toc (HMI + Nut vat ly X4C)
+VAR	Cmd_Start	Bit				Lenh Tong Start (HMI + Nut vat ly X52)
+VAR	Cmd_Stop	Bit				Lenh Tong Stop (HMI + Nut vat ly X53)
+VAR	Cmd_Inc	Bit				Lenh Tong INC Tang toc (HMI + Nut vat ly X54)
+VAR	Cmd_Dec	Bit				Lenh Tong DEC Giam toc (HMI + Nut vat ly X55)
 VAR	Inc_Hold_Timer	Double Word[Signed]				Timer bam giu phim Tang toc INC
 VAR	Dec_Hold_Timer	Double Word[Signed]				Timer bam giu phim Giam toc DEC
 VAR	Curr_Pulse_T	Double Word[Signed]				Xung Encoder Thu T
@@ -45,15 +46,16 @@ VAR	Rev_Count_T	Double Word[Signed]				So vong quay cuon T
 VAR	Rev_Count_M	Double Word[Signed]				So vong quay cuon M
 VAR	Rev_Count_U	Double Word[Signed]				So vong quay cuon U
 VAR	Dynamic_Accel_Step	Double Word[Signed]				Buoc gia toc dong tang giam luy tien
-VAR	Trig_Pen1	Bit				Xung nhan phim Toggle Pen 1 X52
-VAR	Trig_Pen2	Bit				Xung nhan phim Toggle Pen 2 X53
-VAR	Prev_Pen1_PB	Bit				Trang thai X52 vong scan truoc
-VAR	Prev_Pen2_PB	Bit				Trang thai X53 vong scan truoc
+VAR	Trig_Pen1	Bit				Xung nhan phim Toggle Pen 1 X56
+VAR	Trig_Pen2	Bit				Xung nhan phim Toggle Pen 2 X57
+VAR	Prev_Pen1_PB	Bit				Trang thai X56 vong scan truoc
+VAR	Prev_Pen2_PB	Bit				Trang thai X57 vong scan truoc
 VAR	Pen1_State	Bit				Trang thai ON/OFF hien tai Pen 1
 VAR	Pen2_State	Bit				Trang thai ON/OFF hien tai Pen 2
 VAR	PID_Out_T	Double Word[Signed]				Output PID sau khi lay tu pid_T
 VAR	PID_Out_X1	Double Word[Signed]				Output PID sau khi lay tu pid_X1
 VAR	PID_Out_M	Double Word[Signed]				Output PID sau khi lay tu pid_M
 VAR	PID_Out_U	Double Word[Signed]				Output PID sau khi lay tu pid_U
+VAR	PID_Out_S	Double Word[Signed]				Output PID sau khi lay tu pid_S
 VAR	Trig_PID_10ms	Bit				Xung kich hoat PID moi 10ms (SM409)
 VAR	Prev_SM409	Bit				Trang thai SM409 vong scan truoc

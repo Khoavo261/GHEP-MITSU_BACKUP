@@ -54,10 +54,13 @@ Trong phần mềm **EasyBuilder Pro**:
 | **Lực căng Trục Xả U** | Numeric Input/Display | `D612` (Thực tế) | `D614` (Cài đặt) | $0 \sim 400\text{ N}$ |
 | **Hệ số PID Cuộn T** | 3 Numeric Inputs | - | `D620` (Kp), `D622` (Ki), `D624` (Kd) | x100 |
 | **Hệ số PID Trục X1** | 3 Numeric Inputs | - | `D626` (Kp), `D628` (Ki), `D630` (Kd) | x100 |
-| **Hệ số PID Thắng M** | 3 Numeric Inputs | - | `D632` (Kp), `D634` (Ki), `D636` (Kd) | x100 |
-| **Hệ số PID Trục Xả U**| 3 Numeric Inputs | - | `D638` (Kp), `D640` (Ki), `D642` (Kd) | x100 |
-| **Côn Lực Taper Tension T**| Numeric Input | - | `D716` (% Côn lực) | $0 \sim 100\%$ |
-| **3 Pha Thắng M** | 3 Numeric Inputs | - | `D740` (Hold), `D742` (Min), `D744` (Max) | $0 \sim 4000\text{ DAC}$ |
+| **Hệ số PID Thắng M** | 3 Numeric Inputs | - | `D682` (Kp), `D684` (Ki), `D686` (Kd) | x100 |
+| **Hệ số PID Trục Xả U**| 3 Numeric Inputs | - | `D688` (Kp), `D690` (Ki), `D692` (Kd) | x100 |
+| **Hệ số PID Trục Dầu S**| 3 Numeric Inputs | - | `D694` (Kp), `D696` (Ki), `D698` (Kd) | x100 |
+| **Tỷ lệ Tốc độ Trục S** | Numeric Input | - | `D762` (1000 = 100%, >1000 Nhanh, <1000 Chậm) | $0.1\%$ |
+| **Bù Tốc độ Trục S**   | Numeric Input | - | `D764` (Bù lệch tốc độ $\pm \Delta v$) | $0.1\text{ m/p}$ |
+| **Côn Lực Taper Tension T**| Numeric Input | - | `D666` (% Côn lực) | $0 \sim 100\%$ |
+| **3 Pha Thắng M** | 3 Numeric Inputs | - | `D764` (Hold), `D760` (Min), `D762` (Max) | $0 \sim 4000\text{ DAC}$ |
 
 ---
 
