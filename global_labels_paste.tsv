@@ -98,6 +98,9 @@ VAR_GLOBAL	Kd_M	Double Word[Signed]		D686		He so Kd PID Truc M
 VAR_GLOBAL	Kp_U	Double Word[Signed]		D688		He so Kp PID Truc U
 VAR_GLOBAL	Ki_U	Double Word[Signed]		D690		He so Ki PID Truc U
 VAR_GLOBAL	Kd_U	Double Word[Signed]		D692		He so Kd PID Truc U
+VAR_GLOBAL	Kp_S	Double Word[Signed]		D694		He so Kp PID Toc do Truc S
+VAR_GLOBAL	Ki_S	Double Word[Signed]		D696		He so Ki PID Toc do Truc S
+VAR_GLOBAL	Kd_S	Double Word[Signed]		D698		He so Kd PID Toc do Truc S
 VAR_GLOBAL	Set_Target_Length	Double Word[Signed]		D700		Chieu dai met hang cai dat tu dung (m)
 VAR_GLOBAL	Decel_Distance_Meters	Double Word[Signed]		D702		Khoang cach bao giam toc truoc khi dung (m)
 VAR_GLOBAL	Ramp_Accel_Rate	Double Word[Signed]		D704		Thanh ghi gia toc ACC (m/p/s)
@@ -121,6 +124,7 @@ VAR_GLOBAL	Anti_Dry_Crawl_Speed	Double Word[Signed]		D738		Toc do bo cham rua ma
 VAR_GLOBAL	Min_Torque_M	Double Word[Signed]		D760		Torque Min Thang M
 VAR_GLOBAL	Max_Torque_M	Double Word[Signed]		D762		Torque Max Thang M
 VAR_GLOBAL	Init_Holding_Torque_M	Double Word[Signed]		D764		Torque ban dau Thang M
-VAR_GLOBAL	Init_Holding_Torque_U	Double Word[Signed]		D766		Torque ban dau Cuon U
+VAR_GLOBAL	SP_Speed_S	Double Word[Signed]		D766		Toc do Setpoint Truc S
+VAR_GLOBAL	Feedback_Speed_S	Double Word[Signed]		D768		Toc do Feedback Truc S
 VAR_GLOBAL	Dia_Ms_Roller_mm	Double Word[Signed]		D770		Duong kinh lo lo ghep Ms (mm x10)
 VAR_GLOBAL	Dia_X2_Roller_mm	Double Word[Signed]		D772		Duong kinh lo lo Master X2 (mm x10)
