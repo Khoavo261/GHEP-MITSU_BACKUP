@@ -123,12 +123,13 @@ VAR_GLOBAL	Anti_Dry_Crawl_Speed	Double Word[Signed]		D738		Toc do bo cham rua ma
 VAR_GLOBAL	Min_Torque_M	Double Word[Signed]		D760		Torque Min Thang M
 VAR_GLOBAL	Max_Torque_M	Double Word[Signed]		D762		Torque Max Thang M
 VAR_GLOBAL	Init_Holding_Torque_M	Double Word[Signed]		D764		Torque ban dau Thang M
-VAR_GLOBAL	SP_Speed_S	Double Word[Signed]		D766		Toc do Setpoint Truc S
-VAR_GLOBAL	Feedback_Speed_S	Double Word[Signed]		D768		Toc do Feedback Truc S
+VAR_GLOBAL	Init_Holding_Torque_U	Double Word[Signed]		D766		Torque/Toc do ban dau giu cuon U
+VAR_GLOBAL	SP_Speed_S	Double Word[Signed]		D768		Toc do Setpoint Truc S
+VAR_GLOBAL	Feedback_Speed_S	Double Word[Signed]		D770		Toc do Feedback Truc S
 VAR_GLOBAL	Feedback_Speed_X2	Double Word[Signed]		D774		Toc do Feedback Master X2
 VAR_GLOBAL	Feedback_Speed_Ms	Double Word[Signed]		D776		Toc do Feedback Ghep Ms
-VAR_GLOBAL	Dia_Ms_Roller_mm	Double Word[Signed]		D770		Duong kinh lo lo ghep Ms (mm x10)
-VAR_GLOBAL	Dia_X2_Roller_mm	Double Word[Signed]		D772		Duong kinh lo lo Master X2 (mm x10)
+VAR_GLOBAL	Dia_Ms_Roller_mm	Double Word[Signed]		D778		Duong kinh lo lo ghep Ms (mm x10)
+VAR_GLOBAL	Dia_X2_Roller_mm	Double Word[Signed]		D780		Duong kinh lo lo Master X2 (mm x10)
 VAR_GLOBAL	Test_Speed_T	Double Word[Signed]		D800		Toc do cai dat Test Truc T (0..4000)
 VAR_GLOBAL	Test_Torque_T	Double Word[Signed]		D801		Torque cai dat Test Truc T (0..4000)
 VAR_GLOBAL	Test_Speed_X1	Double Word[Signed]		D802		Toc do cai dat Test Truc X1 (0..4000)
