@@ -29,18 +29,18 @@ IF Ramp_Accel_Rate <= 0 THEN Ramp_Accel_Rate := 5; END_IF;  (* Tăng tốc 5 m/p
 IF Ramp_Decel_Rate <= 0 THEN Ramp_Decel_Rate := 10; END_IF; (* Giảm tốc 10 m/phút mỗi giây *)
 IF Release_Pen_Speed_MPM <= 0 THEN Release_Pen_Speed_MPM := 20; END_IF; (* 2.0 m/p tự nhả 2 pen *)
 
-(* 1. KIỂM TRA BẢO VỆ 5 TRỤC SERVO READY (X40..X44) - GÁN ĐƠN TRÁNH WARNING C9300 *)
+(* 1. KIỂM TRA BẢO VỆ 5 TRỤC SERVO READY TRÊN MODULE 16DT (X0..X4 = M1104..M1108) *)
 Servo_Not_Ready_Fault := NOT(Servo_Ready_T) OR NOT(Servo_Ready_X1) OR NOT(Servo_Ready_X2) OR NOT(Servo_Ready_Ms) OR NOT(Servo_Ready_S);
 
 IF Servo_Not_Ready_Fault THEN
     State_Machine := 0; (* Ngắt về trạng thái STOPPED khẩn cấp *)
 END_IF;
 
-(* 2. ĐIỀU KHIỂN CÔNG TẮC GIỮ TORQUE VÀ CÔNG TẮC BÒ CHẬM RỬA MÁY (X45..X48) *)
-Hold_Torque_Stop_M := Switch_Hold_M;
-Hold_Torque_Stop_U := Switch_Hold_U;
-Anti_Dry_Rotate_Ms := Switch_Wash_Ms;
-Anti_Dry_Rotate_S  := Switch_Wash_S;
+(* 2. ĐIỀU KHIỂN CÔNG TẮC GIỮ TORQUE VÀ CÔNG TẮC BÒ CHẬM RỬA MÁY TRÊN QX40 (X58..X5B) *)
+Hold_Torque_Stop_M := Switch_Hold_M;   (* X58 trên QX40 *)
+Hold_Torque_Stop_U := Switch_Hold_U;   (* X59 trên QX40 *)
+Anti_Dry_Rotate_Ms := Switch_Wash_Ms;  (* X5A trên QX40 *)
+Anti_Dry_Rotate_S  := Switch_Wash_S;   (* X5B trên QX40 *)
 
 (* 3. NẠP LẠI ĐƯỜNG KÍNH KHI NẠP CUỘN MỚI *)
 IF HMI_Reset_Roll_T THEN Real_Dia_T_mm := Core_Dia_T_mm; HMI_Reset_Roll_T := FALSE; END_IF;
