@@ -25,9 +25,9 @@ IF HMI_Reset_Roll_T THEN Real_Dia_T_mm := Core_Dia_T_mm; HMI_Reset_Roll_T := FAL
 IF HMI_Reset_Roll_M THEN Real_Dia_M_mm := Max_Dia_M_mm;  HMI_Reset_Roll_M := FALSE; END_IF;
 IF HMI_Reset_Roll_U THEN Real_Dia_U_mm := Max_Dia_U_mm;  HMI_Reset_Roll_U := FALSE; END_IF;
 
-(* 2. TĂNG GIẢM TỐC LŨY TIẾN THEO THỜI GIAN GIỮ PHÍM INC / DEC *)
-Cmd_Inc := HMI_Inc_Hold OR Physical_Inc_PB;
-Cmd_Dec := HMI_Dec_Hold OR Physical_Dec_PB;
+(* 2. TĂNG GIẢM TỐC LŨY TIẾN THEO THỜI GIAN GIỮ PHÍM INC (X54) / DEC (X55) *)
+Cmd_Inc := HMI_Inc_Hold OR Physical_Inc_PB; (* Physical_Inc_PB = X54 trên QX40 *)
+Cmd_Dec := HMI_Dec_Hold OR Physical_Dec_PB; (* Physical_Dec_PB = X55 trên QX40 *)
 
 IF Cmd_Inc THEN
     Inc_Hold_Timer := Inc_Hold_Timer + 1;
@@ -155,10 +155,10 @@ Calc_Speed_X2 := (Current_Line_MPM * 4000) / Max_Speed_MPM;
 IF NOT M100 THEN
     Calc_Speed_T  := 0;
     Calc_Speed_X1 := 0;
-    IF Switch_Wash_Ms THEN Calc_Speed_Ms := (Anti_Dry_Crawl_Speed * 4000) / Max_Speed_MPM; ELSE Calc_Speed_Ms := 0; END_IF;
-    IF Switch_Wash_S  THEN Calc_Speed_S  := (Anti_Dry_Crawl_Speed * 4000) / Max_Speed_MPM; ELSE Calc_Speed_S  := 0; END_IF;
+    IF Switch_Wash_Ms THEN Calc_Speed_Ms := (Anti_Dry_Crawl_Speed * 4000) / Max_Speed_MPM; ELSE Calc_Speed_Ms := 0; END_IF; (* X5E *)
+    IF Switch_Wash_S  THEN Calc_Speed_S  := (Anti_Dry_Crawl_Speed * 4000) / Max_Speed_MPM; ELSE Calc_Speed_S  := 0; END_IF; (* X5F *)
     Calc_Speed_U  := 0;
-    IF Switch_Hold_M  THEN Calc_Torque_M := Init_Holding_Torque_M; ELSE Calc_Torque_M := 0; END_IF;
+    IF Switch_Hold_M  THEN Calc_Torque_M := Init_Holding_Torque_M; ELSE Calc_Torque_M := 0; END_IF;                        (* X5D *)
 ELSE
     (* Khi máy đang chạy *)
     Calc_Speed_T  := (Calc_Speed_X2 * Real_Dia_T_mm) / Core_Dia_T_mm;
