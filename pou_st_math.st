@@ -155,10 +155,10 @@ Calc_Speed_X2 := (Current_Line_MPM * 4000) / Max_Speed_MPM;
 IF NOT M100 THEN
     Calc_Speed_T  := 0;
     Calc_Speed_X1 := 0;
-    IF Switch_Wash_Ms THEN Calc_Speed_Ms := (Anti_Dry_Crawl_Speed * 4000) / Max_Speed_MPM; ELSE Calc_Speed_Ms := 0; END_IF; (* X5E *)
-    IF Switch_Wash_S  THEN Calc_Speed_S  := (Anti_Dry_Crawl_Speed * 4000) / Max_Speed_MPM; ELSE Calc_Speed_S  := 0; END_IF; (* X5F *)
+    IF Switch_Wash_Ms THEN Calc_Speed_Ms := (Anti_Dry_Crawl_Speed * 4000) / Max_Speed_MPM; ELSE Calc_Speed_Ms := 0; END_IF; (* X5A trên QX40 *)
+    IF Switch_Wash_S  THEN Calc_Speed_S  := (Anti_Dry_Crawl_Speed * 4000) / Max_Speed_MPM; ELSE Calc_Speed_S  := 0; END_IF; (* X5B trên QX40 *)
     Calc_Speed_U  := 0;
-    IF Switch_Hold_M  THEN Calc_Torque_M := Init_Holding_Torque_M; ELSE Calc_Torque_M := 0; END_IF;                        (* X5D *)
+    IF Switch_Hold_M  THEN Calc_Torque_M := Init_Holding_Torque_M; ELSE Calc_Torque_M := 0; END_IF;                        (* X58 trên QX40 *)
 ELSE
     (* Khi máy đang chạy *)
     Calc_Speed_T  := (Calc_Speed_X2 * Real_Dia_T_mm) / Core_Dia_T_mm;
