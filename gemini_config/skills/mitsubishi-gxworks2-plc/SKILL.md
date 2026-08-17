@@ -83,3 +83,15 @@ GX Works2 `Read ASC Format File...` expects Instruction List (IL) / Mnemonic sta
 5. **QX40 Response Filter for Narrow Pulse Flags:**
    - When high-speed proximity sensor flags are narrow (e.g. 10mm width at 100 m/min $\rightarrow$ 6ms pulse width), the QX40 input response filter MUST be changed from 10ms default to **1ms** (or 0.2ms / 0.5ms) in GX Works2 `PLC Parameter` $\rightarrow$ `I/O Assignment` $\rightarrow$ `Switch Setting`.
 
+6. **Constant Scanning = 2.0ms (Fix for Error 5010 PRG. TIME OVER):**
+   - On Q02U CPU, standard program execution time with CC-Link refresh is $\approx 0.5\text{ms} \sim 1.155\text{ms}$.
+   - Setting `PLC Parameter -> PLC RAS -> Constant Scanning = 2.0 ms` fixes the scan rate at exactly $2.0\text{ms}$ ($500\text{ scans/second}$), preventing Watchdog / Constant Scan Over error `5010` while guaranteeing 6~10 scan hits per proximity flag pulse at $100\text{ m/min}$.
+
+7. **16DT Symmetric Channel Map (`T, X1, X2, Ms, S, Pen1, Pen2`):**
+   - Remote Inputs `X0..X7` (`M1104..M1111`): Servo Ready (T, X1, X2, Ms, S), Pen 1, Pen 2, System Reset.
+   - Remote Outputs `Y8..YF` (`M1304..M1311`): Servo ON (T, X1, X2, Ms, S), Solenoid Pen 1, Solenoid Pen 2, Alarm/Spare.
+
+8. **16-Bit Integer Arithmetic Overflow Protection:**
+   - Avoid `WORD_TO_INT(x) * 4000 / 1000` which produces $16,000,000 > 32767$ (overflowing 16-bit INT and causing `4100 OPERATION ERROR`). Assign DAC registers directly using full 0..4000 DINT/WORD scaling.
+
+
