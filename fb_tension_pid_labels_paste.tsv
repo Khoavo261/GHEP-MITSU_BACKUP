@@ -1,16 +1,33 @@
-VAR_INPUT	Enable	Bit		Cho phep PID hoat dong
-VAR_INPUT	Reset	Bit		Reset tich luy I
-VAR_INPUT	Setpoint	Double Word[Signed]		Gia tri luc cang cai dat
-VAR_INPUT	Feedback	Double Word[Signed]		Tai trong phan hoi tu Loadcell Net
-VAR_INPUT	Kp	Double Word[Signed]		He so Kp (x100)
-VAR_INPUT	Ki	Double Word[Signed]		He so Ki (x100)
-VAR_INPUT	Kd	Double Word[Signed]		He so Kd (x100)
-VAR_INPUT	Deadband	Double Word[Signed]		Vung chet khong chinh
-VAR_INPUT	Out_Min	Double Word[Signed]		Gioi han dau ra toi thieu
-VAR_INPUT	Out_Max	Double Word[Signed]		Gioi han dau ra toi da
-VAR_OUTPUT	PID_Output	Double Word[Signed]		Gia tri bu toc do torque cho DAC
-VAR_OUTPUT	Error	Double Word[Signed]		Do lech e(k)
-VAR	Error_Prev	Double Word[Signed]		Do lech vong truoc
-VAR	I_Term	Double Word[Signed]		Thanh phan Tich phan I
-VAR	P_Term	Double Word[Signed]		Thanh phan Ty le P
-VAR	D_Term	Double Word[Signed]		Thanh phan Dao ham D
+VAR_INPUT	Enable	BOOL		Cho phep PID hoat dong
+VAR_INPUT	Reset	BOOL		Reset tich luy I
+VAR_INPUT	Setpoint	REAL		Gia tri luc cang/toc do cai dat (REAL)
+VAR_INPUT	Feedback	REAL		Gia tri phan hoi tu Loadcell/Encoder (REAL)
+VAR_INPUT	Kp	REAL		He so Kp (REAL)
+VAR_INPUT	Ki	REAL		He so Ki (REAL)
+VAR_INPUT	Kd	REAL		He so Kd (REAL)
+VAR_INPUT	Deadband	REAL		Vung chet khong chinh (REAL)
+VAR_INPUT	Out_Min	REAL		Gioi han dau ra toi thieu (REAL)
+VAR_INPUT	Out_Max	REAL		Gioi han dau ra toi da (REAL)
+VAR_INPUT	AT_Enable	BOOL		Lenh kich hoat Auto-Tuning tu dong do tim Kp, Ki, Kd
+VAR_INPUT	AT_Step	REAL		Bien do xung buoc nhay test Auto-Tune (vi du 200.0..400.0)
+VAR_OUTPUT	PID_Output	REAL		Gia tri bu toc do torque cho DAC (REAL)
+VAR_OUTPUT	Error	REAL		Do lech e(k) (REAL)
+VAR_OUTPUT	AT_Done	BOOL		Co bao da Auto-Tuning xong
+VAR_OUTPUT	AT_Busy	BOOL		Co bao dang trong qua trinh Auto-Tuning
+VAR_OUTPUT	Tuned_Kp	REAL		He so Kp vua do tim duoc
+VAR_OUTPUT	Tuned_Ki	REAL		He so Ki vua do tim duoc
+VAR_OUTPUT	Tuned_Kd	REAL		He so Kd vua do tim duoc
+VAR	Error_Prev	REAL		Do lech vong truoc (REAL)
+VAR	I_Term	REAL		Thanh phan Tich phan I (REAL)
+VAR	P_Term	REAL		Thanh phan Ty le P (REAL)
+VAR	D_Term	REAL		Thanh phan Dao ham D (REAL)
+VAR	AT_State	INT		Trang thai State Machine cua Auto-Tune
+VAR	AT_Cycle_Count	INT		Dem so chu ky dao dong Limit Cycle
+VAR	AT_Timer_10ms	DINT		Timer do chu ky dao dong (nhip 10ms)
+VAR	AT_Period_Tu	REAL		Chu ky dao dong rieng Tu (giay)
+VAR	AT_Ku	REAL		Do khuech dai gioi han Ku
+VAR	AT_PV_Max	REAL		Gia tri Feedback dinh cao nhat
+VAR	AT_PV_Min	REAL		Gia tri Feedback day thap nhat
+VAR	AT_Base_Out	REAL		Muc dau ra co ban truoc khi test
+VAR	AT_Relay_State	BOOL		Trang thai Relay Output (+Step / -Step)
+VAR	Test_Step	REAL		Bien do buoc nhay test noi bo
