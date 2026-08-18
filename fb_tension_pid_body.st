@@ -33,7 +33,7 @@ IF AT_Enable THEN
     IF AT_Step > 0.0 THEN
         Test_Step := AT_Step;
     ELSE
-        Test_Step := 200.0; (* Mặc định 200 đơn vị DAC ~ 5% *)
+        Test_Step := 800.0; (* Mặc định 800 đơn vị DAC ~ 5% của 16000 *)
     END_IF;
 
     CASE AT_State OF

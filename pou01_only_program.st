@@ -200,9 +200,9 @@ ELSE
 END_IF;
 IF Effective_SP_T < 0.0 THEN Effective_SP_T := 0.0; END_IF;
 
-(* TÍNH TOÁN TỐC ĐỘ ĐẶT SETPOINT CHO CÁC TRỤC ĐỒNG BỘ THEO MASTER X2 (FLOAT) *)
+(* TÍNH TOÁN TỐC ĐỘ ĐẶT SETPOINT CHO CÁC TRỤC ĐỒNG BỘ THEO MASTER X2 (HIGH RESOLUTION 0..16000) *)
 IF Max_Speed_MPM > 0.0 THEN
-    Base_Speed_X2 := (Current_Line_MPM * 4000.0) / Max_Speed_MPM;
+    Base_Speed_X2 := (Current_Line_MPM * 16000.0) / Max_Speed_MPM;
 ELSE
     Base_Speed_X2 := 0.0;
 END_IF;
@@ -411,7 +411,7 @@ IF State_Machine = 0 THEN
     IF HMI_Test_Ms THEN
         Calc_Speed_Ms := Test_Speed_Ms;
     ELSIF Anti_Dry_Rotate_Ms AND Max_Speed_MPM > 0.0 THEN
-        Calc_Speed_Ms := (Anti_Dry_Crawl_Speed * 4000.0) / Max_Speed_MPM;
+        Calc_Speed_Ms := (Anti_Dry_Crawl_Speed * 16000.0) / Max_Speed_MPM;
     ELSE
         Calc_Speed_Ms := 0.0;
     END_IF;
@@ -419,7 +419,7 @@ IF State_Machine = 0 THEN
     IF HMI_Test_S THEN
         Calc_Speed_S := Test_Speed_S;
     ELSIF Anti_Dry_Rotate_S AND Max_Speed_MPM > 0.0 THEN
-        Calc_Speed_S := (Anti_Dry_Crawl_Speed * 4000.0) / Max_Speed_MPM;
+        Calc_Speed_S := (Anti_Dry_Crawl_Speed * 16000.0) / Max_Speed_MPM;
     ELSE
         Calc_Speed_S := 0.0;
     END_IF;
@@ -435,7 +435,7 @@ IF State_Machine = 0 THEN
     IF HMI_Test_M THEN
         Calc_Torque_M := Test_Torque_M;
     ELSIF Hold_Torque_Stop_M THEN
-        Calc_Torque_M := Base_Torque_M;
+        Calc_Torque_M := (Base_Torque_M * 160.0);
     ELSE
         Calc_Torque_M := 0.0;
     END_IF;
@@ -443,7 +443,7 @@ IF State_Machine = 0 THEN
     IF HMI_Test_U THEN
         Calc_Speed_U := Test_Speed_U;
     ELSIF Hold_Torque_Stop_U THEN
-        Calc_Speed_U := Init_Holding_Torque_U;
+        Calc_Speed_U := (Init_Holding_Torque_U * 160.0);
     ELSE
         Calc_Speed_U := 0.0;
     END_IF;
@@ -455,7 +455,7 @@ ELSE
     Calc_Speed_Ms := SP_Speed_Ms + PID_Out_Ms;
     Calc_Speed_S  := SP_Speed_S  + PID_Out_S;
     Calc_Speed_T  := SP_Speed_T;
-    Calc_Torque_T := SP_Tension_T + PID_Out_T;
+    Calc_Torque_T := (Effective_SP_T * 160.0) + PID_Out_T;
 
     IF Real_Dia_U_mm > 0.0 THEN
         Calc_Speed_U := ((Calc_Speed_X2 * Max_Dia_U_mm) / Real_Dia_U_mm) + PID_Out_U;
@@ -463,7 +463,7 @@ ELSE
         Calc_Speed_U := Calc_Speed_X2 + PID_Out_U;
     END_IF;
 
-    (* 3 Pha Torque Thắng M *)
+    (* 3 Pha Torque Thắng M (0..100% quy đổi ra 0..16000) *)
     IF Rev_Count_M <= 5 THEN
         Base_Torque_M := Init_Holding_Torque_M;
     ELSIF (Max_Dia_M_mm - Core_Dia_M_mm) > 0.0 THEN
@@ -471,18 +471,18 @@ ELSE
     ELSE
         Base_Torque_M := Min_Torque_M;
     END_IF;
-    Calc_Torque_M := Base_Torque_M + PID_Out_M;
+    Calc_Torque_M := (Base_Torque_M * 160.0) + PID_Out_M;
 END_IF;
 
-(* KHỐNG CHẾ BIÊN AN TOÀN 0..4000 CHO TOÀN BỘ 8 KÊNH DAC *)
-IF Calc_Speed_T  < 0.0 THEN Calc_Speed_T  := 0.0; ELSIF Calc_Speed_T  > 4000.0 THEN Calc_Speed_T  := 4000.0; END_IF;
-IF Calc_Torque_T < 0.0 THEN Calc_Torque_T := 0.0; ELSIF Calc_Torque_T > 4000.0 THEN Calc_Torque_T := 4000.0; END_IF;
-IF Calc_Speed_X1 < 0.0 THEN Calc_Speed_X1 := 0.0; ELSIF Calc_Speed_X1 > 4000.0 THEN Calc_Speed_X1 := 4000.0; END_IF;
-IF Calc_Speed_X2 < 0.0 THEN Calc_Speed_X2 := 0.0; ELSIF Calc_Speed_X2 > 4000.0 THEN Calc_Speed_X2 := 4000.0; END_IF;
-IF Calc_Speed_Ms < 0.0 THEN Calc_Speed_Ms := 0.0; ELSIF Calc_Speed_Ms > 4000.0 THEN Calc_Speed_Ms := 4000.0; END_IF;
-IF Calc_Torque_M < 0.0 THEN Calc_Torque_M := 0.0; ELSIF Calc_Torque_M > 4000.0 THEN Calc_Torque_M := 4000.0; END_IF;
-IF Calc_Speed_S  < 0.0 THEN Calc_Speed_S  := 0.0; ELSIF Calc_Speed_S  > 4000.0 THEN Calc_Speed_S  := 4000.0; END_IF;
-IF Calc_Speed_U  < 0.0 THEN Calc_Speed_U  := 0.0; ELSIF Calc_Speed_U  > 4000.0 THEN Calc_Speed_U  := 4000.0; END_IF;
+(* KHỐNG CHẾ BIÊN AN TOÀN 0..16000 CHO TOÀN BỘ 8 KÊNH DAC (HIGH RESOLUTION) *)
+IF Calc_Speed_T  < 0.0 THEN Calc_Speed_T  := 0.0; ELSIF Calc_Speed_T  > 16000.0 THEN Calc_Speed_T  := 16000.0; END_IF;
+IF Calc_Torque_T < 0.0 THEN Calc_Torque_T := 0.0; ELSIF Calc_Torque_T > 16000.0 THEN Calc_Torque_T := 16000.0; END_IF;
+IF Calc_Speed_X1 < 0.0 THEN Calc_Speed_X1 := 0.0; ELSIF Calc_Speed_X1 > 16000.0 THEN Calc_Speed_X1 := 16000.0; END_IF;
+IF Calc_Speed_X2 < 0.0 THEN Calc_Speed_X2 := 0.0; ELSIF Calc_Speed_X2 > 16000.0 THEN Calc_Speed_X2 := 16000.0; END_IF;
+IF Calc_Speed_Ms < 0.0 THEN Calc_Speed_Ms := 0.0; ELSIF Calc_Speed_Ms > 16000.0 THEN Calc_Speed_Ms := 16000.0; END_IF;
+IF Calc_Torque_M < 0.0 THEN Calc_Torque_M := 0.0; ELSIF Calc_Torque_M > 16000.0 THEN Calc_Torque_M := 16000.0; END_IF;
+IF Calc_Speed_S  < 0.0 THEN Calc_Speed_S  := 0.0; ELSIF Calc_Speed_S  > 16000.0 THEN Calc_Speed_S  := 16000.0; END_IF;
+IF Calc_Speed_U  < 0.0 THEN Calc_Speed_U  := 0.0; ELSIF Calc_Speed_U  > 16000.0 THEN Calc_Speed_U  := 16000.0; END_IF;
 
 (* 12. THỰC THI FB CC-LINK XUẤT ÁP 8 KÊNH DAC (TRUYỀN TRỰC TIẾP BIẾN FLOAT) *)
 fbCCLink(

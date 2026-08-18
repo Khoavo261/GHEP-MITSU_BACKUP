@@ -139,14 +139,14 @@ VAR_GLOBAL	SP_Speed_S	REAL		D782		Toc do Setpoint Truc S
 VAR_GLOBAL	Feedback_Speed_S	REAL		D784		Toc do Feedback Truc S
 VAR_GLOBAL	Feedback_Speed_X2	REAL		D786		Toc do Feedback Master X2
 VAR_GLOBAL	Feedback_Speed_Ms	REAL		D788		Toc do Feedback Ghep Ms
-VAR_GLOBAL	Test_Speed_T	REAL		D800		Toc do cai dat Test Truc T (0..4000)
-VAR_GLOBAL	Test_Torque_T	REAL		D802		Torque cai dat Test Truc T (0..4000)
-VAR_GLOBAL	Test_Speed_X1	REAL		D804		Toc do cai dat Test Truc X1 (0..4000)
-VAR_GLOBAL	Test_Speed_X2	REAL		D806		Toc do cai dat Test Truc X2 (0..4000)
-VAR_GLOBAL	Test_Speed_Ms	REAL		D808		Toc do cai dat Test Truc Ms (0..4000)
-VAR_GLOBAL	Test_Speed_S	REAL		D810		Toc do cai dat Test Truc S (0..4000)
-VAR_GLOBAL	Test_Torque_M	REAL		D812		Torque cai dat Test Thang M (0..4000)
-VAR_GLOBAL	Test_Speed_U	REAL		D814		Toc do cai dat Test Truc U (0..4000)
+VAR_GLOBAL	Test_Speed_T	REAL		D800		Toc do cai dat Test Truc T (0..16000)
+VAR_GLOBAL	Test_Torque_T	REAL		D802		Torque cai dat Test Truc T (0..16000)
+VAR_GLOBAL	Test_Speed_X1	REAL		D804		Toc do cai dat Test Truc X1 (0..16000)
+VAR_GLOBAL	Test_Speed_X2	REAL		D806		Toc do cai dat Test Truc X2 (0..16000)
+VAR_GLOBAL	Test_Speed_Ms	REAL		D808		Toc do cai dat Test Truc Ms (0..16000)
+VAR_GLOBAL	Test_Speed_S	REAL		D810		Toc do cai dat Test Truc S (0..16000)
+VAR_GLOBAL	Test_Torque_M	REAL		D812		Torque cai dat Test Thang M (0..16000)
+VAR_GLOBAL	Test_Speed_U	REAL		D814		Toc do cai dat Test Truc U (0..16000)
 VAR_GLOBAL	Max_RPM_X2	REAL		D820		Toc do Max RPM Master X2 (1000.0)
 VAR_GLOBAL	Max_RPM_X1	REAL		D822		Toc do Max RPM Xa X1 (1000.0)
 VAR_GLOBAL	Max_RPM_Ms	REAL		D824		Toc do Max RPM Ghep Ms (3000.0)

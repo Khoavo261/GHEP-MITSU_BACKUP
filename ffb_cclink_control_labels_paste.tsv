@@ -1,14 +1,14 @@
 VAR_INPUT	Enable	BOOL		Cho phep FB hoat dong
 VAR_INPUT	ResetErr	BOOL		Nut reset loi he thong
 VAR_INPUT	Auto_Mode	BOOL		Che do Auto / Manual
-VAR_INPUT	Set_Speed_T	REAL		CH1 Speed Thu T (0.0..4000.0)
-VAR_INPUT	Set_Torque_T	REAL		CH2 Torque Thu T (0.0..4000.0)
-VAR_INPUT	Set_Speed_X1	REAL		CH3 Speed Xa X1 (0.0..4000.0)
-VAR_INPUT	Set_Speed_X2	REAL		CH4 Speed Master X2 (0.0..4000.0)
-VAR_INPUT	Set_Speed_Ms	REAL		CH5 Speed Ghep Ms (0.0..4000.0)
-VAR_INPUT	Set_Torque_M	REAL		CH6 Torque Thang M (0.0..4000.0)
-VAR_INPUT	Set_Speed_S	REAL		CH7 Speed Trang Dau S (0.0..4000.0)
-VAR_INPUT	Set_Speed_U	REAL		CH8 Speed Xa U (0.0..4000.0)
+VAR_INPUT	Set_Speed_T	REAL		CH1 Speed Thu T (0.0..16000.0)
+VAR_INPUT	Set_Torque_T	REAL		CH2 Torque Thu T (0.0..16000.0)
+VAR_INPUT	Set_Speed_X1	REAL		CH3 Speed Xa X1 (0.0..16000.0)
+VAR_INPUT	Set_Speed_X2	REAL		CH4 Speed Master X2 (0.0..16000.0)
+VAR_INPUT	Set_Speed_Ms	REAL		CH5 Speed Ghep Ms (0.0..16000.0)
+VAR_INPUT	Set_Torque_M	REAL		CH6 Torque Thang M (0.0..16000.0)
+VAR_INPUT	Set_Speed_S	REAL		CH7 Speed Trang Dau S (0.0..16000.0)
+VAR_INPUT	Set_Speed_U	REAL		CH8 Speed Xa U (0.0..16000.0)
 VAR_INPUT	DO_Y8_Cmd	BOOL		Lenh ngo ra Y8 St 4 (M1304)
 VAR_INPUT	DO_Y9_Cmd	BOOL		Lenh ngo ra Y9 St 4 (M1305)
 VAR_OUTPUT	CCLink_OK	BOOL		Trang thai mang CC-Link OK

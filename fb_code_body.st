@@ -1,5 +1,6 @@
 (* ============================================================================ *)
-(* FUNCTION BLOCK BODY: FB_CCLINK_CONTROL (QUẢN LÝ MẠNG CC-LINK - CHUẨN SỐ THỰC REAL) *)
+(* FUNCTION BLOCK BODY: FB_CCLINK_CONTROL (QUẢN LÝ MẠNG CC-LINK - CHUẨN REAL)  *)
+(* MODULE DAC: AJ65VBTCU-68DAVN (CHẾ ĐỘ ĐỘ PHÂN GIẢI CAO HIGH RESOLUTION 0..16000) *)
 (* ============================================================================ *)
 
 IF Enable THEN
@@ -25,32 +26,32 @@ IF Enable THEN
         ADC_CH4_Val := INT_TO_REAL(WORD_TO_INT(D503));
     END_IF;
 
-    (* 3. Ghi 8 kênh Analog Output DAC 0..4000 (AJ65VBTCU-68DAVN - Trạm 2 & 3) *)
-    (* Tự động kẹp biên an toàn 0.0..4000.0 và ép kiểu từ REAL sang WORD cho phần cứng *)
+    (* 3. Ghi 8 kênh Analog Output DAC 0..16000 (AJ65VBTCU-68DAVN High Resolution Mode) *)
+    (* Tự động kẹp biên an toàn 0.0..16000.0 và ép kiểu từ REAL sang 16-bit WORD cho phần cứng *)
     
     (* CH1: Speed Thu T (D524) *)
-    IF Set_Speed_T < 0.0 THEN D524 := INT_TO_WORD(0); ELSIF Set_Speed_T > 4000.0 THEN D524 := INT_TO_WORD(4000); ELSE D524 := INT_TO_WORD(REAL_TO_INT(Set_Speed_T)); END_IF;
+    IF Set_Speed_T < 0.0 THEN D524 := INT_TO_WORD(0); ELSIF Set_Speed_T > 16000.0 THEN D524 := INT_TO_WORD(16000); ELSE D524 := INT_TO_WORD(REAL_TO_INT(Set_Speed_T)); END_IF;
 
     (* CH2: Torque Thu T (D525) *)
-    IF Set_Torque_T < 0.0 THEN D525 := INT_TO_WORD(0); ELSIF Set_Torque_T > 4000.0 THEN D525 := INT_TO_WORD(4000); ELSE D525 := INT_TO_WORD(REAL_TO_INT(Set_Torque_T)); END_IF;
+    IF Set_Torque_T < 0.0 THEN D525 := INT_TO_WORD(0); ELSIF Set_Torque_T > 16000.0 THEN D525 := INT_TO_WORD(16000); ELSE D525 := INT_TO_WORD(REAL_TO_INT(Set_Torque_T)); END_IF;
 
     (* CH3: Speed Xả X1 (D526) *)
-    IF Set_Speed_X1 < 0.0 THEN D526 := INT_TO_WORD(0); ELSIF Set_Speed_X1 > 4000.0 THEN D526 := INT_TO_WORD(4000); ELSE D526 := INT_TO_WORD(REAL_TO_INT(Set_Speed_X1)); END_IF;
+    IF Set_Speed_X1 < 0.0 THEN D526 := INT_TO_WORD(0); ELSIF Set_Speed_X1 > 16000.0 THEN D526 := INT_TO_WORD(16000); ELSE D526 := INT_TO_WORD(REAL_TO_INT(Set_Speed_X1)); END_IF;
 
     (* CH4: Speed Master X2 (D527) *)
-    IF Set_Speed_X2 < 0.0 THEN D527 := INT_TO_WORD(0); ELSIF Set_Speed_X2 > 4000.0 THEN D527 := INT_TO_WORD(4000); ELSE D527 := INT_TO_WORD(REAL_TO_INT(Set_Speed_X2)); END_IF;
+    IF Set_Speed_X2 < 0.0 THEN D527 := INT_TO_WORD(0); ELSIF Set_Speed_X2 > 16000.0 THEN D527 := INT_TO_WORD(16000); ELSE D527 := INT_TO_WORD(REAL_TO_INT(Set_Speed_X2)); END_IF;
 
     (* CH5: Speed Ghép Ms (D528) *)
-    IF Set_Speed_Ms < 0.0 THEN D528 := INT_TO_WORD(0); ELSIF Set_Speed_Ms > 4000.0 THEN D528 := INT_TO_WORD(4000); ELSE D528 := INT_TO_WORD(REAL_TO_INT(Set_Speed_Ms)); END_IF;
+    IF Set_Speed_Ms < 0.0 THEN D528 := INT_TO_WORD(0); ELSIF Set_Speed_Ms > 16000.0 THEN D528 := INT_TO_WORD(16000); ELSE D528 := INT_TO_WORD(REAL_TO_INT(Set_Speed_Ms)); END_IF;
 
     (* CH6: Torque Thắng M (D529) *)
-    IF Set_Torque_M < 0.0 THEN D529 := INT_TO_WORD(0); ELSIF Set_Torque_M > 4000.0 THEN D529 := INT_TO_WORD(4000); ELSE D529 := INT_TO_WORD(REAL_TO_INT(Set_Torque_M)); END_IF;
+    IF Set_Torque_M < 0.0 THEN D529 := INT_TO_WORD(0); ELSIF Set_Torque_M > 16000.0 THEN D529 := INT_TO_WORD(16000); ELSE D529 := INT_TO_WORD(REAL_TO_INT(Set_Torque_M)); END_IF;
 
     (* CH7: Speed Tráng Dầu S (D530) *)
-    IF Set_Speed_S < 0.0 THEN D530 := INT_TO_WORD(0); ELSIF Set_Speed_S > 4000.0 THEN D530 := INT_TO_WORD(4000); ELSE D530 := INT_TO_WORD(REAL_TO_INT(Set_Speed_S)); END_IF;
+    IF Set_Speed_S < 0.0 THEN D530 := INT_TO_WORD(0); ELSIF Set_Speed_S > 16000.0 THEN D530 := INT_TO_WORD(16000); ELSE D530 := INT_TO_WORD(REAL_TO_INT(Set_Speed_S)); END_IF;
 
     (* CH8: Speed Xả U (D531) *)
-    IF Set_Speed_U < 0.0 THEN D531 := INT_TO_WORD(0); ELSIF Set_Speed_U > 4000.0 THEN D531 := INT_TO_WORD(4000); ELSE D531 := INT_TO_WORD(REAL_TO_INT(Set_Speed_U)); END_IF;
+    IF Set_Speed_U < 0.0 THEN D531 := INT_TO_WORD(0); ELSIF Set_Speed_U > 16000.0 THEN D531 := INT_TO_WORD(16000); ELSE D531 := INT_TO_WORD(REAL_TO_INT(Set_Speed_U)); END_IF;
 
     (* 4. Xử lý Digital Remote I/O (AJ65SBTB1-16DT: X0..X7 = M1104..M1111 | Y8..YF = M1304..M1311) *)
     DI_X0_State := M1104;  (* RX60 St 4 *)
