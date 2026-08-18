@@ -5,6 +5,7 @@ VAR_GLOBAL	Servo_Ready_Ms	BOOL		M1107		Cam bien Servo Ready Truc Ghep Ms (X3 16D
 VAR_GLOBAL	Servo_Ready_S	BOOL		M1108		Cam bien Servo Ready Truc Trang Dau S (X4 16DT)
 VAR_GLOBAL	Pen1_Input_16DT	BOOL		M1109		Tin hieu Pen 1 (X5 16DT)
 VAR_GLOBAL	Pen2_Input_16DT	BOOL		M1110		Tin hieu Pen 2 (X6 16DT)
+VAR_GLOBAL	Jog_Input_16DT	BOOL		M1111		Tin hieu Bo Cham 16DT (X7 16DT)
 VAR_GLOBAL	Sensor_Rev_M	BOOL		X50		Cam bien tiem can dem 1 vong cuon M (X50)
 VAR_GLOBAL	Sensor_Rev_U	BOOL		X51		Cam bien tiem can dem 1 vong cuon U (X51)
 VAR_GLOBAL	Physical_Start_PB	BOOL		X52		Nut nhan vat ly START QX40 (X52)
@@ -17,6 +18,7 @@ VAR_GLOBAL	Switch_Hold_M	BOOL		X58		Cong tac giu Torque Thang M khi dung (X58)
 VAR_GLOBAL	Switch_Hold_U	BOOL		X59		Cong tac giu Torque Xa U khi dung (X59)
 VAR_GLOBAL	Switch_Wash_Ms	BOOL		X5A		Cong tac quay rua may bo cham Ms khi dung (X5A)
 VAR_GLOBAL	Switch_Wash_S	BOOL		X5B		Cong tac quay rua may bo cham S khi dung (X5B)
+VAR_GLOBAL	Physical_Jog_PB	BOOL		X5C		Nut nhan co ben ngoai BO CHAM NOI MANG QX40 (X5C)
 VAR_GLOBAL	Servo_ON_T	BOOL		M1304		Ngo ra Servo ON Truc Thu T (Y8 16DT)
 VAR_GLOBAL	Servo_ON_X1	BOOL		M1305		Ngo ra Servo ON Truc Xa X1 (Y9 16DT)
 VAR_GLOBAL	Servo_ON_X2	BOOL		M1306		Ngo ra Servo ON Truc Master X2 (YA 16DT)
@@ -57,6 +59,10 @@ VAR_GLOBAL	Hold_Torque_Stop_M	BOOL		M130		Giu Torque M khi dung may
 VAR_GLOBAL	Hold_Torque_Stop_U	BOOL		M131		Giu Torque U khi dung may
 VAR_GLOBAL	Anti_Dry_Rotate_S	BOOL		M132		Bo cham S khi dung may
 VAR_GLOBAL	Anti_Dry_Rotate_Ms	BOOL		M133		Bo cham Ms khi dung may
+VAR_GLOBAL	HMI_Reset_All_Rolls	BOOL		M135		Nut thay cuon moi toan bo (Reset ca 3 cuon va xoa met)
+VAR_GLOBAL	HMI_Jog_Crawl_Cmd	BOOL		M136		Nut bo cham noi mang 2 m/p giu de chay tha de dung
+VAR_GLOBAL	HMI_Cmd_Apply_Recipe	BOOL		M137		Nut ap dung cong thuc don hang da chon
+VAR_GLOBAL	HMI_Cmd_Save_Recipe	BOOL		M138		Nut luu thong so hien tai vao cong thuc
 VAR_GLOBAL	Weight_Net_T	REAL		D510		Trong luong Luc cang thuc te T (kg/N)
 VAR_GLOBAL	Weight_Net_X1	REAL		D512		Trong luong Luc cang thuc te X1 (kg/N)
 VAR_GLOBAL	Weight_Net_M	REAL		D514		Trong luong Luc cang thuc te M (kg/N)
@@ -67,6 +73,9 @@ VAR_GLOBAL	HMI_Cmd_Save_PID	BOOL		M125		Nut bam Luu cai dat PID / Calib tren HMI
 VAR_GLOBAL	HMI_Cmd_AutoTune	BOOL		M126		Nut bam Kich hoat Auto-Tuning PID cho truc dang chon
 VAR_GLOBAL	HMI_Status_AT_Busy	BOOL		M127		Den bao dang chay Auto-Tuning
 VAR_GLOBAL	HMI_Status_AT_Done	BOOL		M128		Den bao da Auto-Tuning xong va da tu cap nhat Kp Ki Kd
+VAR_GLOBAL	HMI_Status_Text_Code	INT		D602		Ma trang thai van hanh hien thi tieng Viet tren HMI
+VAR_GLOBAL	HMI_Recipe_Select	INT		D604		Chon cong thuc don hang Recipe (1..5)
+VAR_GLOBAL	HMI_Disp_Zero_Offset	REAL		D608		O nhap Zero Offset duy nhat tren HMI
 VAR_GLOBAL	HMI_Axis_Select	INT		D610		Chon truc tren HMI (1=Thu T, 2=Xa X1, 3=Master X2, 4=Ghep Ms, 5=Dau S, 6=Thang M, 7=Xa U)
 VAR_GLOBAL	HMI_Disp_Kp	REAL		D612		O nhap Kp duy nhat tren HMI
 VAR_GLOBAL	HMI_Disp_Ki	REAL		D614		O nhap Ki duy nhat tren HMI
@@ -162,3 +171,7 @@ VAR_GLOBAL	Kd_M	REAL		D844		He so Kd PID Truc M
 VAR_GLOBAL	Kp_U	REAL		D846		He so Kp PID Truc U
 VAR_GLOBAL	Ki_U	REAL		D848		He so Ki PID Truc U
 VAR_GLOBAL	Kd_U	REAL		D850		He so Kd PID Truc U
+VAR_GLOBAL	Zero_Offset_T	REAL		D852		Diem 0 Zero Offset Loadcell Thu T
+VAR_GLOBAL	Zero_Offset_X1	REAL		D854		Diem 0 Zero Offset Loadcell Xa X1
+VAR_GLOBAL	Zero_Offset_M	REAL		D856		Diem 0 Zero Offset Thang Tu Metalize M
+VAR_GLOBAL	Zero_Offset_U	REAL		D858		Diem 0 Zero Offset Cuon Xa Sau Cung U

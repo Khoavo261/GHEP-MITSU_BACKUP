@@ -35,6 +35,7 @@ VAR	Cmd_Start	BOOL				Lenh Tong Start (HMI + Nut vat ly X52)
 VAR	Cmd_Stop	BOOL				Lenh Tong Stop (HMI + Nut vat ly X53)
 VAR	Cmd_Inc	BOOL				Lenh Tong INC Tang toc (HMI + Nut vat ly X54)
 VAR	Cmd_Dec	BOOL				Lenh Tong DEC Giam toc (HMI + Nut vat ly X55)
+VAR	Cmd_Jog_Crawl	BOOL				Lenh Tong Bo cham noi mang 2 m/p (HMI + Nut co X5C)
 VAR	Inc_Hold_Timer	DINT				Timer bam giu phim Tang toc INC
 VAR	Dec_Hold_Timer	DINT				Timer bam giu phim Giam toc DEC
 VAR	Curr_Pulse_T	DINT				Xung Encoder Thu T
@@ -75,3 +76,5 @@ VAR	PID_Out_Ms	REAL				Output PID Toc do Ms
 VAR	PID_Out_S	REAL				Output PID Toc do S
 VAR	Trig_PID_10ms	BOOL				Xung kich hoat PID moi 10ms (SM409)
 VAR	Prev_SM409	BOOL				Trang thai SM409 vong scan truoc
+VAR	Pen_Auto_Engaged	BOOL				Co tu dong kep 2 Pen khi toc do vuot 5 m/p
+VAR	Prev_Recipe_Select	INT				Luu gia tri Recipe da chon vong scan truoc
