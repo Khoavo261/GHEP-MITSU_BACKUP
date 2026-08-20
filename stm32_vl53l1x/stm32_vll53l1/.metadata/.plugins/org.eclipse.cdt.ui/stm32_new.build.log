@@ -1,0 +1,18 @@
+15:16:53 **** Incremental Build of configuration Debug for project stm32_new ****
+make -j4 all 
+arm-none-eabi-gcc "../Core/Src/freertos.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xC -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/freertos.d" -MT"Core/Src/freertos.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/freertos.o"
+arm-none-eabi-gcc "../Core/Src/oled_ssd1306.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xC -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/oled_ssd1306.d" -MT"Core/Src/oled_ssd1306.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/oled_ssd1306.o"
+arm-none-eabi-gcc -o "stm32_new.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\data-2026\lap_top\GHEP-MITSU_BACKUP\stm32_vl53l1x\stm32_new\STM32F401CCUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="stm32_new.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: stm32_new.elf
+ 
+arm-none-eabi-size  stm32_new.elf 
+arm-none-eabi-objdump -h -S stm32_new.elf  > "stm32_new.list"
+   text	   data	    bss	    dec	    hex	filename
+  42404	    120	  22640	  65164	   fe8c	stm32_new.elf
+Finished building: default.size.stdout
+ 
+Finished building: stm32_new.list
+ 
+
+15:16:55 Build Finished. 0 errors, 0 warnings. (took 1s.641ms)
+

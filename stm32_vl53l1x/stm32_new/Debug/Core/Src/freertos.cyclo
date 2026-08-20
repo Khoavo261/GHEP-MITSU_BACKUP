@@ -1,0 +1,4 @@
+../Core/Src/freertos.c:89:6:MX_FREERTOS_Init	1
+../Core/Src/freertos.c:137:6:VL53_F	1
+../Core/Src/freertos.c:158:6:PLC_F	1
+../Core/Src/freertos.c:179:6:OLED096_F	1

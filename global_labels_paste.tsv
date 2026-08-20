@@ -175,3 +175,9 @@ VAR_GLOBAL	Zero_Offset_T	REAL		D852		Diem 0 Zero Offset Loadcell Thu T
 VAR_GLOBAL	Zero_Offset_X1	REAL		D854		Diem 0 Zero Offset Loadcell Xa X1
 VAR_GLOBAL	Zero_Offset_M	REAL		D856		Diem 0 Zero Offset Thang Tu Metalize M
 VAR_GLOBAL	Zero_Offset_U	REAL		D858		Diem 0 Zero Offset Cuon Xa Sau Cung U
+VAR_GLOBAL	CCLink_AD_Avg_Mode	WORD		D860		Che do lay trung binh BFM 0 64AD (H3333=Moving Avg)
+VAR_GLOBAL	CCLink_AD_Avg_CH1	INT		D861		So mau trung binh CH1 BFM 1 (Loadcell Thu T)
+VAR_GLOBAL	CCLink_AD_Avg_CH2	INT		D862		So mau trung binh CH2 BFM 2 (Loadcell Xa X1)
+VAR_GLOBAL	CCLink_AD_Avg_CH3	INT		D863		So mau trung binh CH3 BFM 3 (Loadcell Thang M)
+VAR_GLOBAL	CCLink_AD_Avg_CH4	INT		D864		So mau trung binh CH4 BFM 4 (Loadcell Xa U)
+VAR_GLOBAL	CCLink_AD_Conv_En	INT		D865		Cho phep chuyen doi AD 4 kenh BFM 10 (0=Enable)

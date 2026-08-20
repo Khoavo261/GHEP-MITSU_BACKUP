@@ -67,7 +67,7 @@ IF (HMI_Recipe_Select <> Prev_Recipe_Select) OR HMI_Cmd_Apply_Recipe THEN
             Ramp_Decel_Rate  := 0.06;
 
         5: (* 5. CHẾ ĐỘ TÙY CHỈNH (CUSTOM) *)
-            (* Giữ nguyên cài đặt người dùng *)
+            Target_Line_MPM := Target_Line_MPM; (* Giữ nguyên thông số người dùng tùy chỉnh *)
     END_CASE;
     Prev_Recipe_Select   := HMI_Recipe_Select;
     HMI_Cmd_Apply_Recipe := FALSE;

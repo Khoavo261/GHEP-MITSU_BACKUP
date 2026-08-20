@@ -1,0 +1,100 @@
+================================================================================
+          HƯỚNG DẪN HIỆU CHUẨN (CALIBRATION) CẢM BIẾN LASER ToF VL53L1X
+                     DỰ ÁN: STM32F4 <-> PLC MITSUBISHI Q-SERIES
+================================================================================
+
+1. TỔNG QUAN VỀ HIỆU CHUẨN CẢM BIẾN ToF:
+--------------------------------------------------------------------------------
+Cảm biến khoảng cách Laser ToF (Time-of-Flight) VL53L1X đo khoảng cách bằng tốc độ
+ánh sáng của hạt photon. Trong thực tế lắp đặt công nghiệp, cần hiệu chuẩn trong
+2 trường hợp:
+   - Trường hợp A: Cảm biến bị lệch cố định một vài mm do cơ khí gá đặt (Offset).
+   - Trường hợp B: Cảm biến được lắp sau tấm kính hoặc Mica bảo vệ (Crosstalk / Xtalk).
+
+
+================================================================================
+2. PHƯƠNG PHÁP 1: CALIB OFFSET PHẦN MỀM (NHANH NHẤT & DỄ DÙNG NHẤT)
+================================================================================
+Đây là cách các kỹ sư tự động hóa dùng phổ biến nhất vì không làm thay đổi thanh
+ghi nội của cảm biến, dễ dàng tùy chỉnh trực tiếp trên HMI hoặc trong code C.
+
+BƯỚC 1: ĐO KIỂM CHỨNG BẰNG THƯỚC CƠ KHÍ
+   - Đặt một vật cản phẳng (màu trắng hoặc màu sáng) ở cự ly cố định, dùng thước
+     cơ khí đo chính xác khoảng cách từ mặt cảm biến đến vật cản.
+     Ví dụ: Khoảng cách thực tế = 500 mm (D_thuc = 500).
+
+BƯỚC 2: QUAN SÁT GIÁ TRỊ ĐO THÔ TRÊN OLED HOẶC PLC
+   - Nhìn dòng D901 (Raw) trên màn hình OLED xem cảm biến đang đo ra bao nhiêu.
+     Ví dụ: D901 đo được = 486 mm (D_do = 486).
+
+BƯỚC 3: TÍNH HỆ SỐ OFFSET
+   - Độ lệch bù trừ: 
+     OFFSET = D_thuc - D_do
+     OFFSET = 500 - 486 = +14 mm.
+
+BƯỚC 4: ÁP DỤNG VÀO CODE C HOẶC LẬP TRÌNH PLC
+   - Trong file VL53L.h, chỉ cần khai báo:
+     #define CALIB_OFFSET_MM    (+14)
+   - Trong hàm lọc của VL53L.c:
+     g_vl53_app.d_distance_filtered = Filter_TrimmedMovingAverage(dist) + CALIB_OFFSET_MM;
+
+
+================================================================================
+3. PHƯƠNG PHÁP 2: CALIB OFFSET PHẦN CỨNG BẰNG HÀM CỦA HÃNG ST (ST API)
+================================================================================
+Hàm này của hãng ST sẽ tự động đo 50 lần, tính trung bình và ghi thẳng giá trị bù
+vào thanh ghi nội (0x001E) của cảm biến VL53L1X.
+
+BƯỚC 1: Chuẩn bị một tấm bia màu trắng (độ phản xạ 88% hoặc 17%).
+BƯỚC 2: Đặt tấm bia cách cảm biến đúng cự ly chuẩn 140 mm (khuyến cáo của hãng ST).
+BƯỚC 3: Trong hàm khởi tạo VL53L_Init(), chèn đoạn code calib sau:
+
+   int16_t offset_calib = 0;
+   // Gọi hàm hiệu chuẩn ở khoảng cách chuẩn 140mm:
+   VL53L1X_CalibrateOffset(VL53L_I2C_ADDR, 140, &offset_calib);
+   
+   // Sau khi hàm chạy xong, giá trị offset_calib sẽ được cảm biến tự động lưu
+   // và áp dụng cho tất cả các lần đo tiếp theo.
+
+
+================================================================================
+4. PHƯƠNG PHÁP 3: CALIB CROSSTALK (KHI CÓ KÍNH / MICA CHE PHÍA TRƯỚC CẢM BIẾN)
+================================================================================
+Khi cảm biến đặt trong hộp bảo vệ có nắp kính hoặc tấm mica, một phần tia laser
+sẽ bị phản xạ ngược lại ngay tại bề mặt kính gây hiện tượng "chói/nhiễu xuyên quang".
+Hiện tượng: Khoảng cách đo bị ngắn đi bất thường hoặc cảm biến báo lỗi.
+
+QUY TRÌNH CALIB CROSSTALK:
+BƯỚC 1: Lắp cố định nắp kính/mica bảo vệ phía trước cảm biến đúng vị trí làm việc.
+BƯỚC 2: Đặt một tấm bia màu xám hoặc màu trắng cách mặt kính đúng 500 mm.
+BƯỚC 3: Gọi hàm Calib Xtalk:
+
+   uint16_t xtalk_value = 0;
+   // Gọi hàm hiệu chuẩn triệt tiêu phản xạ kính ở cự ly 500mm:
+   VL53L1X_CalibrateXtalk(VL53L_I2C_ADDR, 500, &xtalk_value);
+   
+   // Cảm biến sẽ đo tín hiệu tán xạ trên mặt kính và trừ khử hoàn toàn
+   // thành phần phản xạ này trong các chu kỳ đo sau.
+
+
+================================================================================
+5. BẢNG TÓM TẮT CÁC HÀM CALIB TRONG THƯ VIỆN CÓ SẴN (VL53L1X_calibration.c):
+================================================================================
+1. VL53L1X_CalibrateOffset(dev, TargetDistInMm, &offset);
+   -> Tự động đo và nạp bù Offset phần cứng (Target chuẩn: 140mm).
+
+2. VL53L1X_SetOffset(dev, offset);
+   -> Gán thủ công một giá trị offset vào cảm biến (đơn vị: mm).
+
+3. VL53L1X_GetOffset(dev, &offset);
+   -> Đọc giá trị offset hiện tại đang lưu trong cảm biến.
+
+4. VL53L1X_CalibrateXtalk(dev, TargetDistInMm, &xtalk);
+   -> Tự động đo và triệt tiêu phản xạ kính/mica bảo vệ (Target chuẩn: 500mm).
+
+5. VL53L1X_SetXtalk(dev, xtalk);
+   -> Gán thủ công giá trị Xtalk vào thanh ghi cảm biến.
+
+================================================================================
+                              HẾT TÀI LIỆU
+================================================================================

@@ -1,0 +1,292 @@
+/**
+ * @file vl53l1x_mitsu_app.c
+ * @brief Giao tiếp VL53L1X + MC Protocol Format 4 (PLC Mitsubishi Q-Series QJ71C24)
+ *        Sử dụng UART DMA TX & RX (Idle Line Interrupt) không chiếm thời gian CPU.
+ */
+
+#include "vl53l1x_mitsu_app.h"
+#include "usart.h"
+#include "i2c.h"
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+/* ========================================================================== */
+/* CẤU HÌNH CỔNG UART GIAO TIẾP VỚI PLC                                       */
+/* Có thể chọn huart1 (PB6/PB7) hoặc huart6 (PA11/PA12)                      */
+/* ========================================================================== */
+#define PLC_UART_HANDLE     huart6
+#define PLC_UART_INSTANCE   USART6
+
+/* ========================================================================== */
+/* BIẾN TOÀN CỤC                                                              */
+/* ========================================================================== */
+VL53L1X_AppData_t g_vl53_app = {0};
+
+static uint16_t filter_buf[FILTER_SAMPLES] = {0};
+static uint8_t  filter_idx = 0;
+static uint8_t  filter_cnt = 0;
+
+static uint8_t  tx_dma_buf[UART_TX_BUF_SIZE];
+static uint8_t  rx_dma_buf[UART_RX_BUF_SIZE];
+static uint8_t  rx_process_buf[UART_RX_BUF_SIZE];
+
+static volatile uint8_t  dma_tx_busy = 0;
+static volatile uint8_t  rx_data_ready = 0;
+static volatile uint16_t rx_data_len = 0;
+
+typedef enum {
+    COMM_STEP_IDLE = 0,
+    COMM_STEP_SEND_WRITE,    // Gửi lệnh WW (Ghi D900 lên PLC)
+    COMM_STEP_SEND_READ,     // Gửi lệnh WR (Đọc D910..D911 từ PLC)
+    COMM_STEP_WAIT_READ_RESP // Đợi phản hồi lệnh đọc từ PLC
+} CommStep_t;
+
+static CommStep_t comm_step = COMM_STEP_SEND_WRITE;
+static uint32_t   last_comm_time = 0;
+static uint32_t   read_timeout_timer = 0;
+
+/* ========================================================================== */
+/* BỘ LỌC TRUNG BÌNH ĐỘNG (MOVING AVERAGE FILTER)                             */
+/* ========================================================================== */
+static uint16_t Filter_MovingAverage(uint16_t raw_mm) {
+    // Loại bỏ mẫu rác ngoài dải hoạt động hoặc vật cản quá gần / quá xa
+    if (raw_mm < 30 || raw_mm > 4000) {
+        if (filter_cnt > 0) {
+            uint8_t prev_idx = (filter_idx == 0) ? (FILTER_SAMPLES - 1) : (filter_idx - 1);
+            return filter_buf[prev_idx];
+        }
+        return 0;
+    }
+
+    filter_buf[filter_idx] = raw_mm;
+    filter_idx = (filter_idx + 1) % FILTER_SAMPLES;
+    if (filter_cnt < FILTER_SAMPLES) filter_cnt++;
+
+    uint32_t sum = 0;
+    for (uint8_t i = 0; i < filter_cnt; i++) {
+        sum += filter_buf[i];
+    }
+    return (uint16_t)(sum / filter_cnt);
+}
+
+/* ========================================================================== */
+/* ĐÓNG GÓI MC PROTOCOL FORMAT 4 - LỆNH GHI WORD (WW)                         */
+/* Khung gửi: [STX][Station][PLC][WW][0][D*][HeadAddr][Points][Data][ETX][Sum]*/
+/* ========================================================================== */
+static uint16_t Build_MC_Format4_Write(uint8_t *out_buf, const char* head_reg, uint16_t *data, uint8_t points) {
+    char payload[128];
+    char hex_str[8];
+
+    // Tạo chuỗi nội dung lệnh WW
+    sprintf(payload, "%s%sWW0D*%s%02X", PLC_STATION_NO, PLC_CPU_NO, head_reg, points);
+    
+    // Nối dữ liệu từng thanh ghi dưới dạng 4 ký tự HEX
+    for (uint8_t i = 0; i < points; i++) {
+        sprintf(hex_str, "%04X", data[i]);
+        strcat(payload, hex_str);
+    }
+
+    uint16_t payload_len = strlen(payload);
+    out_buf[0] = 0x02; // STX
+    memcpy(&out_buf[1], payload, payload_len);
+    out_buf[1 + payload_len] = 0x03; // ETX
+
+    // Tính Sum Check (Tổng các byte từ sau STX đến hết ETX)
+    uint16_t sum = 0;
+    for (uint16_t i = 1; i <= 1 + payload_len; i++) {
+        sum += out_buf[i];
+    }
+    sprintf((char*)&out_buf[2 + payload_len], "%02X", (uint8_t)(sum & 0xFF));
+
+    return (2 + payload_len + 2);
+}
+
+/* ========================================================================== */
+/* ĐÓNG GÓI MC PROTOCOL FORMAT 4 - LỆNH ĐỌC WORD (WR)                         */
+/* Khung gửi: [STX][Station][PLC][WR][0][D*][HeadAddr][Points][ETX][Sum]     */
+/* ========================================================================== */
+static uint16_t Build_MC_Format4_Read(uint8_t *out_buf, const char* head_reg, uint8_t points) {
+    char payload[64];
+
+    sprintf(payload, "%s%sWR0D*%s%02X", PLC_STATION_NO, PLC_CPU_NO, head_reg, points);
+
+    uint16_t payload_len = strlen(payload);
+    out_buf[0] = 0x02; // STX
+    memcpy(&out_buf[1], payload, payload_len);
+    out_buf[1 + payload_len] = 0x03; // ETX
+
+    // Tính Sum Check
+    uint16_t sum = 0;
+    for (uint16_t i = 1; i <= 1 + payload_len; i++) {
+        sum += out_buf[i];
+    }
+    sprintf((char*)&out_buf[2 + payload_len], "%02X", (uint8_t)(sum & 0xFF));
+
+    return (2 + payload_len + 2);
+}
+
+/* ========================================================================== */
+/* GIẢI MÃ PHẢN HỒI LỆNH ĐỌC TỪ PLC MITSUBISHI                                */
+/* Khung chuẩn: [STX][Station:2][PLC:2][Data:4 x Points][ETX][SumCheck:2]    */
+/* ========================================================================== */
+static uint8_t Parse_MC_Format4_Read_Response(uint8_t *rx, uint16_t len, uint16_t *out_data, uint8_t points) {
+    uint16_t expected_len = 1 + 4 + (points * 4) + 1 + 2;
+    if (len < expected_len) return 0;
+    if (rx[0] != 0x02) return 0; // Thiếu STX
+
+    uint16_t etx_pos = 1 + 4 + (points * 4);
+    if (rx[etx_pos] != 0x03) return 0; // Sai vị trí ETX
+
+    // Kiểm tra Checksum
+    uint16_t sum = 0;
+    for (uint16_t i = 1; i <= etx_pos; i++) sum += rx[i];
+
+    char calc_sum_str[3];
+    sprintf(calc_sum_str, "%02X", (uint8_t)(sum & 0xFF));
+    if (strncmp((char*)&rx[etx_pos + 1], calc_sum_str, 2) != 0) {
+        return 0; // Sai Checksum
+    }
+
+    // Trích xuất dữ liệu các thanh ghi
+    char hex_str[5] = {0};
+    uint8_t *p_data = &rx[5]; // Bắt đầu sau [STX][Station][PLC]
+    for (uint8_t i = 0; i < points; i++) {
+        memcpy(hex_str, p_data + (i * 4), 4);
+        out_data[i] = (uint16_t)strtol(hex_str, NULL, 16);
+    }
+
+    return 1;
+}
+
+/* ========================================================================== */
+/* UART DMA CALLBACKS (HAL EVENT HOOKS)                                       */
+/* ========================================================================== */
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
+    if (huart->Instance == PLC_UART_INSTANCE) {
+        dma_tx_busy = 0;
+    }
+}
+
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
+    if (huart->Instance == PLC_UART_INSTANCE) {
+        if (Size > 0 && Size <= UART_RX_BUF_SIZE) {
+            memcpy(rx_process_buf, rx_dma_buf, Size);
+            rx_data_len = Size;
+            rx_data_ready = 1;
+        }
+        // Kích hoạt lại DMA nhận IDLE sẵn sàng cho lần tiếp theo
+        HAL_UARTEx_ReceiveToIdle_DMA(&PLC_UART_HANDLE, rx_dma_buf, UART_RX_BUF_SIZE);
+    }
+}
+
+/* ========================================================================== */
+/* KHỞI TẠO CẢM BIẾN & TRUYỀN THÔNG                                          */
+/* ========================================================================== */
+void VL53L1X_App_Init(void) {
+    uint8_t boot_state = 0;
+    uint16_t sensor_id = 0;
+    uint32_t timeout_tick = HAL_GetTick();
+
+    // 1. Chờ cảm biến khởi động sẵn sàng
+    while (boot_state == 0) {
+        VL53L1X_BootState(VL53L1X_I2C_ADDR, &boot_state);
+        HAL_Delay(5);
+        if (HAL_GetTick() - timeout_tick > 1000) {
+            g_vl53_app.sensor_ok = false;
+            break;
+        }
+    }
+
+    // 2. Khởi tạo và cấu hình tham số đo của VL53L1X
+    if (VL53L1X_SensorInit(VL53L1X_I2C_ADDR) == VL53L1_ERROR_NONE) {
+        VL53L1X_GetSensorId(VL53L1X_I2C_ADDR, &sensor_id);
+        VL53L1X_SetDistanceMode(VL53L1X_I2C_ADDR, VL53L1X_DISTANCE_MODE_LONG); // Đo xa tới 4000mm
+        VL53L1X_SetTimingBudgetInMs(VL53L1X_I2C_ADDR, 50);                     // 50ms mỗi mẫu
+        VL53L1X_SetInterMeasurementInMs(VL53L1X_I2C_ADDR, 55);
+        VL53L1X_StartRanging(VL53L1X_I2C_ADDR);
+        g_vl53_app.sensor_ok = true;
+    } else {
+        g_vl53_app.sensor_ok = false;
+    }
+
+    // 3. Kích hoạt DMA Nhận ngắt Idle trên UART giao tiếp PLC
+    HAL_UARTEx_ReceiveToIdle_DMA(&PLC_UART_HANDLE, rx_dma_buf, UART_RX_BUF_SIZE);
+}
+
+/* ========================================================================== */
+/* VÒNG LẶP XỬ LÝ CHÍNH (GỌI TRONG WHILE(1) CỦA MAIN)                         */
+/* ========================================================================== */
+void VL53L1X_App_Process(void) {
+    uint32_t now = HAL_GetTick();
+
+    // 1. ĐỌC KHOẢNG CÁCH MỚI TỪ VL53L1X
+    if (g_vl53_app.sensor_ok) {
+        uint8_t isDataReady = 0;
+        VL53L1X_CheckForDataReady(VL53L1X_I2C_ADDR, &isDataReady);
+        if (isDataReady) {
+            uint16_t dist = 0;
+            uint8_t status = 0;
+            VL53L1X_GetRangeStatus(VL53L1X_I2C_ADDR, &status);
+            VL53L1X_GetDistance(VL53L1X_I2C_ADDR, &dist);
+            VL53L1X_ClearInterrupt(VL53L1X_I2C_ADDR);
+
+            g_vl53_app.raw_distance_mm = dist;
+            g_vl53_app.range_status = status;
+
+            if (status == 0) { // Dữ liệu hợp lệ
+                g_vl53_app.filtered_distance_mm =500;// Filter_MovingAverage(dist);
+            }
+        }
+    }
+
+    // 2. XỬ LÝ DỮ LIỆU PHẢN HỒI TỪ PLC
+    if (rx_data_ready) {
+        rx_data_ready = 0;
+        if (comm_step == COMM_STEP_WAIT_READ_RESP) {
+            uint16_t read_vals[NUM_READ_POINTS];
+            if (Parse_MC_Format4_Read_Response(rx_process_buf, rx_data_len, read_vals, NUM_READ_POINTS)) {
+                g_vl53_app.plc_param_D910 = read_vals[0]; // Setpoint/Ngưỡng đọc từ PLC
+                g_vl53_app.plc_param_D911 = read_vals[1]; // Lệnh điều khiển từ HMI/PLC
+                g_vl53_app.comm_success_count++;
+            } else {
+                g_vl53_app.comm_error_count++;
+            }
+            comm_step = COMM_STEP_SEND_WRITE; // Quay về chu kỳ ghi khoảng cách
+        }
+    }
+
+    // 3. QUẢN LÝ TIMEOUT CHO LƯỢT ĐỌC (NẾU PLC BẬN KHÔNG TRẢ LỜI)
+    if (comm_step == COMM_STEP_WAIT_READ_RESP && (now - read_timeout_timer >= 100)) {
+        g_vl53_app.comm_error_count++;
+        comm_step = COMM_STEP_SEND_WRITE;
+    }
+
+    // 4. MÁY TRẠNG THÁI TRUYỀN THÔNG ĐỊNH KỲ VỚI PLC
+    if ((now - last_comm_time >= COMM_PERIOD_MS) && (!dma_tx_busy)) {
+        last_comm_time = now;
+
+        if (comm_step == COMM_STEP_SEND_WRITE) {
+            // A. GỬI KHOẢNG CÁCH LÊN D900 CỦA PLC (LỆNH WW)
+//            uint16_t send_val[1] = { g_vl53_app.filtered_distance_mm };
+
+        	 uint16_t send_val[1] =500;
+            uint16_t tx_len = Build_MC_Format4_Write(tx_dma_buf, REG_DIST_WRITE, send_val, 1);
+
+            dma_tx_busy = 1;
+            HAL_UART_Transmit_DMA(&PLC_UART_HANDLE, tx_dma_buf, tx_len);
+            
+            comm_step = COMM_STEP_SEND_READ; // Lượt kế tiếp gửi lệnh đọc
+        }
+        else if (comm_step == COMM_STEP_SEND_READ) {
+            // B. GỬI YÊU CẦU ĐỌC D910..D911 TỪ PLC (LỆNH WR)
+            uint16_t tx_len = Build_MC_Format4_Read(tx_dma_buf, REG_PARAM_READ, NUM_READ_POINTS);
+
+            dma_tx_busy = 1;
+            read_timeout_timer = now;
+            comm_step = COMM_STEP_WAIT_READ_RESP; // Chờ phản hồi
+
+            HAL_UART_Transmit_DMA(&PLC_UART_HANDLE, tx_dma_buf, tx_len);
+        }
+    }
+}

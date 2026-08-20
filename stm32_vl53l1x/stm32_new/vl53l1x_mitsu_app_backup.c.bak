@@ -1,0 +1,239 @@
+/**
+ * @file vl53l1x_mitsu_app_backup.c
+ * @brief Bản sao lưu hoàn chỉnh đang hoạt động tốt (Polling/IT Mode)
+ */
+
+#include "vl53l1x_mitsu_app.h"
+#include "VL53L1X_api.h"
+#include "vl53l1_platform.h"
+#include "usart.h"
+#include "i2c.h"
+#include "cmsis_os.h"
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#define PLC_UART_HANDLE     huart6
+#define DEBUG_UART_HANDLE   huart1
+
+VL53L1X_AppData_t g_vl53_app = {
+    .d_distance_filtered = 2002,
+    .d_distance_raw = 2002,
+    .d_status = 1,
+    .d_error = 0,
+    .d_scan_time_ms = 50,
+    .d_heartbeat = 0,
+    .sensor_ok = false,
+    .raw_range_status = 0,
+    .comm_success_count = 0,
+    .comm_error_count = 0
+};
+
+static uint16_t filter_buf[FILTER_SAMPLES] = {0};
+static uint8_t  filter_idx = 0;
+static uint8_t  filter_cnt = 0;
+
+static uint8_t  tx_buf[UART_TX_BUF_SIZE];
+static uint8_t  rx_raw_byte = 0;
+static uint8_t  rx_ring[UART_RX_BUF_SIZE];
+static volatile uint16_t rx_head = 0;
+
+int __io_putchar(int ch) {
+    uint8_t c = (uint8_t)ch;
+    HAL_UART_Transmit(&DEBUG_UART_HANDLE, &c, 1, 10);
+    return ch;
+}
+
+static uint16_t Filter_MovingAverage(uint16_t raw_mm) {
+    if (raw_mm < 30 || raw_mm > 4000) {
+        if (filter_cnt > 0) {
+            uint8_t prev_idx = (filter_idx == 0) ? (FILTER_SAMPLES - 1) : (filter_idx - 1);
+            return filter_buf[prev_idx];
+        }
+        return 0;
+    }
+
+    filter_buf[filter_idx] = raw_mm;
+    filter_idx = (filter_idx + 1) % FILTER_SAMPLES;
+    if (filter_cnt < FILTER_SAMPLES) filter_cnt++;
+
+    uint32_t sum = 0;
+    for (uint8_t i = 0; i < filter_cnt; i++) {
+        sum += filter_buf[i];
+    }
+    return (uint16_t)(sum / filter_cnt);
+}
+
+static uint16_t Build_Batch_Write_D_Array(uint8_t *out_buf, uint16_t start_addr, const uint16_t *data_words, uint16_t points) {
+    uint8_t payload[64];
+    uint16_t p_len = 0;
+    
+    uint16_t data_len = 18 + (points * 2);
+    payload[p_len++] = (uint8_t)(data_len & 0xFF);
+    payload[p_len++] = (uint8_t)((data_len >> 8) & 0xFF);
+    
+    payload[p_len++] = 0xF8;
+    payload[p_len++] = 0x00;
+    payload[p_len++] = 0x00;
+    payload[p_len++] = 0xFF;
+    payload[p_len++] = 0xFF;
+    payload[p_len++] = 0x03;
+    payload[p_len++] = 0x00;
+    payload[p_len++] = 0x00;
+    
+    payload[p_len++] = 0x01;
+    payload[p_len++] = 0x14;
+    
+    payload[p_len++] = 0x00;
+    payload[p_len++] = 0x00;
+    
+    payload[p_len++] = (uint8_t)(start_addr & 0xFF);
+    payload[p_len++] = (uint8_t)((start_addr >> 8) & 0xFF);
+    payload[p_len++] = 0x00;
+    
+    payload[p_len++] = 0xA8;
+    
+    payload[p_len++] = (uint8_t)(points & 0xFF);
+    payload[p_len++] = (uint8_t)((points >> 8) & 0xFF);
+    
+    for (uint16_t p = 0; p < points; p++) {
+        payload[p_len++] = (uint8_t)(data_words[p] & 0xFF);
+        payload[p_len++] = (uint8_t)((data_words[p] >> 8) & 0xFF);
+    }
+    
+    uint16_t tx_idx = 0;
+    out_buf[tx_idx++] = 0x10;
+    out_buf[tx_idx++] = 0x02;
+    
+    uint16_t sum_start = tx_idx;
+    
+    for (uint16_t i = 0; i < p_len; i++) {
+        out_buf[tx_idx++] = payload[i];
+        if (payload[i] == 0x10) {
+            out_buf[tx_idx++] = 0x10;
+        }
+    }
+    
+    uint16_t sum_end = tx_idx;
+    
+    uint16_t sum = 0;
+    for (uint16_t i = sum_start; i < sum_end; i++) {
+        sum += out_buf[i];
+    }
+    
+    out_buf[tx_idx++] = 0x10;
+    out_buf[tx_idx++] = 0x03;
+    
+    snprintf((char*)&out_buf[tx_idx], 3, "%02X", (uint8_t)(sum & 0xFF));
+    tx_idx += 2;
+    
+    return tx_idx;
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+    if (huart->Instance == USART6) {
+        if (rx_head < UART_RX_BUF_SIZE - 1) {
+            rx_ring[rx_head++] = rx_raw_byte;
+            rx_ring[rx_head] = 0;
+        }
+        HAL_UART_Receive_IT(&PLC_UART_HANDLE, &rx_raw_byte, 1);
+    }
+}
+
+static bool Try_Init_Sensor(void) {
+    if (HAL_I2C_IsDeviceReady(&hi2c1, VL53L1X_I2C_ADDR, 3, 10) != HAL_OK) {
+        g_vl53_app.d_error = 30;
+        return false;
+    }
+
+    uint8_t boot_state = 0;
+    for (int i = 0; i < 10; i++) {
+        VL53L1X_BootState(VL53L1X_I2C_ADDR, &boot_state);
+        if (boot_state != 0) break;
+        osDelay(10);
+    }
+
+    if (boot_state == 0) {
+        g_vl53_app.d_error = 10;
+        return false;
+    }
+
+    if (VL53L1X_SensorInit(VL53L1X_I2C_ADDR) != VL53L1_ERROR_NONE) {
+        g_vl53_app.d_error = 20;
+        return false;
+    }
+
+    uint16_t sensor_id = 0;
+    VL53L1X_GetSensorId(VL53L1X_I2C_ADDR, &sensor_id);
+    VL53L1X_SetDistanceMode(VL53L1X_I2C_ADDR, VL53L1X_DISTANCE_MODE_LONG);
+    VL53L1X_SetTimingBudgetInMs(VL53L1X_I2C_ADDR, 50);
+    VL53L1X_SetInterMeasurementInMs(VL53L1X_I2C_ADDR, 55);
+    VL53L1X_StartRanging(VL53L1X_I2C_ADDR);
+
+    g_vl53_app.sensor_ok = true;
+    g_vl53_app.d_error = 0;
+    return true;
+}
+
+void VL53L1X_App_Init(void) {
+    Try_Init_Sensor();
+    HAL_UART_Receive_IT(&PLC_UART_HANDLE, &rx_raw_byte, 1);
+}
+
+void VL53L1X_Task_Sensor_Run(void) {
+    if (g_vl53_app.sensor_ok) {
+        uint8_t isDataReady = 0;
+        VL53L1X_CheckForDataReady(VL53L1X_I2C_ADDR, &isDataReady);
+        if (isDataReady) {
+            uint16_t dist = 0;
+            uint8_t status = 0;
+            VL53L1X_GetRangeStatus(VL53L1X_I2C_ADDR, &status);
+            VL53L1X_GetDistance(VL53L1X_I2C_ADDR, &dist);
+            VL53L1X_ClearInterrupt(VL53L1X_I2C_ADDR);
+
+            g_vl53_app.d_distance_raw = dist;
+            g_vl53_app.raw_range_status = status;
+            g_vl53_app.d_error = status;
+
+            if (status == 0) {
+                g_vl53_app.d_distance_filtered = Filter_MovingAverage(dist);
+            }
+        }
+    } else {
+        static uint32_t last_scan = 0;
+        if (HAL_GetTick() - last_scan >= 1000) {
+            last_scan = HAL_GetTick();
+            Try_Init_Sensor();
+        }
+        g_vl53_app.d_distance_raw = 2002;
+        g_vl53_app.d_distance_filtered = 2002;
+    }
+
+    uint16_t status_word = 0;
+    if (g_vl53_app.sensor_ok) status_word |= (1 << 0);
+    if (g_vl53_app.d_distance_filtered > 0 && g_vl53_app.d_distance_filtered < 200) status_word |= (1 << 1);
+    if (g_vl53_app.d_distance_filtered >= 30 && g_vl53_app.d_distance_filtered <= 3000) status_word |= (1 << 2);
+    g_vl53_app.d_status = status_word;
+}
+
+void VL53L1X_Task_PLC_Run(void) {
+    HAL_GPIO_TogglePin(led_GPIO_Port, led_Pin);
+    g_vl53_app.d_heartbeat++;
+
+    if (rx_head > 0) {
+        rx_head = 0;
+        g_vl53_app.comm_success_count++;
+    }
+
+    uint16_t d_table[REG_D_POINTS] = {
+        g_vl53_app.d_distance_filtered,
+        g_vl53_app.d_distance_raw,
+        g_vl53_app.d_status,
+        g_vl53_app.d_error,
+        g_vl53_app.d_scan_time_ms,
+        g_vl53_app.d_heartbeat
+    };
+
+    uint16_t tx_len = Build_Batch_Write_D_Array(tx_buf, REG_D_START_ADDR, d_table, REG_D_POINTS);
+    HAL_UART_Transmit(&PLC_UART_HANDLE, tx_buf, tx_len, 40);
+}
