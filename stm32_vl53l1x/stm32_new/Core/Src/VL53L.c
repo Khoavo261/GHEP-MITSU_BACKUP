@@ -284,19 +284,20 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
 }
 
 /* ==============================================================================
- *       BỘ LỌC TRUNG BÌNH TRƯỢT LOẠI BỎ GAI BẤT THƯỜNG (KHÔNG VÙNG CHẾT)
+ *       BỘ LỌC TRUNG BÌNH TRƯỢT 11 MẪU + CHỐNG RUNG SỐ ĐỨNG YÊN (DEADBAND)
  * ============================================================================== */
 
-#define FILTER_WINDOW_SIZE  7
+#define FILTER_WINDOW_SIZE      11
+#define FILTER_DEADBAND_MM      4  // Ngưỡng chống rung: Dao động <= 4mm sẽ giữ đứng số tuyệt đối
 
 static uint16_t Filter_TrimmedMovingAverage(uint16_t raw_mm) {
     static uint16_t window[FILTER_WINDOW_SIZE] = {0};
     static uint8_t  head = 0;
     static uint8_t  count = 0;
-    static uint16_t last_valid_val = 2002;
+    static uint16_t stable_output = 0;
 
     if (raw_mm < 30 || raw_mm > 4000) {
-        return last_valid_val;
+        return stable_output ? stable_output : raw_mm;
     }
 
     window[head] = raw_mm;
@@ -305,11 +306,12 @@ static uint16_t Filter_TrimmedMovingAverage(uint16_t raw_mm) {
         count++;
     }
 
-    if (count < 3) {
-        last_valid_val = raw_mm;
+    if (count < 5) {
+        stable_output = raw_mm;
         return raw_mm;
     }
 
+    // Sắp xếp mảng để loại bỏ nhiễu đỉnh và nhiễu đáy
     uint16_t sorted[FILTER_WINDOW_SIZE];
     for (uint8_t i = 0; i < count; i++) {
         sorted[i] = window[i];
@@ -325,20 +327,29 @@ static uint16_t Filter_TrimmedMovingAverage(uint16_t raw_mm) {
         }
     }
 
+    // Cắt bỏ 2 mẫu nhỏ nhất và 2 mẫu lớn nhất (Trimmed Mean)
     uint32_t sum = 0;
     uint8_t valid_cnt = 0;
-    for (uint8_t i = 1; i < count - 1; i++) {
+    for (uint8_t i = 2; i < count - 2; i++) {
         sum += sorted[i];
         valid_cnt++;
     }
 
-    if (valid_cnt > 0) {
-        last_valid_val = (uint16_t)(sum / valid_cnt);
+    uint16_t avg = (valid_cnt > 0) ? (uint16_t)(sum / valid_cnt) : raw_mm;
+
+    // Thuật toán Deadband chống rung: Nếu dao động nhỏ hơn 4mm thì giữ đứng số tuyệt đối
+    if (stable_output == 0) {
+        stable_output = avg;
     } else {
-        last_valid_val = raw_mm;
+        int32_t diff = (int32_t)avg - (int32_t)stable_output;
+        if (diff < 0) diff = -diff;
+
+        if (diff >= FILTER_DEADBAND_MM) {
+            stable_output = avg;
+        }
     }
 
-    return last_valid_val;
+    return stable_output;
 }
 
 /* ==============================================================================
