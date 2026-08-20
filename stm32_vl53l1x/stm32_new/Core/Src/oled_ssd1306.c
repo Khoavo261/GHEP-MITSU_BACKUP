@@ -1,6 +1,6 @@
 /**
  * @file oled_ssd1306.c
- * @brief IMPLEMENTATION DRIVER OLED SSD1306 HỖ TRỢ ĐA FONT (6x8, 8x16, 16x26)
+ * @brief IMPLEMENTATION DRIVER OLED SSD1306 HỖ TRỢ ĐA FONT & HIỂN THỊ CALIB D910/M910
  */
 
 #include "oled_ssd1306.h"
@@ -15,7 +15,7 @@
 static uint8_t OLED_Buffer[1024];
 static bool    oled_is_ready = false;
 static uint8_t oled_actual_addr = 0x78;
-static OLED_DisplayMode_t g_oled_mode = OLED_VIEW_BIG_DISTANCE;// OLED_VIEW_FULL_6REG;
+static OLED_DisplayMode_t g_oled_mode = OLED_VIEW_FULL_6REG;
 
 /* Bảng Font 6x8 (Ký tự 32 ' ' đến 126 '~') */
 static const uint8_t Font6x8[][6] = {
@@ -190,7 +190,7 @@ void OLED_UpdateScreen(void) {
 }
 
 /* ==============================================================================
- *                       BỘ VẼ ĐA FONT (6x8, 8x16, 16x26)
+ *                       BỘ VẼ ĐA FONT
  * ============================================================================== */
 
 static void OLED_DrawPixel(uint8_t x, uint8_t y, bool color) {
@@ -219,7 +219,6 @@ void OLED_DrawChar_Font(uint8_t x, uint8_t y, char c, OLED_Font_t font, bool inv
         }
 
         case OLED_FONT_8x16: {
-            // Phóng to Font 6x8 thành 8x16 sắc nét
             for (uint8_t col = 0; col < 6; col++) {
                 uint8_t line = Font6x8[char_idx][col];
                 for (uint8_t row = 0; row < 8; row++) {
@@ -233,7 +232,6 @@ void OLED_DrawChar_Font(uint8_t x, uint8_t y, char c, OLED_Font_t font, bool inv
         }
 
         case OLED_FONT_16x26: {
-            // Phóng to Font thành cỡ cực lớn 16x24 (chuyên hiển thị số đo khoảng cách lớn)
             for (uint8_t col = 0; col < 6; col++) {
                 uint8_t line = Font6x8[char_idx][col];
                 for (uint8_t row = 0; row < 8; row++) {
@@ -271,32 +269,37 @@ void OLED_SetDisplayMode(OLED_DisplayMode_t mode) {
 }
 
 /* ==============================================================================
- *                       CÁC CHẾ ĐỘ HIỂN THỊ DỮ LIỆU
+ *                       HIỂN THỊ DỮ LIỆU & CALIB D910 / M910
  * ============================================================================== */
 
 static void OLED_Show_Full_6Registers(void) {
     char line_str[24];
     OLED_Clear();
 
-    // Dòng 0: Tiêu đề (Font 6x8 Invert)
+    // Dòng 0: Tiêu đề nổi bật
     OLED_DrawString_Font(0, 0, " [Q02U <-> VL53L1X] ", OLED_FONT_6x8, true);
 
-    // Dòng 1..6: 6 Thanh ghi D900..D905 (Font 6x8)
-    snprintf(line_str, sizeof(line_str), "D900(Fil):%4d mm", g_vl53_app.d_distance_filtered);
+    // Dòng 1: D900 - Khoảng cách sau Calib
+    snprintf(line_str, sizeof(line_str), "D900(Cal):%4d mm", g_vl53_app.d_distance_filtered);
     OLED_DrawString_Font(0, 9, line_str, OLED_FONT_6x8, false);
 
+    // Dòng 2: D901 - Khoảng cách thô
     snprintf(line_str, sizeof(line_str), "D901(Raw):%4d mm", g_vl53_app.d_distance_raw);
     OLED_DrawString_Font(0, 18, line_str, OLED_FONT_6x8, false);
 
-    snprintf(line_str, sizeof(line_str), "D902(Sta): 0x%04X", g_vl53_app.d_status);
+    // Dòng 3: D910 - Khoảng cách đặt chuẩn từ HMI & Cờ M910
+    snprintf(line_str, sizeof(line_str), "D910(Set):%4d mm", g_vl53_app.d_calib_target);
     OLED_DrawString_Font(0, 27, line_str, OLED_FONT_6x8, false);
 
-    snprintf(line_str, sizeof(line_str), "D903(Err):%4d", g_vl53_app.d_error);
+    // Dòng 4: Độ lệch Offset tính được & Trạng thái Calib
+    snprintf(line_str, sizeof(line_str), "Offset:%+4dmm %s", g_vl53_app.d_calib_offset, g_vl53_app.calib_done ? "[OK]" : "[--]");
     OLED_DrawString_Font(0, 36, line_str, OLED_FONT_6x8, false);
 
-    snprintf(line_str, sizeof(line_str), "D904(Scn):%4d ms", g_vl53_app.d_scan_time_ms);
+    // Dòng 5: D902 - Trạng thái hoạt động
+    snprintf(line_str, sizeof(line_str), "D902(Sta): 0x%04X", g_vl53_app.d_status);
     OLED_DrawString_Font(0, 45, line_str, OLED_FONT_6x8, false);
 
+    // Dòng 6: D905 - Nhịp tim Heartbeat
     snprintf(line_str, sizeof(line_str), "D905(Hbt):%5u", g_vl53_app.d_heartbeat);
     OLED_DrawString_Font(0, 54, line_str, OLED_FONT_6x8, false);
 
@@ -308,18 +311,19 @@ static void OLED_Show_Big_Distance_View(void) {
     char sub_str[24];
     OLED_Clear();
 
-    // Tiêu đề nhỏ phía trên
+    // Tiêu đề
     OLED_DrawString_Font(0, 0, "DISTANCE (D900):", OLED_FONT_8x16, false);
 
     // Số đo khoảng cách Siêu Lớn (Font 16x26)
     snprintf(dist_str, sizeof(dist_str), "%4d mm", g_vl53_app.d_distance_filtered);
     OLED_DrawString_Font(12, 18, dist_str, OLED_FONT_16x26, false);
 
-    // Thông tin phụ phía dưới
-    snprintf(sub_str, sizeof(sub_str), "Raw:%4d Hbt:%5u", g_vl53_app.d_distance_raw, g_vl53_app.d_heartbeat);
+    // Thông số Calib D910 & Offset
+    snprintf(sub_str, sizeof(sub_str), "Set:%4d Off:%+3d %s", g_vl53_app.d_calib_target, g_vl53_app.d_calib_offset, g_vl53_app.calib_done ? "OK" : "");
     OLED_DrawString_Font(0, 48, sub_str, OLED_FONT_6x8, false);
 
-    snprintf(sub_str, sizeof(sub_str), "Sta:0x%02X DMA:OK", g_vl53_app.d_status);
+    // Trạng thái truyền thông
+    snprintf(sub_str, sizeof(sub_str), "Raw:%4d Hbt:%5u", g_vl53_app.d_distance_raw, g_vl53_app.d_heartbeat);
     OLED_DrawString_Font(0, 56, sub_str, OLED_FONT_6x8, false);
 
     OLED_UpdateScreen();

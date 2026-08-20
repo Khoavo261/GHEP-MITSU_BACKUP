@@ -4,8 +4,8 @@
 ../Core/Src/oled_ssd1306.c:177:6:OLED_UpdateScreen	152	static
 ../Core/Src/oled_ssd1306.c:196:13:OLED_DrawPixel	16	static
 ../Core/Src/oled_ssd1306.c:205:6:OLED_DrawChar_Font	48	static
-../Core/Src/oled_ssd1306.c:256:6:OLED_DrawString_Font	40	static
-../Core/Src/oled_ssd1306.c:269:6:OLED_SetDisplayMode	16	static
-../Core/Src/oled_ssd1306.c:277:13:OLED_Show_Full_6Registers	40	static
-../Core/Src/oled_ssd1306.c:306:13:OLED_Show_Big_Distance_View	56	static
-../Core/Src/oled_ssd1306.c:328:6:OLED_Task_Run	8	static
+../Core/Src/oled_ssd1306.c:254:6:OLED_DrawString_Font	40	static
+../Core/Src/oled_ssd1306.c:267:6:OLED_SetDisplayMode	16	static
+../Core/Src/oled_ssd1306.c:275:13:OLED_Show_Full_6Registers	40	static
+../Core/Src/oled_ssd1306.c:309:13:OLED_Show_Big_Distance_View	56	static
+../Core/Src/oled_ssd1306.c:332:6:OLED_Task_Run	8	static

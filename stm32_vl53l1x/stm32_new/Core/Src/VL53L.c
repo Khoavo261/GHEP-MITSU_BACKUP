@@ -1,6 +1,6 @@
 /**
  * @file VL53L.c
- * @brief ĐÓNG GÓI 1 FILE DUY NHẤT: CẢM BIẾN ToF VL53L1X <-> PLC MITSUBISHI Q-SERIES
+ * @brief ĐÓNG GÓI 1 FILE DUY NHẤT: CẢM BIẾN ToF VL53L1X <-> PLC MITSUBISHI Q-SERIES (TÍCH HỢP CALIB D910 & M910)
  */
 
 #include "VL53L.h"
@@ -24,6 +24,10 @@ VL53L_AppData_t g_vl53_app = {
     .d_error = 0,
     .d_scan_time_ms = 50,
     .d_heartbeat = 0,
+    .d_calib_target = 500,  // Mặc định khoảng cách Calib D910 = 500 mm
+    .d_calib_offset = 0,    // Độ lệch ban đầu = 0 mm
+    .m_calib_trigger = false,
+    .calib_done = false,
     .sensor_ok = false,
     .raw_range_status = 0,
     .comm_success_count = 0
@@ -74,12 +78,10 @@ static uint16_t Filter_TrimmedMovingAverage(uint16_t raw_mm) {
     static uint8_t  count = 0;
     static uint16_t last_valid_val = 2002;
 
-    // Kiểm tra phạm vi vật lý hợp lệ của cảm biến ToF
     if (raw_mm < 30 || raw_mm > 4000) {
         return last_valid_val;
     }
 
-    // 1. Nạp mẫu mới vào bộ đệm trượt (Ring Buffer)
     window[head] = raw_mm;
     head = (head + 1) % FILTER_WINDOW_SIZE;
     if (count < FILTER_WINDOW_SIZE) {
@@ -91,13 +93,12 @@ static uint16_t Filter_TrimmedMovingAverage(uint16_t raw_mm) {
         return raw_mm;
     }
 
-    // 2. Sao chép mảng để sắp xếp loại bỏ phần tử gai ngoại lai (Spikes/Outliers)
     uint16_t sorted[FILTER_WINDOW_SIZE];
     for (uint8_t i = 0; i < count; i++) {
         sorted[i] = window[i];
     }
 
-    // Sắp xếp nổi bọt (Bubble sort 7 phần tử cực nhanh)
+    // Sắp xếp nổi bọt (Bubble sort)
     for (uint8_t i = 0; i < count - 1; i++) {
         for (uint8_t j = 0; j < count - 1 - i; j++) {
             if (sorted[j] > sorted[j + 1]) {
@@ -108,8 +109,7 @@ static uint16_t Filter_TrimmedMovingAverage(uint16_t raw_mm) {
         }
     }
 
-    // 3. LOẠI BỎ GAI: Bỏ giá trị nhỏ nhất (gai âm) và giá trị lớn nhất (gai dương)
-    // Tính trung bình trượt của các mẫu còn lại (KHÔNG CÓ VÙNG CHẾT)
+    // Loại bỏ 1 min và 1 max, tính trung bình cộng các mẫu ở giữa
     uint32_t sum = 0;
     uint8_t valid_cnt = 0;
     for (uint8_t i = 1; i < count - 1; i++) {
@@ -124,6 +124,25 @@ static uint16_t Filter_TrimmedMovingAverage(uint16_t raw_mm) {
     }
 
     return last_valid_val;
+}
+
+/* ==============================================================================
+ *                       XỬ LÝ HIỆU CHUẨN (CALIBRATION D910 / M910)
+ * ============================================================================== */
+
+void VL53L_SetCalibTarget(uint16_t target_mm) {
+    if (target_mm >= 30 && target_mm <= 4000) {
+        g_vl53_app.d_calib_target = target_mm;
+    }
+}
+
+void VL53L_TriggerCalib(void) {
+    if (g_vl53_app.d_distance_raw > 0) {
+        int32_t offset = (int32_t)g_vl53_app.d_calib_target - (int32_t)g_vl53_app.d_distance_raw;
+        g_vl53_app.d_calib_offset = (int16_t)offset;
+        g_vl53_app.calib_done = true;
+        g_vl53_app.m_calib_trigger = false;
+    }
 }
 
 /* ==============================================================================
@@ -270,8 +289,18 @@ void VL53L_Task_Sensor(void) {
             g_vl53_app.raw_range_status = status;
             g_vl53_app.d_error = status;
 
+            // Kiểm tra nếu có cờ Calib M910
+            if (g_vl53_app.m_calib_trigger) {
+                VL53L_TriggerCalib();
+            }
+
             if (status == 0) {
-                g_vl53_app.d_distance_filtered = Filter_TrimmedMovingAverage(dist);
+                uint16_t raw_filtered = Filter_TrimmedMovingAverage(dist);
+                
+                // Áp dụng độ lệch Calib vào kết quả D900
+                int32_t calibrated_dist = (int32_t)raw_filtered + (int32_t)g_vl53_app.d_calib_offset;
+                if (calibrated_dist < 0) calibrated_dist = 0;
+                g_vl53_app.d_distance_filtered = (uint16_t)calibrated_dist;
             }
         }
     } else {
@@ -288,6 +317,7 @@ void VL53L_Task_Sensor(void) {
     if (g_vl53_app.sensor_ok) status_word |= (1 << 0);
     if (g_vl53_app.d_distance_filtered > 0 && g_vl53_app.d_distance_filtered < 200) status_word |= (1 << 1);
     if (g_vl53_app.d_distance_filtered >= 30 && g_vl53_app.d_distance_filtered <= 3000) status_word |= (1 << 2);
+    if (g_vl53_app.calib_done) status_word |= (1 << 3); // Bit 3: Đã Calib thành công
     g_vl53_app.d_status = status_word;
 }
 
@@ -311,7 +341,6 @@ void VL53L_Task_PLC(void) {
 
     uint16_t tx_len = Build_Mitsubishi_Batch_Write_6Words(tx_dma_buf, d_table);
 
-    // Phát thuần DMA TX
     if (VL53L_PLC_UART_HANDLE.gState == HAL_UART_STATE_READY) {
         HAL_UART_Transmit_DMA(&VL53L_PLC_UART_HANDLE, tx_dma_buf, tx_len);
     }

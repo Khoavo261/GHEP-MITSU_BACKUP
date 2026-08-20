@@ -1,15 +1,6 @@
 /**
  * @file VL53L.h
- * @brief THƯ VIỆN 1 FILE DUY NHẤT: CẢM BIẾN ToF VL53L1X <-> PLC MITSUBISHI Q-SERIES
- * @note  Tương thích 100% mọi dòng STM32 (F1, F4, F7, H7, G0, L4...)
- * 
- * ==============================================================================
- *                       HƯỚNG DẪN DÙNG CHO DỰ ÁN MỚI
- * ==============================================================================
- * 1. Chỉ cần copy đúng 2 file vào project mới:
- *        - Core/Inc/VL53L.h
- *        - Core/Src/VL53L.c
- * 2. Cấu hình bên dưới đúng tên biến UART và I2C trong STM32CubeMX:
+ * @brief THƯ VIỆN CẢM BIẾN ToF VL53L1X <-> PLC MITSUBISHI Q-SERIES (TÍCH HỢP TÍNH NĂNG CALIB D910 & M910)
  */
 
 #ifndef VL53L_H
@@ -27,31 +18,31 @@ extern "C" {
  *                       KHU VỰC CẤU HÌNH PHẦN CỨNG
  * ============================================================================== */
 
-// 1. Tên biến UART kết nối sang module PLC QJ71 (huart1, huart2, huart3, huart6...)
+// 1. Tên biến UART kết nối sang module PLC QJ71
 extern UART_HandleTypeDef huart6;
 #define VL53L_PLC_UART_HANDLE       huart6
 
-// 2. Tên biến I2C kết nối sang cảm biến ToF VL53L1X (hi2c1, hi2c2, hi2c3...)
+// 2. Tên biến I2C kết nối sang cảm biến ToF VL53L1X
 extern I2C_HandleTypeDef  hi2c1;
 #define VL53L_SENSOR_I2C_HANDLE     hi2c1
 
-// 3. Chân ngắt INT của cảm biến ToF (ví dụ PB7)
+// 3. Chân ngắt INT của cảm biến ToF
 #define VL53L_SENSOR_INT_PIN        GPIO_PIN_7
 
-// 4. Địa chỉ I2C của cảm biến VL53L1X (mặc định 0x52)
+// 4. Địa chỉ I2C của cảm biến VL53L1X
 #define VL53L_I2C_ADDR              0x52
 
 // 5. Cấu hình vùng nhớ PLC Mitsubishi Q-Series
-#define VL53L_PLC_D_START_ADDR      900     // Bắt đầu từ thanh ghi D900
+#define VL53L_PLC_D_START_ADDR      900     // Bắt đầu từ D900
 #define VL53L_PLC_D_TOTAL_POINTS    6       // Gom 6 thanh ghi: D900..D905
 
 /* ==============================================================================
- *                       CẤU TRÚC DỮ LIỆU ĐỒNG BỘ PLC
+ *                       CẤU TRÚC DỮ LIỆU ĐỒNG BỘ PLC & CALIBRATION
  * ============================================================================== */
 typedef struct {
     // 1. Dữ liệu khoảng cách đo (mm)
-    uint16_t d_distance_filtered;   // D900: Khoảng cách sau lọc chống rung quang học 3 tầng
-    uint16_t d_distance_raw;        // D901: Khoảng cách thô nguyên bản từ cảm biến
+    uint16_t d_distance_filtered;   // D900: Khoảng cách sau lọc & sau Calib (mm)
+    uint16_t d_distance_raw;        // D901: Khoảng cách đo thô nguyên bản (mm)
     
     // 2. Trạng thái & Chẩn đoán lỗi
     uint16_t d_status;              // D902: Bit 0 = Online, Bit 1 = Near <200mm, Bit 2 = In Range
@@ -61,7 +52,13 @@ typedef struct {
     uint16_t d_scan_time_ms;        // D904: Chu kỳ quét (50ms)
     uint16_t d_heartbeat;           // D905: Bộ đếm sống tăng liên tục (0..65535)
 
-    // Biến nội bộ
+    // 4. THÔNG SỐ HIỆU CHUẨN (CALIBRATION TỪ HMI)
+    uint16_t d_calib_target;        // D910: Khoảng cách chuẩn đặt từ HMI (mặc định 500 mm)
+    int16_t  d_calib_offset;        // Độ lệch bù trừ tính được: Offset = D910 - D901 (mm)
+    bool     m_calib_trigger;       // M910: Cờ lệnh kích hoạt Calib từ HMI
+    bool     calib_done;            // Báo trạng thái Calib hoàn tất
+
+    // Biến nội bộ vi điều khiển
     bool     sensor_ok;
     uint8_t  raw_range_status;
     uint32_t comm_success_count;
@@ -70,11 +67,11 @@ typedef struct {
 extern VL53L_AppData_t g_vl53_app;
 
 /* ==============================================================================
- *                       HÀM GIAO TIẾP DUY NHẤT
+ *                       HÀM GIAO TIẾP & CALIBRATION
  * ============================================================================== */
 
 /**
- * @brief Khởi tạo toàn bộ Cảm biến ToF và Ngắt nhận phản hồi UART
+ * @brief Khởi tạo toàn bộ Cảm biến ToF và Ngắt nhận UART
  */
 void VL53L_Init(void);
 
@@ -84,9 +81,20 @@ void VL53L_Init(void);
 void VL53L_Task_Sensor(void);
 
 /**
- * @brief Task phát gom 6 thanh ghi D900..D905 qua DMA TX lên PLC (chạy chu kỳ 100ms)
+ * @brief Task phát gom 6 thanh ghi D900..D905 qua DMA TX lên PLC (chu kỳ 100ms)
  */
 void VL53L_Task_PLC(void);
+
+/**
+ * @brief Đặt khoảng cách chuẩn D910 để Calib từ HMI
+ * @param target_mm Khoảng cách chuẩn đã đo bằng thước (ví dụ: 500mm, 1000mm)
+ */
+void VL53L_SetCalibTarget(uint16_t target_mm);
+
+/**
+ * @brief Kích hoạt lệnh Calib tương đương cờ M910 từ HMI
+ */
+void VL53L_TriggerCalib(void);
 
 #ifdef __cplusplus
 }
