@@ -38,22 +38,24 @@ VL53L_AppData_t g_vl53_app = {
     .d_error = 0,
     .d_scan_time_ms = 50,
     .d_heartbeat = 0,
-    .d_calib_target = 0,        // Giá trị ban đầu = 0, sẽ nhận trực tiếp từ PLC D910
-    .d_calib_cmd_flag = 0,      // D911 / M910 từ PLC
+    .d_calib_target = 0,
+    .d_calib_cmd_flag = 0,
     .d_calib_offset = 0,
     .calib_done = false,
     .sensor_ok = false,
     .raw_range_status = 0,
     .comm_success_count = 0,
-    .read_success_count = 0
+    .read_success_count = 0,
+    .total_rx_bytes = 0,
+    .last_rx_bytes = {0}
 };
 
 static uint8_t  tx_dma_buf[128];
 static uint8_t  rx_raw_byte = 0;
-static uint8_t  rx_buf[128];
-static volatile uint16_t rx_idx = 0;
+static uint8_t  rx_ring[256];
+static volatile uint16_t rx_head = 0;
 static volatile bool vl53_int_flag = false;
-static uint8_t  comm_phase = 0; // 0: Gửi Write D900..D905, 1: Gửi Read D910..D911
+static uint8_t  comm_phase = 0;
 
 /* ==============================================================================
  *                       ĐỌC & GHI FLASH STM32
@@ -124,13 +126,13 @@ void VL53L_Process_PLC_Response(const uint8_t *buf, uint16_t len) {
     }
     if (stx_pos < 0) return;
 
-    // Bỏ DLE stuffing
+    // Bỏ DLE stuffing (10 10 -> 10)
     uint8_t payload[64];
     uint16_t p_len = 0;
     for (uint16_t i = stx_pos + 2; i < len; i++) {
         if (buf[i] == 0x10) {
             if (i + 1 < len && buf[i + 1] == 0x03) {
-                break; // Gặp DLE ETX
+                break; // Gặp DLE ETX (10 03)
             } else if (i + 1 < len && buf[i + 1] == 0x10) {
                 payload[p_len++] = 0x10;
                 i++;
@@ -140,12 +142,13 @@ void VL53L_Process_PLC_Response(const uint8_t *buf, uint16_t len) {
         payload[p_len++] = buf[i];
     }
 
-    // Nếu là gói phản hồi đọc (Có EndCode 00 00 và có dữ liệu trả về)
-     if (p_len >= 6) {
+    // Nếu là gói phản hồi Đọc dữ liệu (Format 5 Read Response)
+    // Payload gồm: [Len 2B] [EndCode: 00 00] [D910: 2B] [D911/M910: 2B]
+    if (p_len >= 6) {
         uint16_t end_code = payload[2] | (payload[3] << 8);
         if (end_code == 0x0000 && p_len >= 8) {
-            uint16_t plc_d910 = payload[4] | (payload[5] << 8); // Khoảng cách đặt D910 từ PLC
-            uint16_t plc_d911 = payload[6] | (payload[7] << 8); // Cờ Calib M910 / D911 từ PLC
+            uint16_t plc_d910 = payload[4] | (payload[5] << 8); // Khoảng cách đặt D910
+            uint16_t plc_d911 = payload[6] | (payload[7] << 8); // Cờ Calib M910 / D911
 
             g_vl53_app.d_calib_target = plc_d910;
             g_vl53_app.d_calib_cmd_flag = plc_d911;
@@ -176,15 +179,34 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == VL53L_PLC_UART_HANDLE.Instance) {
-        if (rx_idx < sizeof(rx_buf) - 1) {
-            rx_buf[rx_idx++] = rx_raw_byte;
+        g_vl53_app.total_rx_bytes++;
+
+        // Lưu 8 byte gần nhất để xem trực tiếp trên OLED
+        for (int i = 0; i < 7; i++) {
+            g_vl53_app.last_rx_bytes[i] = g_vl53_app.last_rx_bytes[i + 1];
+        }
+        g_vl53_app.last_rx_bytes[7] = rx_raw_byte;
+
+        if (rx_head < sizeof(rx_ring) - 1) {
+            rx_ring[rx_head++] = rx_raw_byte;
         }
 
-        // Kiểm tra kết thúc gói tin DLE (0x10) ETX (0x03) + 2 bytes Checksum
-        if (rx_idx >= 4 && rx_buf[rx_idx - 4] == 0x10 && rx_buf[rx_idx - 3] == 0x03) {
-            VL53L_Process_PLC_Response(rx_buf, rx_idx);
-            rx_idx = 0;
-            g_vl53_app.comm_success_count++;
+        // Quét gói tin khi nhận được Checksum sau DLE ETX (10 03 XX XX)
+        if (rx_head >= 4) {
+            for (uint16_t i = 0; i < rx_head - 3; i++) {
+                if (rx_ring[i] == 0x10 && rx_ring[i + 1] == 0x03) {
+                    // Đã nhận trọn vẹn gói tin kèm 2 byte checksum
+                    VL53L_Process_PLC_Response(rx_ring, i + 4);
+                    rx_head = 0;
+                    g_vl53_app.comm_success_count++;
+                    break;
+                }
+            }
+        }
+
+        // Chống tràn bộ đệm nếu có nhiễu
+        if (rx_head >= sizeof(rx_ring) - 10) {
+            rx_head = 0;
         }
 
         HAL_UART_Receive_IT(&VL53L_PLC_UART_HANDLE, &rx_raw_byte, 1);
@@ -432,7 +454,7 @@ void VL53L_Task_PLC(void) {
 
     uint16_t tx_len = 0;
 
-    // Luân phiên 2 pha: Pha 0 Ghi D900..D905 -> Pha 1 Đọc D910..D911 từ PLC
+    // Gửi lệnh luân phiên: Ghi D900..D905 (100ms) rồi Đọc D910 (100ms)
     if (comm_phase == 0) {
         uint16_t d_table[VL53L_PLC_D_TOTAL_POINTS] = {
             g_vl53_app.d_distance_filtered, // D900

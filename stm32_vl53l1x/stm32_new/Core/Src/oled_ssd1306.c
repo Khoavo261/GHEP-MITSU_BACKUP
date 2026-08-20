@@ -1,6 +1,6 @@
 /**
  * @file oled_ssd1306.c
- * @brief IMPLEMENTATION DRIVER OLED SSD1306 - HIỂN THỊ TRỰC QUAN Ô NHỚ D910 & D900..D905
+ * @brief IMPLEMENTATION DRIVER OLED SSD1306 - HIỂN THỊ D910 & CHẨN ĐOÁN RX REALTIME
  */
 
 #include "oled_ssd1306.h"
@@ -17,7 +17,6 @@ static bool    oled_is_ready = false;
 static uint8_t oled_actual_addr = 0x78;
 static OLED_DisplayMode_t g_oled_mode = OLED_VIEW_FULL_6REG;
 
-/* Bảng Font 6x8 (Ký tự 32 ' ' đến 126 '~') */
 static const uint8_t Font6x8[][6] = {
     {0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, // 32 ' '
     {0x00, 0x00, 0x5F, 0x00, 0x00, 0x00}, // 33 '!'
@@ -269,38 +268,41 @@ void OLED_SetDisplayMode(OLED_DisplayMode_t mode) {
 }
 
 /* ==============================================================================
- *                       HIỂN THỊ DỮ LIỆU & CALIB D910 / M910
+ *                       HIỂN THỊ DỮ LIỆU & CHẨN ĐOÁN TRUYỀN THÔNG
  * ============================================================================== */
 
 static void OLED_Show_Full_6Registers(void) {
     char line_str[24];
     OLED_Clear();
 
-    // Dòng 0: Tiêu đề nổi bật (Nền trắng chữ đen)
+    // Dòng 0: Tiêu đề
     OLED_DrawString_Font(0, 0, " [Q02U <-> VL53L1X] ", OLED_FONT_6x8, true);
 
     // Dòng 1: D900 - Khoảng cách sau Calib
     snprintf(line_str, sizeof(line_str), "D900(Cal):%4d mm", g_vl53_app.d_distance_filtered);
     OLED_DrawString_Font(0, 9, line_str, OLED_FONT_6x8, false);
 
-    // Dòng 2: D901 - Khoảng cách thô
+    // Dòng 2: D901 - Khoảng cách đo thô
     snprintf(line_str, sizeof(line_str), "D901(Raw):%4d mm", g_vl53_app.d_distance_raw);
     OLED_DrawString_Font(0, 18, line_str, OLED_FONT_6x8, false);
 
-    // Dòng 3: Ô NHỚ D910 - ĐỌC TRỰC TIẾP TỪ PLC/HMI (Rõ ràng 100%)
+    // Dòng 3: D910 - Khoảng cách đặt từ PLC/HMI
     snprintf(line_str, sizeof(line_str), "D910(PLC):%4d mm", g_vl53_app.d_calib_target);
     OLED_DrawString_Font(0, 27, line_str, OLED_FONT_6x8, false);
 
-    // Dòng 4: Độ lệch Offset tính được & Trạng thái Calib
+    // Dòng 4: Offset tính được & Trạng thái Calib
     snprintf(line_str, sizeof(line_str), "Offset:%+4dmm %s", g_vl53_app.d_calib_offset, g_vl53_app.calib_done ? "[OK]" : "[--]");
     OLED_DrawString_Font(0, 36, line_str, OLED_FONT_6x8, false);
 
-    // Dòng 5: D902 - Trạng thái hoạt động
-    snprintf(line_str, sizeof(line_str), "D902(Sta): 0x%04X", g_vl53_app.d_status);
+    // Dòng 5: Chẩn đoán RX (Tổng byte nhận & Số gói đọc thành công)
+    snprintf(line_str, sizeof(line_str), "RX:%-5lu ReadOK:%-3lu", g_vl53_app.total_rx_bytes % 100000, g_vl53_app.read_success_count % 1000);
     OLED_DrawString_Font(0, 45, line_str, OLED_FONT_6x8, false);
 
-    // Dòng 6: D905 - Nhịp tim Heartbeat
-    snprintf(line_str, sizeof(line_str), "D905(Hbt):%5u", g_vl53_app.d_heartbeat);
+    // Dòng 6: Các byte hex gần nhất nhận từ UART để kiểm tra phản hồi PLC
+    snprintf(line_str, sizeof(line_str), "%02X %02X %02X %02X %02X %02X", 
+             g_vl53_app.last_rx_bytes[2], g_vl53_app.last_rx_bytes[3],
+             g_vl53_app.last_rx_bytes[4], g_vl53_app.last_rx_bytes[5],
+             g_vl53_app.last_rx_bytes[6], g_vl53_app.last_rx_bytes[7]);
     OLED_DrawString_Font(0, 54, line_str, OLED_FONT_6x8, false);
 
     OLED_UpdateScreen();
