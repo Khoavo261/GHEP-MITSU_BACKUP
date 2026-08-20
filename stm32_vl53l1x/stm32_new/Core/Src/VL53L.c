@@ -187,11 +187,11 @@ void VL53L_Process_PLC_Response(const uint8_t *buf, uint16_t len) {
 
         // Gói phản hồi Batch Read QJ71 Type 5 (16 bytes payload):
         // Byte 10-11: End Code (0x0000)
-        // Byte 12-13: Word 0 = D910 (Target mm)
-        // Byte 14-15: Word 1 = D911 (Mã lệnh Calib: 10, 20, 30)
+        // Byte 12-13: D911 (Mã lệnh Calib: 10, 20, 30)
+        // Byte 14-15: D910 (Target mm: 300 mm)
         if (p_len >= 16) {
-            uint16_t plc_d910 = payload[12] | (payload[13] << 8); // D910 (Target mm: Byte 12-13)
-            uint16_t plc_d911 = payload[14] | (payload[15] << 8); // D911 (Lệnh Calib: Byte 14-15)
+            uint16_t plc_d910 = payload[14] | (payload[15] << 8); // D910 = Target mm (Byte 14-15)
+            uint16_t plc_d911 = payload[12] | (payload[13] << 8); // D911 = Lệnh Calib (Byte 12-13)
 
             g_vl53_app.d_calib_target = plc_d910;
             g_vl53_app.d_calib_cmd_flag = plc_d911;
@@ -212,8 +212,8 @@ void VL53L_Process_PLC_Response(const uint8_t *buf, uint16_t len) {
         resp_received = true;
 
         if (end_code == 0x0000 && p_len >= 8) {
-            uint16_t plc_d910 = payload[4] | (payload[5] << 8);
-            uint16_t plc_d911 = payload[6] | (payload[7] << 8);
+            uint16_t plc_d910 = payload[6] | (payload[7] << 8);
+            uint16_t plc_d911 = payload[4] | (payload[5] << 8);
 
             g_vl53_app.d_calib_target = plc_d910;
             g_vl53_app.d_calib_cmd_flag = plc_d911;
