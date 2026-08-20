@@ -333,11 +333,11 @@ static void OLED_Show_Parameter_Calib_View(void) {
     snprintf(line_str, sizeof(line_str), "Calib (D900): %4d mm", g_vl53_app.d_distance_filtered);
     OLED_DrawString_Font(0, 36, line_str, OLED_FONT_6x8, false);
 
-    // Dòng 5: Offset tính toán & Payload thô byte 14-17 (D910 & D911)
+    // Dòng 5: Offset tính toán & Payload thô byte 12-15 (D910 & D911)
     snprintf(line_str, sizeof(line_str), "Off:%+4d|%02X%02X %02X%02X", 
              g_vl53_app.d_calib_offset,
-             g_vl53_app.last_payload[14], g_vl53_app.last_payload[15],
-             g_vl53_app.last_payload[16], g_vl53_app.last_payload[17]);
+             g_vl53_app.last_payload[12], g_vl53_app.last_payload[13],
+             g_vl53_app.last_payload[14], g_vl53_app.last_payload[15]);
     OLED_DrawString_Font(0, 45, line_str, OLED_FONT_6x8, false);
 
     // Dòng 6: Trạng thái Calib
