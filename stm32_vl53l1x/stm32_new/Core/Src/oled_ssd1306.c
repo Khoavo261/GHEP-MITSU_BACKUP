@@ -116,12 +116,27 @@ static const uint8_t Font6x8[][6] = {
 };
 
 /* ==============================================================================
- *                       GIAO TIẾP LỆNH / DỮ LIỆU I2C
+ *       GIAO TIẾP LỆNH / DỮ LIỆU I2C + BỘ LỌC VI SAI & TỰ PHỤC HỒI AUTO-RECOVERY
  * ============================================================================== */
 
-static void OLED_WriteCommand(uint8_t cmd) {
+static uint8_t  OLED_LastBuffer[1024];
+static uint32_t last_full_refresh_tick = 0;
+static uint8_t  i2c_err_consecutive_count = 0;
+
+static void OLED_Reset_I2C_Hardware(void) {
+    HAL_I2C_DeInit(&OLED_I2C_HANDLE);
+    HAL_Delay(10);
+    HAL_I2C_Init(&OLED_I2C_HANDLE);
+    oled_is_ready = false;
+    memset(OLED_LastBuffer, 0xFF, sizeof(OLED_LastBuffer)); // Buộc làm mới toàn bộ sau khi phục hồi
+}
+
+static bool OLED_WriteCommand(uint8_t cmd) {
     uint8_t data[2] = {0x00, cmd};
-    HAL_I2C_Master_Transmit(&OLED_I2C_HANDLE, oled_actual_addr, data, 2, 10);
+    if (HAL_I2C_Master_Transmit(&OLED_I2C_HANDLE, oled_actual_addr, data, 2, 10) != HAL_OK) {
+        return false;
+    }
+    return true;
 }
 
 bool OLED_Init(void) {
@@ -164,8 +179,9 @@ bool OLED_Init(void) {
     OLED_WriteCommand(0xAF);
 
     OLED_Clear();
-    OLED_UpdateScreen();
+    memset(OLED_LastBuffer, 0xFF, sizeof(OLED_LastBuffer));
     oled_is_ready = true;
+    OLED_UpdateScreen();
     return true;
 }
 
@@ -176,15 +192,49 @@ void OLED_Clear(void) {
 void OLED_UpdateScreen(void) {
     if (!oled_is_ready) return;
 
+    uint32_t now = HAL_GetTick();
+    bool is_dirty = (memcmp(OLED_Buffer, OLED_LastBuffer, sizeof(OLED_Buffer)) != 0);
+    bool is_heartbeat = (now - last_full_refresh_tick >= 1000);
+
+    // CHỈ BẮN I2C KHI CÓ DATA THAY ĐỔI HOẶC ĐẾN CHU KỲ HEARTBEAT (1 Giây)
+    if (!is_dirty && !is_heartbeat) {
+        return;
+    }
+
+    bool tx_ok = true;
     for (uint8_t page = 0; page < 8; page++) {
-        OLED_WriteCommand(0xB0 + page);
-        OLED_WriteCommand(0x00);
-        OLED_WriteCommand(0x10);
+        // Lọc vi sai: Bỏ qua các page không có thay đổi pixel
+        if (!is_heartbeat && memcmp(&OLED_Buffer[page * 128], &OLED_LastBuffer[page * 128], 128) == 0) {
+            continue;
+        }
+
+        if (!OLED_WriteCommand(0xB0 + page) ||
+            !OLED_WriteCommand(0x00) ||
+            !OLED_WriteCommand(0x10)) {
+            tx_ok = false;
+            break;
+        }
 
         uint8_t payload[129];
         payload[0] = 0x40;
         memcpy(&payload[1], &OLED_Buffer[page * 128], 128);
-        HAL_I2C_Master_Transmit(&OLED_I2C_HANDLE, oled_actual_addr, payload, 129, 20);
+        if (HAL_I2C_Master_Transmit(&OLED_I2C_HANDLE, oled_actual_addr, payload, 129, 20) != HAL_OK) {
+            tx_ok = false;
+            break;
+        }
+    }
+
+    if (tx_ok) {
+        memcpy(OLED_LastBuffer, OLED_Buffer, sizeof(OLED_Buffer));
+        last_full_refresh_tick = now;
+        i2c_err_consecutive_count = 0;
+    } else {
+        // CƠ CHẾ TỰ ĐỘNG PHỤC HỒI & RESET I2C KHI PHÁT HIỆN TREO BUS
+        i2c_err_consecutive_count++;
+        if (i2c_err_consecutive_count >= 2) {
+            i2c_err_consecutive_count = 0;
+            OLED_Reset_I2C_Hardware();
+        }
     }
 }
 
