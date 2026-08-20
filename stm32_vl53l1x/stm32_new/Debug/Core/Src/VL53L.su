@@ -6,8 +6,8 @@
 ../Core/Src/VL53L.c:220:6:HAL_UART_TxCpltCallback	16	static
 ../Core/Src/VL53L.c:232:17:Filter_TrimmedMovingAverage	48	static
 ../Core/Src/VL53L.c:289:17:Build_Batch_Write_D900	80	static
-../Core/Src/VL53L.c:328:17:Build_Batch_Read_D910	56	static
-../Core/Src/VL53L.c:365:13:Try_Init_Sensor	16	static
-../Core/Src/VL53L.c:400:6:VL53L_Init	8	static
-../Core/Src/VL53L.c:410:6:VL53L_Task_Sensor	24	static
-../Core/Src/VL53L.c:457:6:VL53L_Task_PLC	24	static
+../Core/Src/VL53L.c:332:17:Build_Batch_Read_D910	56	static
+../Core/Src/VL53L.c:373:13:Try_Init_Sensor	16	static
+../Core/Src/VL53L.c:408:6:VL53L_Init	8	static
+../Core/Src/VL53L.c:418:6:VL53L_Task_Sensor	24	static
+../Core/Src/VL53L.c:465:6:VL53L_Task_PLC	24	static

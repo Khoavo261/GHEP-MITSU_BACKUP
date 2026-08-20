@@ -142,7 +142,6 @@ void VL53L_Process_PLC_Response(const uint8_t *buf, uint16_t len) {
         payload[p_len++] = buf[i];
     }
 
-    // Lưu 16 byte payload vào buffer giám sát OLED
     memset(g_vl53_app.last_payload, 0, sizeof(g_vl53_app.last_payload));
     for (uint8_t i = 0; i < p_len && i < 16; i++) {
         g_vl53_app.last_payload[i] = payload[i];
@@ -152,17 +151,18 @@ void VL53L_Process_PLC_Response(const uint8_t *buf, uint16_t len) {
     // Gói phản hồi Q-Series 3E (Có Routing Header F8 00 ...)
     if (p_len >= 12 && payload[2] == 0xF8) {
         // Bỏ qua TX Echo
-        if (payload[10] == 0x01 && (payload[11] == 0x04 || payload[11] == 0x14)) {
+        if (payload[11] == 0x01 && (payload[12] == 0x04 || payload[12] == 0x14)) {
             return;
         }
 
-        uint16_t end_code = payload[10] | (payload[11] << 8);
+        // EndCode nằm ở byte 11 và 12
+        uint16_t end_code = payload[11] | (payload[12] << 8);
         g_vl53_app.plc_last_end_code = end_code;
 
         // Nếu EndCode == 0x0000 (Thành công hoàn toàn!)
-        if (end_code == 0x0000 && p_len >= 16) {
-            uint16_t plc_d910 = payload[12] | (payload[13] << 8);
-            uint16_t plc_d911 = payload[14] | (payload[15] << 8);
+        if (end_code == 0x0000 && p_len >= 17) {
+            uint16_t plc_d910 = payload[13] | (payload[14] << 8);
+            uint16_t plc_d911 = payload[15] | (payload[16] << 8);
 
             g_vl53_app.d_calib_target = plc_d910;
             g_vl53_app.d_calib_cmd_flag = plc_d911;
@@ -288,9 +288,8 @@ static uint16_t Filter_TrimmedMovingAverage(uint16_t raw_mm) {
 // Gói Ghi D900..D905 (Batch Write 0x1401)
 static uint16_t Build_Batch_Write_D900(uint8_t *out_buf, const uint16_t *data_6words) {
     uint8_t payload[48];
-    uint16_t p_len = 0;
+    uint16_t p_len = 2; // Dành 2 byte đầu cho Length
     
-    payload[p_len++] = 0x1E; payload[p_len++] = 0x00; // Length: 30 bytes
     payload[p_len++] = 0xF8; payload[p_len++] = 0x00; payload[p_len++] = 0x00;
     payload[p_len++] = 0xFF; payload[p_len++] = 0xFF; payload[p_len++] = 0x03;
     payload[p_len++] = 0x00;
@@ -308,6 +307,11 @@ static uint16_t Build_Batch_Write_D900(uint8_t *out_buf, const uint16_t *data_6w
         payload[p_len++] = (uint8_t)(data_6words[i] & 0xFF);
         payload[p_len++] = (uint8_t)((data_6words[i] >> 8) & 0xFF);
     }
+    
+    // Tự động tính chính xác độ dài Length = p_len - 2
+    uint16_t req_data_len = p_len - 2;
+    payload[0] = (uint8_t)(req_data_len & 0xFF);
+    payload[1] = (uint8_t)((req_data_len >> 8) & 0xFF);
     
     uint16_t sum = 0;
     for (uint16_t i = 0; i < p_len; i++) sum += payload[i];
@@ -327,9 +331,8 @@ static uint16_t Build_Batch_Write_D900(uint8_t *out_buf, const uint16_t *data_6w
 // Gói Đọc D910..D911 (Batch Read 0x0401)
 static uint16_t Build_Batch_Read_D910(uint8_t *out_buf) {
     uint8_t payload[24];
-    uint16_t p_len = 0;
+    uint16_t p_len = 2; // Dành 2 byte đầu cho Length
     
-    payload[p_len++] = 0x12; payload[p_len++] = 0x00; // Length: 18 bytes
     payload[p_len++] = 0xF8; payload[p_len++] = 0x00; payload[p_len++] = 0x00;
     payload[p_len++] = 0xFF; payload[p_len++] = 0xFF; payload[p_len++] = 0x03;
     payload[p_len++] = 0x00;
@@ -342,6 +345,11 @@ static uint16_t Build_Batch_Read_D910(uint8_t *out_buf) {
     payload[p_len++] = 0xA8; // Device Code D
     payload[p_len++] = (uint8_t)(VL53L_PLC_READ_D_POINTS & 0xFF);
     payload[p_len++] = (uint8_t)((VL53L_PLC_READ_D_POINTS >> 8) & 0xFF); // 2 Points (D910, D911)
+    
+    // Tự động tính chính xác độ dài Length = p_len - 2 (19 bytes = 0x0013)
+    uint16_t req_data_len = p_len - 2;
+    payload[0] = (uint8_t)(req_data_len & 0xFF);
+    payload[1] = (uint8_t)((req_data_len >> 8) & 0xFF);
     
     uint16_t sum = 0;
     for (uint16_t i = 0; i < p_len; i++) sum += payload[i];
