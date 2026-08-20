@@ -151,24 +151,44 @@ void VL53L_Process_PLC_Response(const uint8_t *buf, uint16_t len) {
     // Gói phản hồi Q-Series 3E (Có Routing Header F8 00 ...)
     if (p_len >= 12 && payload[2] == 0xF8) {
         // Bỏ qua TX Echo
-        if (payload[11] == 0x01 && (payload[12] == 0x04 || payload[12] == 0x14)) {
+        if (payload[10] == 0x01 && (payload[11] == 0x04 || payload[11] == 0x14)) {
             return;
         }
 
-        // EndCode nằm ở byte 11 và 12
-        uint16_t end_code = payload[11] | (payload[12] << 8);
+        uint16_t end_code = payload[10] | (payload[11] << 8);
         g_vl53_app.plc_last_end_code = end_code;
 
         // Nếu EndCode == 0x0000 (Thành công hoàn toàn!)
-        if (end_code == 0x0000 && p_len >= 17) {
-            uint16_t plc_d910 = payload[13] | (payload[14] << 8);
-            uint16_t plc_d911 = payload[15] | (payload[16] << 8);
+        if (end_code == 0x0000 && p_len >= 16) {
+            uint16_t plc_d910 = payload[12] | (payload[13] << 8);
+            uint16_t plc_d911 = payload[14] | (payload[15] << 8);
 
             g_vl53_app.d_calib_target = plc_d910;
             g_vl53_app.d_calib_cmd_flag = plc_d911;
             g_vl53_app.read_success_count++;
 
             // Kích hoạt Calib khi cờ M910 / D911 = 1
+            if (plc_d911 == 1 && g_vl53_app.d_distance_raw > 0) {
+                int32_t offset = (int32_t)g_vl53_app.d_calib_target - (int32_t)g_vl53_app.d_distance_raw;
+                g_vl53_app.d_calib_offset = (int16_t)offset;
+                g_vl53_app.calib_done = true;
+                Calib_Save_To_Flash();
+            }
+        }
+    }
+    // Gói phản hồi ngắn không kèm Routing Header
+    else if (p_len >= 4 && payload[2] != 0xF8) {
+        uint16_t end_code = payload[2] | (payload[3] << 8);
+        g_vl53_app.plc_last_end_code = end_code;
+
+        if (end_code == 0x0000 && p_len >= 8) {
+            uint16_t plc_d910 = payload[4] | (payload[5] << 8);
+            uint16_t plc_d911 = payload[6] | (payload[7] << 8);
+
+            g_vl53_app.d_calib_target = plc_d910;
+            g_vl53_app.d_calib_cmd_flag = plc_d911;
+            g_vl53_app.read_success_count++;
+
             if (plc_d911 == 1 && g_vl53_app.d_distance_raw > 0) {
                 int32_t offset = (int32_t)g_vl53_app.d_calib_target - (int32_t)g_vl53_app.d_distance_raw;
                 g_vl53_app.d_calib_offset = (int16_t)offset;
@@ -285,20 +305,20 @@ static uint16_t Filter_TrimmedMovingAverage(uint16_t raw_mm) {
  *                       XÂY DỰNG GÓI LỆNH MITSUBISHI TYPE 5
  * ============================================================================== */
 
-// Gói Ghi D900..D905 (Batch Write 0x1401)
+// Gói Ghi D900..D905 (Batch Write 0x1401 - Chuẩn 30 bytes)
 static uint16_t Build_Batch_Write_D900(uint8_t *out_buf, const uint16_t *data_6words) {
     uint8_t payload[48];
-    uint16_t p_len = 2; // Dành 2 byte đầu cho Length
+    uint16_t p_len = 0;
     
+    payload[p_len++] = 0x1E; payload[p_len++] = 0x00; // Length: 30 bytes (0x001E)
     payload[p_len++] = 0xF8; payload[p_len++] = 0x00; payload[p_len++] = 0x00;
     payload[p_len++] = 0xFF; payload[p_len++] = 0xFF; payload[p_len++] = 0x03;
-    payload[p_len++] = 0x00;
-    payload[p_len++] = 0x10; payload[p_len++] = 0x00; // CPU Monitoring Timer = 0x0010 (4000ms)
+    payload[p_len++] = 0x00; payload[p_len++] = 0x00; // Routing: 8 bytes
     payload[p_len++] = 0x01; payload[p_len++] = 0x14; // Command 0x1401 (Batch Write)
     payload[p_len++] = 0x00; payload[p_len++] = 0x00; // Subcommand: 0000
     payload[p_len++] = (uint8_t)(VL53L_PLC_D_START_ADDR & 0xFF);
     payload[p_len++] = (uint8_t)((VL53L_PLC_D_START_ADDR >> 8) & 0xFF);
-    payload[p_len++] = 0x00; // Head D900
+    payload[p_len++] = 0x00; // Head D900 (3 bytes)
     payload[p_len++] = 0xA8; // Device Code D
     payload[p_len++] = (uint8_t)(VL53L_PLC_D_TOTAL_POINTS & 0xFF);
     payload[p_len++] = (uint8_t)((VL53L_PLC_D_TOTAL_POINTS >> 8) & 0xFF); // 6 Points
@@ -307,11 +327,6 @@ static uint16_t Build_Batch_Write_D900(uint8_t *out_buf, const uint16_t *data_6w
         payload[p_len++] = (uint8_t)(data_6words[i] & 0xFF);
         payload[p_len++] = (uint8_t)((data_6words[i] >> 8) & 0xFF);
     }
-    
-    // Tự động tính chính xác độ dài Length = p_len - 2
-    uint16_t req_data_len = p_len - 2;
-    payload[0] = (uint8_t)(req_data_len & 0xFF);
-    payload[1] = (uint8_t)((req_data_len >> 8) & 0xFF);
     
     uint16_t sum = 0;
     for (uint16_t i = 0; i < p_len; i++) sum += payload[i];
@@ -328,28 +343,23 @@ static uint16_t Build_Batch_Write_D900(uint8_t *out_buf, const uint16_t *data_6w
     return tx_idx;
 }
 
-// Gói Đọc D910..D911 (Batch Read 0x0401)
+// Gói Đọc D910..D911 (Batch Read 0x0401 - Chuẩn 18 bytes)
 static uint16_t Build_Batch_Read_D910(uint8_t *out_buf) {
     uint8_t payload[24];
-    uint16_t p_len = 2; // Dành 2 byte đầu cho Length
+    uint16_t p_len = 0;
     
+    payload[p_len++] = 0x12; payload[p_len++] = 0x00; // Length: 18 bytes (0x0012)
     payload[p_len++] = 0xF8; payload[p_len++] = 0x00; payload[p_len++] = 0x00;
     payload[p_len++] = 0xFF; payload[p_len++] = 0xFF; payload[p_len++] = 0x03;
-    payload[p_len++] = 0x00;
-    payload[p_len++] = 0x10; payload[p_len++] = 0x00; // CPU Monitoring Timer = 0x0010 (4000ms chuẩn Q-Series)
+    payload[p_len++] = 0x00; payload[p_len++] = 0x00; // Routing Header: 8 bytes
     payload[p_len++] = 0x01; payload[p_len++] = 0x04; // Command 0x0401 (Batch Read)
     payload[p_len++] = 0x00; payload[p_len++] = 0x00; // Subcommand: 0000
-    payload[p_len++] = (uint8_t)(VL53L_PLC_READ_D_ADDR & 0xFF);
-    payload[p_len++] = (uint8_t)((VL53L_PLC_READ_D_ADDR >> 8) & 0xFF);
-    payload[p_len++] = 0x00; // Head D910 (0x038E)
-    payload[p_len++] = 0xA8; // Device Code D
-    payload[p_len++] = (uint8_t)(VL53L_PLC_READ_D_POINTS & 0xFF);
-    payload[p_len++] = (uint8_t)((VL53L_PLC_READ_D_POINTS >> 8) & 0xFF); // 2 Points (D910, D911)
-    
-    // Tự động tính chính xác độ dài Length = p_len - 2 (19 bytes = 0x0013)
-    uint16_t req_data_len = p_len - 2;
-    payload[0] = (uint8_t)(req_data_len & 0xFF);
-    payload[1] = (uint8_t)((req_data_len >> 8) & 0xFF);
+    payload[p_len++] = (uint8_t)(VL53L_PLC_READ_D_ADDR & 0xFF);         // 0x8E
+    payload[p_len++] = (uint8_t)((VL53L_PLC_READ_D_ADDR >> 8) & 0xFF);  // 0x03
+    payload[p_len++] = 0x00;                                            // 0x00 -> D910
+    payload[p_len++] = 0xA8;                                            // Code D
+    payload[p_len++] = (uint8_t)(VL53L_PLC_READ_D_POINTS & 0xFF);        // 0x02
+    payload[p_len++] = (uint8_t)((VL53L_PLC_READ_D_POINTS >> 8) & 0xFF); // 0x00 -> 2 Points
     
     uint16_t sum = 0;
     for (uint16_t i = 0; i < p_len; i++) sum += payload[i];
