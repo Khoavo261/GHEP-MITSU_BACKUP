@@ -118,7 +118,6 @@ static bool Calib_Save_To_Flash(void) {
 void VL53L_Process_PLC_Response(const uint8_t *buf, uint16_t len) {
     if (len < 6) return;
 
-    // Tìm DLE STX (10 02)
     int16_t stx_pos = -1;
     for (uint16_t i = 0; i < len - 1; i++) {
         if (buf[i] == 0x10 && buf[i + 1] == 0x02) {
@@ -134,7 +133,7 @@ void VL53L_Process_PLC_Response(const uint8_t *buf, uint16_t len) {
     for (uint16_t i = stx_pos + 2; i < len; i++) {
         if (buf[i] == 0x10) {
             if (i + 1 < len && buf[i + 1] == 0x03) {
-                break; // Gặp DLE ETX (10 03)
+                break; // DLE ETX
             } else if (i + 1 < len && buf[i + 1] == 0x10) {
                 payload[p_len++] = 0x10;
                 i++;
@@ -146,15 +145,20 @@ void VL53L_Process_PLC_Response(const uint8_t *buf, uint16_t len) {
 
     g_vl53_app.plc_last_p_len = (uint8_t)p_len;
 
-    // Gói phản hồi Mitsubishi Type 5: [Len 2B] [EndCode: 2B] [Data: N Bytes]
-    if (p_len >= 4) {
-        uint16_t end_code = payload[2] | (payload[3] << 8);
+    // TRƯỜNG HỢP 1: Phản hồi có Routing Header 8 bytes (Format 5 Q-Series 3E)
+    // Cấu trúc: [Len 2B] [Routing 8B: F8 00 ...] [EndCode 2B] [D910 2B] [D911 2B]
+    if (p_len >= 12 && payload[2] == 0xF8) {
+        // Bỏ qua TX Echo (nếu là lệnh TX do chính STM32 phát ra)
+        if (payload[10] == 0x01 && (payload[11] == 0x04 || payload[11] == 0x14)) {
+            return;
+        }
+
+        uint16_t end_code = payload[10] | (payload[11] << 8);
         g_vl53_app.plc_last_end_code = end_code;
 
-        // Nếu là phản hồi Đọc thành công có chứa dữ liệu D910/D911
-        if (p_len >= 8) {
-            uint16_t plc_d910 = payload[4] | (payload[5] << 8);
-            uint16_t plc_d911 = payload[6] | (payload[7] << 8);
+        if (end_code == 0x0000 && p_len >= 16) {
+            uint16_t plc_d910 = payload[12] | (payload[13] << 8);
+            uint16_t plc_d911 = payload[14] | (payload[15] << 8);
 
             g_vl53_app.d_calib_target = plc_d910;
             g_vl53_app.d_calib_cmd_flag = plc_d911;
@@ -165,8 +169,28 @@ void VL53L_Process_PLC_Response(const uint8_t *buf, uint16_t len) {
                 int32_t offset = (int32_t)g_vl53_app.d_calib_target - (int32_t)g_vl53_app.d_distance_raw;
                 g_vl53_app.d_calib_offset = (int16_t)offset;
                 g_vl53_app.calib_done = true;
+                Calib_Save_To_Flash();
+            }
+        }
+    }
+    // TRƯỜNG HỢP 2: Phản hồi chuẩn ngắn không kèm Routing Header
+    // Cấu trúc: [Len 2B] [EndCode 2B] [D910 2B] [D911 2B]
+    else if (p_len >= 4 && payload[2] != 0xF8) {
+        uint16_t end_code = payload[2] | (payload[3] << 8);
+        g_vl53_app.plc_last_end_code = end_code;
 
-                // Tự động lưu nhớ vĩnh viễn vào Flash
+        if (end_code == 0x0000 && p_len >= 8) {
+            uint16_t plc_d910 = payload[4] | (payload[5] << 8);
+            uint16_t plc_d911 = payload[6] | (payload[7] << 8);
+
+            g_vl53_app.d_calib_target = plc_d910;
+            g_vl53_app.d_calib_cmd_flag = plc_d911;
+            g_vl53_app.read_success_count++;
+
+            if (plc_d911 == 1 && g_vl53_app.d_distance_raw > 0) {
+                int32_t offset = (int32_t)g_vl53_app.d_calib_target - (int32_t)g_vl53_app.d_distance_raw;
+                g_vl53_app.d_calib_offset = (int16_t)offset;
+                g_vl53_app.calib_done = true;
                 Calib_Save_To_Flash();
             }
         }
