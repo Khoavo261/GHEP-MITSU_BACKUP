@@ -44,12 +44,12 @@ VL53L_AppData_t g_vl53_app = {
     .calib_done = false,
     .plc_last_end_code = 0xFFFF,
     .plc_last_p_len = 0,
+    .last_payload = {0},
     .sensor_ok = false,
     .raw_range_status = 0,
     .comm_success_count = 0,
     .read_success_count = 0,
-    .total_rx_bytes = 0,
-    .last_rx_bytes = {0}
+    .total_rx_bytes = 0
 };
 
 static uint8_t  tx_dma_buf[128];
@@ -127,13 +127,12 @@ void VL53L_Process_PLC_Response(const uint8_t *buf, uint16_t len) {
     }
     if (stx_pos < 0) return;
 
-    // Bỏ DLE stuffing (10 10 -> 10)
     uint8_t payload[64];
     uint16_t p_len = 0;
     for (uint16_t i = stx_pos + 2; i < len; i++) {
         if (buf[i] == 0x10) {
             if (i + 1 < len && buf[i + 1] == 0x03) {
-                break; // DLE ETX
+                break;
             } else if (i + 1 < len && buf[i + 1] == 0x10) {
                 payload[p_len++] = 0x10;
                 i++;
@@ -143,12 +142,16 @@ void VL53L_Process_PLC_Response(const uint8_t *buf, uint16_t len) {
         payload[p_len++] = buf[i];
     }
 
+    // Lưu 16 byte payload để hiển thị chẩn đoán trực tiếp trên OLED
+    memset(g_vl53_app.last_payload, 0, sizeof(g_vl53_app.last_payload));
+    for (uint8_t i = 0; i < p_len && i < 16; i++) {
+        g_vl53_app.last_payload[i] = payload[i];
+    }
     g_vl53_app.plc_last_p_len = (uint8_t)p_len;
 
-    // TRƯỜNG HỢP 1: Phản hồi có Routing Header 8 bytes (Format 5 Q-Series 3E)
-    // Cấu trúc: [Len 2B] [Routing 8B: F8 00 ...] [EndCode 2B] [D910 2B] [D911 2B]
+    // TRƯỜNG HỢP 1: Gói tin có Routing Header (F8 00 ...)
     if (p_len >= 12 && payload[2] == 0xF8) {
-        // Bỏ qua TX Echo (nếu là lệnh TX do chính STM32 phát ra)
+        // Bỏ qua TX Echo của STM32
         if (payload[10] == 0x01 && (payload[11] == 0x04 || payload[11] == 0x14)) {
             return;
         }
@@ -156,15 +159,22 @@ void VL53L_Process_PLC_Response(const uint8_t *buf, uint16_t len) {
         uint16_t end_code = payload[10] | (payload[11] << 8);
         g_vl53_app.plc_last_end_code = end_code;
 
-        if (end_code == 0x0000 && p_len >= 16) {
-            uint16_t plc_d910 = payload[12] | (payload[13] << 8);
-            uint16_t plc_d911 = payload[14] | (payload[15] << 8);
+        // Nếu EndCode == 0x0000 (Thành công)
+        if (end_code == 0x0000) {
+            uint16_t plc_d910 = 0;
+            uint16_t plc_d911 = 0;
+
+            if (p_len >= 16) {
+                plc_d910 = payload[12] | (payload[13] << 8);
+                plc_d911 = payload[14] | (payload[15] << 8);
+            } else if (p_len >= 14) {
+                plc_d910 = payload[12] | (payload[13] << 8);
+            }
 
             g_vl53_app.d_calib_target = plc_d910;
             g_vl53_app.d_calib_cmd_flag = plc_d911;
             g_vl53_app.read_success_count++;
 
-            // NẾU CỜ CALIB TỪ PLC/HMI ĐƯỢC BẬT (M910 = 1 hoặc D911 == 1)
             if (plc_d911 == 1 && g_vl53_app.d_distance_raw > 0) {
                 int32_t offset = (int32_t)g_vl53_app.d_calib_target - (int32_t)g_vl53_app.d_distance_raw;
                 g_vl53_app.d_calib_offset = (int16_t)offset;
@@ -173,8 +183,7 @@ void VL53L_Process_PLC_Response(const uint8_t *buf, uint16_t len) {
             }
         }
     }
-    // TRƯỜNG HỢP 2: Phản hồi chuẩn ngắn không kèm Routing Header
-    // Cấu trúc: [Len 2B] [EndCode 2B] [D910 2B] [D911 2B]
+    // TRƯỜNG HỢP 2: Gói tin ngắn không kèm Routing Header
     else if (p_len >= 4 && payload[2] != 0xF8) {
         uint16_t end_code = payload[2] | (payload[3] << 8);
         g_vl53_app.plc_last_end_code = end_code;
@@ -210,11 +219,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == VL53L_PLC_UART_HANDLE.Instance) {
         g_vl53_app.total_rx_bytes++;
-
-        for (int i = 0; i < 7; i++) {
-            g_vl53_app.last_rx_bytes[i] = g_vl53_app.last_rx_bytes[i + 1];
-        }
-        g_vl53_app.last_rx_bytes[7] = rx_raw_byte;
 
         if (rx_head < sizeof(rx_ring) - 1) {
             rx_ring[rx_head++] = rx_raw_byte;
