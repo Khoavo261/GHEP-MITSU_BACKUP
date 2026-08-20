@@ -1,6 +1,6 @@
 /**
  * @file VL53L.c
- * @brief ĐÓNG GÓI 1 FILE DUY NHẤT: CẢM BIẾN ToF VL53L1X <-> PLC MITSUBISHI Q-SERIES (TÍCH HỢP CALIB D910 & M910)
+ * @brief ĐÓNG GÓI 1 FILE DUY NHẤT: CẢM BIẾN VL53L1X <-> PLC MITSUBISHI Q-SERIES (LƯU FLASH VĨNH VIỄN)
  */
 
 #include "VL53L.h"
@@ -15,6 +15,20 @@
 #include <stdlib.h>
 
 /* ==============================================================================
+ *                       CẤU HÌNH BỘ NHỚ FLASH LƯU CALIB VĨNH VIỄN
+ * ============================================================================== */
+#define CALIB_FLASH_MAGIC_KEY       0x55AA1234
+#define CALIB_FLASH_SECTOR          FLASH_SECTOR_5
+#define CALIB_FLASH_ADDR            0x08020000  // Địa chỉ đầu Sector 5 trong STM32F401 Flash
+
+typedef struct {
+    uint32_t magic_key;     // Khóa nhận diện dữ liệu hợp lệ
+    uint16_t calib_target;  // D910: Khoảng cách chuẩn đã đặt
+    int16_t  calib_offset;  // Độ lệch bù trừ lưu vĩnh viễn
+    uint32_t checksum;      // Kiểm tra toàn vẹn
+} Calib_Flash_Data_t;
+
+/* ==============================================================================
  *                       BIẾN TOÀN CỤC & BỘ ĐỆM
  * ============================================================================== */
 VL53L_AppData_t g_vl53_app = {
@@ -24,8 +38,8 @@ VL53L_AppData_t g_vl53_app = {
     .d_error = 0,
     .d_scan_time_ms = 50,
     .d_heartbeat = 0,
-    .d_calib_target = 500,  // Mặc định khoảng cách Calib D910 = 500 mm
-    .d_calib_offset = 0,    // Độ lệch ban đầu = 0 mm
+    .d_calib_target = 500,  // Mặc định D910 = 500 mm
+    .d_calib_offset = 0,
     .m_calib_trigger = false,
     .calib_done = false,
     .sensor_ok = false,
@@ -38,6 +52,60 @@ static uint8_t  rx_raw_byte = 0;
 static uint8_t  rx_ring[128];
 static volatile uint16_t rx_head = 0;
 static volatile bool vl53_int_flag = false;
+
+/* ==============================================================================
+ *                       ĐỌC & GHI BỘ NHỚ FLASH STM32
+ * ============================================================================== */
+
+static void Calib_Load_From_Flash(void) {
+    const Calib_Flash_Data_t *flash_ptr = (const Calib_Flash_Data_t*)CALIB_FLASH_ADDR;
+
+    if (flash_ptr->magic_key == CALIB_FLASH_MAGIC_KEY) {
+        uint32_t check = flash_ptr->magic_key + flash_ptr->calib_target + (uint16_t)flash_ptr->calib_offset;
+        if (check == flash_ptr->checksum) {
+            g_vl53_app.d_calib_target = flash_ptr->calib_target;
+            g_vl53_app.d_calib_offset = flash_ptr->calib_offset;
+            g_vl53_app.calib_done = true; // Đã khôi phục dữ liệu Calib từ Flash thành công!
+        }
+    }
+}
+
+static bool Calib_Save_To_Flash(void) {
+    Calib_Flash_Data_t save_data;
+    save_data.magic_key    = CALIB_FLASH_MAGIC_KEY;
+    save_data.calib_target = g_vl53_app.d_calib_target;
+    save_data.calib_offset = g_vl53_app.d_calib_offset;
+    save_data.checksum     = save_data.magic_key + save_data.calib_target + (uint16_t)save_data.calib_offset;
+
+    HAL_FLASH_Unlock();
+
+    // Xóa Sector 5 Flash
+    FLASH_EraseInitTypeDef EraseInitStruct;
+    EraseInitStruct.TypeErase    = FLASH_TYPEERASE_SECTORS;
+    EraseInitStruct.VoltageRange = FLASH_VOLTAGE_RANGE_3;
+    EraseInitStruct.Sector       = CALIB_FLASH_SECTOR;
+    EraseInitStruct.NbSectors    = 1;
+
+    uint32_t SectorError = 0;
+    if (HAL_FLASHEx_Erase(&EraseInitStruct, &SectorError) != HAL_OK) {
+        HAL_FLASH_Lock();
+        return false;
+    }
+
+    // Ghi dữ liệu vào Flash (Ghi từng từ 32-bit)
+    uint32_t *src = (uint32_t*)&save_data;
+    uint32_t addr = CALIB_FLASH_ADDR;
+    for (uint32_t i = 0; i < sizeof(Calib_Flash_Data_t) / 4; i++) {
+        if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, addr, src[i]) != HAL_OK) {
+            HAL_FLASH_Lock();
+            return false;
+        }
+        addr += 4;
+    }
+
+    HAL_FLASH_Lock();
+    return true;
+}
 
 /* ==============================================================================
  *                       CALLBACK NGẮT PHẦN CỨNG
@@ -98,7 +166,6 @@ static uint16_t Filter_TrimmedMovingAverage(uint16_t raw_mm) {
         sorted[i] = window[i];
     }
 
-    // Sắp xếp nổi bọt (Bubble sort)
     for (uint8_t i = 0; i < count - 1; i++) {
         for (uint8_t j = 0; j < count - 1 - i; j++) {
             if (sorted[j] > sorted[j + 1]) {
@@ -109,7 +176,6 @@ static uint16_t Filter_TrimmedMovingAverage(uint16_t raw_mm) {
         }
     }
 
-    // Loại bỏ 1 min và 1 max, tính trung bình cộng các mẫu ở giữa
     uint32_t sum = 0;
     uint8_t valid_cnt = 0;
     for (uint8_t i = 1; i < count - 1; i++) {
@@ -142,6 +208,9 @@ void VL53L_TriggerCalib(void) {
         g_vl53_app.d_calib_offset = (int16_t)offset;
         g_vl53_app.calib_done = true;
         g_vl53_app.m_calib_trigger = false;
+
+        // Lưu vĩnh viễn vào Flash STM32 (mất điện không bao giờ mất)
+        Calib_Save_To_Flash();
     }
 }
 
@@ -260,6 +329,10 @@ static bool Try_Init_Sensor(void) {
 }
 
 void VL53L_Init(void) {
+    // 1. Khôi phục thông số Calib đã lưu trong Flash (nếu có)
+    Calib_Load_From_Flash();
+
+    // 2. Khởi tạo cảm biến và UART
     Try_Init_Sensor();
     HAL_UART_Receive_IT(&VL53L_PLC_UART_HANDLE, &rx_raw_byte, 1);
 }
@@ -289,7 +362,7 @@ void VL53L_Task_Sensor(void) {
             g_vl53_app.raw_range_status = status;
             g_vl53_app.d_error = status;
 
-            // Kiểm tra nếu có cờ Calib M910
+            // Kiểm tra cờ lệnh Calib M910
             if (g_vl53_app.m_calib_trigger) {
                 VL53L_TriggerCalib();
             }
@@ -297,7 +370,7 @@ void VL53L_Task_Sensor(void) {
             if (status == 0) {
                 uint16_t raw_filtered = Filter_TrimmedMovingAverage(dist);
                 
-                // Áp dụng độ lệch Calib vào kết quả D900
+                // Áp dụng bù Offset Calib vào D900
                 int32_t calibrated_dist = (int32_t)raw_filtered + (int32_t)g_vl53_app.d_calib_offset;
                 if (calibrated_dist < 0) calibrated_dist = 0;
                 g_vl53_app.d_distance_filtered = (uint16_t)calibrated_dist;
@@ -317,7 +390,7 @@ void VL53L_Task_Sensor(void) {
     if (g_vl53_app.sensor_ok) status_word |= (1 << 0);
     if (g_vl53_app.d_distance_filtered > 0 && g_vl53_app.d_distance_filtered < 200) status_word |= (1 << 1);
     if (g_vl53_app.d_distance_filtered >= 30 && g_vl53_app.d_distance_filtered <= 3000) status_word |= (1 << 2);
-    if (g_vl53_app.calib_done) status_word |= (1 << 3); // Bit 3: Đã Calib thành công
+    if (g_vl53_app.calib_done) status_word |= (1 << 3); // Bit 3: Đã có dữ liệu Calib
     g_vl53_app.d_status = status_word;
 }
 
