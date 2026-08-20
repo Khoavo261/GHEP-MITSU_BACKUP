@@ -1,6 +1,6 @@
 /**
  * @file VL53L.h
- * @brief THƯ VIỆN CẢM BIẾN ToF VL53L1X <-> PLC MITSUBISHI Q-SERIES (TÍCH HỢP TÍNH NĂNG CALIB D910 & M910)
+ * @brief THƯ VIỆN CẢM BIẾN VL53L1X <-> PLC MITSUBISHI Q-SERIES (GHI D900..D905 & ĐỌC D910/M910 TỪ PLC)
  */
 
 #ifndef VL53L_H
@@ -33,45 +33,45 @@ extern I2C_HandleTypeDef  hi2c1;
 #define VL53L_I2C_ADDR              0x52
 
 // 5. Cấu hình vùng nhớ PLC Mitsubishi Q-Series
-#define VL53L_PLC_D_START_ADDR      900     // Bắt đầu từ D900
-#define VL53L_PLC_D_TOTAL_POINTS    6       // Gom 6 thanh ghi: D900..D905
+#define VL53L_PLC_D_START_ADDR      900     // Ghi D900..D905
+#define VL53L_PLC_D_TOTAL_POINTS    6
+
+#define VL53L_PLC_READ_D_ADDR       910     // Đọc D910 (Target mm) & D911 (Cờ M910)
+#define VL53L_PLC_READ_D_POINTS     2
 
 /* ==============================================================================
  *                       CẤU TRÚC DỮ LIỆU ĐỒNG BỘ PLC & CALIBRATION
  * ============================================================================== */
 typedef struct {
-    // 1. Dữ liệu khoảng cách đo (mm)
+    // 1. Dữ liệu ghi xuống PLC (D900..D905)
     uint16_t d_distance_filtered;   // D900: Khoảng cách sau lọc & sau Calib (mm)
     uint16_t d_distance_raw;        // D901: Khoảng cách đo thô nguyên bản (mm)
-    
-    // 2. Trạng thái & Chẩn đoán lỗi
-    uint16_t d_status;              // D902: Bit 0 = Online, Bit 1 = Near <200mm, Bit 2 = In Range
-    uint16_t d_error;               // D903: Mã lỗi (0: OK, 1: Signal Fail, 2: Sigma Fail, 30: Mất I2C)
-    
-    // 3. Hệ thống & Giám sát truyền thông
+    uint16_t d_status;              // D902: Trạng thái (Bit 0: OK, Bit 3: Calib OK)
+    uint16_t d_error;               // D903: Mã lỗi cảm biến
     uint16_t d_scan_time_ms;        // D904: Chu kỳ quét (50ms)
-    uint16_t d_heartbeat;           // D905: Bộ đếm sống tăng liên tục (0..65535)
+    uint16_t d_heartbeat;           // D905: Nhịp tim sống tăng liên tục
 
-    // 4. THÔNG SỐ HIỆU CHUẨN (CALIBRATION TỪ HMI)
-    uint16_t d_calib_target;        // D910: Khoảng cách chuẩn đặt từ HMI (mặc định 500 mm)
-    int16_t  d_calib_offset;        // Độ lệch bù trừ tính được: Offset = D910 - D901 (mm)
-    bool     m_calib_trigger;       // M910: Cờ lệnh kích hoạt Calib từ HMI
-    bool     calib_done;            // Báo trạng thái Calib hoàn tất
+    // 2. Dữ liệu STM32 ĐỌC TỪ PLC/HMI (D910 & M910/D911)
+    uint16_t d_calib_target;        // D910: Đọc từ PLC (Khoảng cách chuẩn đặt trên HMI, ví dụ 500mm)
+    uint16_t d_calib_cmd_flag;      // D911 (hoặc M910): Đọc từ PLC (1 = Yêu cầu Calib)
+    int16_t  d_calib_offset;        // Độ lệch bù trừ đã tính và lưu Flash: Offset = D910 - D901 (mm)
+    bool     calib_done;            // Báo Calib đã hoàn tất
 
-    // Biến nội bộ vi điều khiển
+    // Biến nội bộ
     bool     sensor_ok;
     uint8_t  raw_range_status;
     uint32_t comm_success_count;
+    uint32_t read_success_count;
 } VL53L_AppData_t;
 
 extern VL53L_AppData_t g_vl53_app;
 
 /* ==============================================================================
- *                       HÀM GIAO TIẾP & CALIBRATION
+ *                       HÀM GIAO TIẾP & THỰC THI
  * ============================================================================== */
 
 /**
- * @brief Khởi tạo toàn bộ Cảm biến ToF và Ngắt nhận UART
+ * @brief Khởi tạo toàn bộ Cảm biến ToF, khôi phục Flash và khởi động UART RX
  */
 void VL53L_Init(void);
 
@@ -81,20 +81,14 @@ void VL53L_Init(void);
 void VL53L_Task_Sensor(void);
 
 /**
- * @brief Task phát gom 6 thanh ghi D900..D905 qua DMA TX lên PLC (chu kỳ 100ms)
+ * @brief Task truyền thông 2 chiều với PLC QJ71 (Ghi D900..D905 và Đọc D910/M910)
  */
 void VL53L_Task_PLC(void);
 
 /**
- * @brief Đặt khoảng cách chuẩn D910 để Calib từ HMI
- * @param target_mm Khoảng cách chuẩn đã đo bằng thước (ví dụ: 500mm, 1000mm)
+ * @brief Xử lý gói tin nhận về từ PLC (Tự động bóc tách phản hồi Đọc D910/M910)
  */
-void VL53L_SetCalibTarget(uint16_t target_mm);
-
-/**
- * @brief Kích hoạt lệnh Calib tương đương cờ M910 từ HMI
- */
-void VL53L_TriggerCalib(void);
+void VL53L_Process_PLC_Response(const uint8_t *rx_buf, uint16_t len);
 
 #ifdef __cplusplus
 }
