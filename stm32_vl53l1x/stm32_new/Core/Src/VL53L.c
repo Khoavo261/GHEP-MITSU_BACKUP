@@ -284,17 +284,18 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
 }
 
 /* ==============================================================================
- *       BỘ LỌC TRUNG BÌNH TRƯỢT 11 MẪU + CHỐNG RUNG SỐ ĐỨNG YÊN (DEADBAND)
+ *   BỘ LỌC THÍCH NGHI ADAPTIVE CONSENSUS: ĐỨNG YÊN SỐ & BÁM CHUẨN TỪNG 1 MM
  * ============================================================================== */
 
-#define FILTER_WINDOW_SIZE      11
-#define FILTER_DEADBAND_MM      4  // Ngưỡng chống rung: Dao động <= 4mm sẽ giữ đứng số tuyệt đối
+#define FILTER_WINDOW_SIZE      9
 
 static uint16_t Filter_TrimmedMovingAverage(uint16_t raw_mm) {
     static uint16_t window[FILTER_WINDOW_SIZE] = {0};
     static uint8_t  head = 0;
     static uint8_t  count = 0;
+    static float    smoothed_dist = 0.0f;
     static uint16_t stable_output = 0;
+    static int8_t   drift_count = 0;
 
     if (raw_mm < 30 || raw_mm > 4000) {
         return stable_output ? stable_output : raw_mm;
@@ -302,21 +303,17 @@ static uint16_t Filter_TrimmedMovingAverage(uint16_t raw_mm) {
 
     window[head] = raw_mm;
     head = (head + 1) % FILTER_WINDOW_SIZE;
-    if (count < FILTER_WINDOW_SIZE) {
-        count++;
-    }
+    if (count < FILTER_WINDOW_SIZE) count++;
 
-    if (count < 5) {
+    if (count < 3) {
+        smoothed_dist = (float)raw_mm;
         stable_output = raw_mm;
         return raw_mm;
     }
 
-    // Sắp xếp mảng để loại bỏ nhiễu đỉnh và nhiễu đáy
+    // 1. Trimmed Mean: Loại bỏ 1 đỉnh cao nhất và 1 đáy thấp nhất
     uint16_t sorted[FILTER_WINDOW_SIZE];
-    for (uint8_t i = 0; i < count; i++) {
-        sorted[i] = window[i];
-    }
-
+    for (uint8_t i = 0; i < count; i++) sorted[i] = window[i];
     for (uint8_t i = 0; i < count - 1; i++) {
         for (uint8_t j = 0; j < count - 1 - i; j++) {
             if (sorted[j] > sorted[j + 1]) {
@@ -327,25 +324,50 @@ static uint16_t Filter_TrimmedMovingAverage(uint16_t raw_mm) {
         }
     }
 
-    // Cắt bỏ 2 mẫu nhỏ nhất và 2 mẫu lớn nhất (Trimmed Mean)
     uint32_t sum = 0;
     uint8_t valid_cnt = 0;
-    for (uint8_t i = 2; i < count - 2; i++) {
+    for (uint8_t i = 1; i < count - 1; i++) {
         sum += sorted[i];
         valid_cnt++;
     }
+    float current_avg = (float)sum / (float)valid_cnt;
 
-    uint16_t avg = (valid_cnt > 0) ? (uint16_t)(sum / valid_cnt) : raw_mm;
+    // 2. Bộ lọc thích nghi Adaptive Low-Pass:
+    float diff = current_avg - smoothed_dist;
+    float abs_diff = (diff < 0.0f) ? -diff : diff;
 
-    // Thuật toán Deadband chống rung: Nếu dao động nhỏ hơn 4mm thì giữ đứng số tuyệt đối
-    if (stable_output == 0) {
-        stable_output = avg;
+    float alpha;
+    if (abs_diff > 12.0f) {
+        alpha = 0.85f; // Chuyển động nhanh: Bám tức thì
+    } else if (abs_diff > 4.0f) {
+        alpha = 0.45f; // Chuyển động vừa
     } else {
-        int32_t diff = (int32_t)avg - (int32_t)stable_output;
-        if (diff < 0) diff = -diff;
+        alpha = 0.18f; // Chuyển động chậm / đứng yên: Lọc mịn tối đa
+    }
 
-        if (diff >= FILTER_DEADBAND_MM) {
-            stable_output = avg;
+    smoothed_dist = smoothed_dist + alpha * (current_avg - smoothed_dist);
+
+    // 3. Cơ chế đồng thuận xu hướng (Trend Consensus): 
+    //    Đứng yên số tuyệt đối khi đứng yên, nhưng khi dịch chuyển dù chỉ 1mm vẫn nhảy đúng 1mm mượt mà
+    uint16_t target_int = (uint16_t)(smoothed_dist + 0.5f);
+
+    if (stable_output == 0) {
+        stable_output = target_int;
+    } else {
+        if (target_int > stable_output) {
+            drift_count++;
+            if (drift_count >= 3 || abs_diff >= 2.5f) {
+                stable_output++;
+                drift_count = 0;
+            }
+        } else if (target_int < stable_output) {
+            drift_count--;
+            if (drift_count <= -3 || abs_diff >= 2.5f) {
+                stable_output--;
+                drift_count = 0;
+            }
+        } else {
+            drift_count = 0; // Đứng yên tuyệt đối
         }
     }
 
