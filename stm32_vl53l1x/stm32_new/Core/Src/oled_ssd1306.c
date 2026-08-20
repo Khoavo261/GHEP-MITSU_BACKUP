@@ -347,6 +347,37 @@ static void OLED_Show_Parameter_Calib_View(void) {
     OLED_UpdateScreen();
 }
 
+// Màn hình 3: Bảng hướng dẫn khi nhập sai mã lệnh D911 (# 10, 20, 30)
+static void OLED_Show_Invalid_Param_Guide_View(uint16_t cur_d911) {
+    char line_str[24];
+    OLED_Clear();
+
+    // Dòng 0: Tiêu đề
+    OLED_DrawString_Font(0, 0, " [CALIB GUIDE / HELP] ", OLED_FONT_6x8, true);
+
+    // Dòng 1: Hướng dẫn D911=10
+    OLED_DrawString_Font(0, 9, "D911=10: SW Offset", OLED_FONT_6x8, false);
+
+    // Dòng 2: Hướng dẫn D911=20
+    OLED_DrawString_Font(0, 18, "D911=20: HW Offset", OLED_FONT_6x8, false);
+
+    // Dòng 3: Hướng dẫn D911=30
+    OLED_DrawString_Font(0, 27, "D911=30: Xtalk Glass", OLED_FONT_6x8, false);
+
+    // Dòng 4: Target hiện tại
+    snprintf(line_str, sizeof(line_str), "Target D910: %4d mm", g_vl53_app.d_calib_target);
+    OLED_DrawString_Font(0, 36, line_str, OLED_FONT_6x8, false);
+
+    // Dòng 5: Giá trị D911 vừa nhập
+    snprintf(line_str, sizeof(line_str), "Cur D911   : %-4u", cur_d911);
+    OLED_DrawString_Font(0, 45, line_str, OLED_FONT_6x8, false);
+
+    // Dòng 6: Cảnh báo hướng dẫn
+    OLED_DrawString_Font(0, 54, "Set 10,20,30 to Calib", OLED_FONT_6x8, false);
+
+    OLED_UpdateScreen();
+}
+
 void OLED_Task_Run(void) {
     if (!oled_is_ready) {
         static uint32_t last_init_tick = 0;
@@ -357,13 +388,20 @@ void OLED_Task_Run(void) {
         return;
     }
 
-    // Kiểm tra xem có đang kích hoạt màn hình Calib hoặc trong thời gian giữ hiển thị không:
-    bool show_calib_screen = (g_vl53_app.d_calib_cmd_flag != 0) || (HAL_GetTick() < g_vl53_app.calib_display_hold_until);
+    uint16_t mode = g_vl53_app.active_calib_mode ? g_vl53_app.active_calib_mode : g_vl53_app.d_calib_cmd_flag;
+    bool is_holding_calib = (HAL_GetTick() < g_vl53_app.calib_display_hold_until);
 
-    if (!show_calib_screen) {
+    // D911 == 0: Chế độ vận hành bình thường (Font lớn 16x26)
+    if (mode == 0 && !is_holding_calib) {
         g_vl53_app.active_calib_mode = 0;
         OLED_Show_Big_Distance_View();
-    } else {
+    } 
+    // D911 == 10, 20, 30 hoặc đang giữ hiển thị sau khi Calib xong: Chế độ Calib
+    else if (mode == 10 || mode == 1 || mode == 20 || mode == 30 || is_holding_calib) {
         OLED_Show_Parameter_Calib_View();
+    } 
+    // D911 khác 0 và khác 10, 20, 30: Hiện bảng hướng dẫn nhập đúng số
+    else {
+        OLED_Show_Invalid_Param_Guide_View(mode);
     }
 }

@@ -8,4 +8,5 @@
 ../Core/Src/oled_ssd1306.c:266:6:OLED_SetDisplayMode	16	static
 ../Core/Src/oled_ssd1306.c:275:13:OLED_Show_Big_Distance_View	64	static
 ../Core/Src/oled_ssd1306.c:303:13:OLED_Show_Parameter_Calib_View	64	static
-../Core/Src/oled_ssd1306.c:350:6:OLED_Task_Run	16	static
+../Core/Src/oled_ssd1306.c:351:13:OLED_Show_Invalid_Param_Guide_View	48	static
+../Core/Src/oled_ssd1306.c:381:6:OLED_Task_Run	16	static
