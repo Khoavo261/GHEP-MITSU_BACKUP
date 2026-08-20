@@ -271,69 +271,78 @@ void OLED_SetDisplayMode(OLED_DisplayMode_t mode) {
  *                       HIỂN THỊ DỮ LIỆU & CHẨN ĐOÁN TRUYỀN THÔNG
  * ============================================================================== */
 
-static void OLED_Show_Full_6Registers(void) {
-    char line_str[24];
+// Màn hình 1: Giám sát vận hành (Khi D911 == 0) - Font siêu lớn 16x26
+static void OLED_Show_Big_Distance_View(void) {
+    char dist_str[16];
+    char sub_str[32];
     OLED_Clear();
 
     // Dòng 0: Tiêu đề
-    OLED_DrawString_Font(0, 0, " [Q02U <-> VL53L1X] ", OLED_FONT_6x8, true);
+    OLED_DrawString_Font(0, 0, " [VL53L1X - RUN MODE] ", OLED_FONT_6x8, true);
 
-    // Dòng 1: D900 - Khoảng cách sau Calib
-    snprintf(line_str, sizeof(line_str), "D900(Cal):%4d mm", g_vl53_app.d_distance_filtered);
-    OLED_DrawString_Font(0, 9, line_str, OLED_FONT_6x8, false);
+    // Số đo khoảng cách Siêu Lớn (Font 16x26)
+    snprintf(dist_str, sizeof(dist_str), "%4d mm", g_vl53_app.d_distance_filtered);
+    OLED_DrawString_Font(10, 10, dist_str, OLED_FONT_16x26, false);
 
-    // Dòng 2: D901 - Khoảng cách đo thô
-    snprintf(line_str, sizeof(line_str), "D901(Raw):%4d mm", g_vl53_app.d_distance_raw);
-    OLED_DrawString_Font(0, 18, line_str, OLED_FONT_6x8, false);
+    // Thông số ô nhớ đọc từ PLC: D910 & D911
+    snprintf(sub_str, sizeof(sub_str), "D910:%-4d  D911:%-4d", g_vl53_app.d_calib_target, g_vl53_app.d_calib_cmd_flag);
+    OLED_DrawString_Font(0, 38, sub_str, OLED_FONT_6x8, false);
 
-    // Dòng 3: D910 - Khoảng cách đặt từ PLC/HMI
-    snprintf(line_str, sizeof(line_str), "D910(PLC):%4d mm", g_vl53_app.d_calib_target);
-    OLED_DrawString_Font(0, 27, line_str, OLED_FONT_6x8, false);
+    // Thông số đo thô & Offset
+    snprintf(sub_str, sizeof(sub_str), "Raw:%-4d Off:%+4d mm", g_vl53_app.d_distance_raw, g_vl53_app.d_calib_offset);
+    OLED_DrawString_Font(0, 47, sub_str, OLED_FONT_6x8, false);
 
-    // Dòng 4: 8 byte đầu của Payload (P0..P7)
-    snprintf(line_str, sizeof(line_str), "%02X %02X %02X %02X %02X %02X %02X",
-             g_vl53_app.last_payload[0], g_vl53_app.last_payload[1],
-             g_vl53_app.last_payload[2], g_vl53_app.last_payload[3],
-             g_vl53_app.last_payload[4], g_vl53_app.last_payload[5],
-             g_vl53_app.last_payload[6]);
-    OLED_DrawString_Font(0, 36, line_str, OLED_FONT_6x8, false);
-
-    // Dòng 5: 8 byte tiếp theo của Payload (P8..P15)
-    snprintf(line_str, sizeof(line_str), "%02X %02X %02X %02X %02X %02X %02X",
-             g_vl53_app.last_payload[8], g_vl53_app.last_payload[9],
-             g_vl53_app.last_payload[10], g_vl53_app.last_payload[11],
-             g_vl53_app.last_payload[12], g_vl53_app.last_payload[13],
-             g_vl53_app.last_payload[14]);
-    OLED_DrawString_Font(0, 45, line_str, OLED_FONT_6x8, false);
-
-    // Dòng 6: L:%d End:%04X Rd:%lu
-    snprintf(line_str, sizeof(line_str), "L:%-2d End:%04X Rd:%-3lu", 
-             g_vl53_app.plc_last_p_len, g_vl53_app.plc_last_end_code, 
-             g_vl53_app.read_success_count % 1000);
-    OLED_DrawString_Font(0, 54, line_str, OLED_FONT_6x8, false);
+    // Trạng thái cảm biến & Chu kỳ đọc PLC
+    snprintf(sub_str, sizeof(sub_str), "Stat:%s  Rd:%lu", g_vl53_app.sensor_ok ? "OK" : "ERR", g_vl53_app.read_success_count % 10000);
+    OLED_DrawString_Font(0, 56, sub_str, OLED_FONT_6x8, false);
 
     OLED_UpdateScreen();
 }
 
-static void OLED_Show_Big_Distance_View(void) {
-    char dist_str[16];
-    char sub_str[24];
+// Màn hình 2: Cài đặt & Hiệu chuẩn Calib (Khi D911 != 0 hoặc đang trong thời gian giữ hiển thị)
+static void OLED_Show_Parameter_Calib_View(void) {
+    char line_str[24];
     OLED_Clear();
 
-    // Tiêu đề
-    OLED_DrawString_Font(0, 0, "DISTANCE (D900):", OLED_FONT_8x16, false);
+    // Dòng 0: Tiêu đề
+    OLED_DrawString_Font(0, 0, " [CALIB / PARAM MODE] ", OLED_FONT_6x8, true);
 
-    // Số đo khoảng cách Siêu Lớn (Font 16x26)
-    snprintf(dist_str, sizeof(dist_str), "%4d mm", g_vl53_app.d_distance_filtered);
-    OLED_DrawString_Font(12, 18, dist_str, OLED_FONT_16x26, false);
+    uint16_t mode = g_vl53_app.active_calib_mode ? g_vl53_app.active_calib_mode : g_vl53_app.d_calib_cmd_flag;
 
-    // Thông số ô nhớ D910 đọc từ PLC & Offset
-    snprintf(sub_str, sizeof(sub_str), "D910:%4d Off:%+3d %s", g_vl53_app.d_calib_target, g_vl53_app.d_calib_offset, g_vl53_app.calib_done ? "OK" : "");
-    OLED_DrawString_Font(0, 48, sub_str, OLED_FONT_6x8, false);
+    // Dòng 1: Chế độ Calib theo D911
+    if (mode == 10 || mode == 1) {
+        snprintf(line_str, sizeof(line_str), "MODE 10: SW OFFSET");
+    } else if (mode == 20) {
+        snprintf(line_str, sizeof(line_str), "MODE 20: HW OFFSET");
+    } else if (mode == 30) {
+        snprintf(line_str, sizeof(line_str), "MODE 30: XTALK REF");
+    } else {
+        snprintf(line_str, sizeof(line_str), "PARAM D911: %-4u", mode);
+    }
+    OLED_DrawString_Font(0, 9, line_str, OLED_FONT_6x8, false);
 
-    // Trạng thái truyền thông
-    snprintf(sub_str, sizeof(sub_str), "Raw:%4d Hbt:%5u", g_vl53_app.d_distance_raw, g_vl53_app.d_heartbeat);
-    OLED_DrawString_Font(0, 56, sub_str, OLED_FONT_6x8, false);
+    // Dòng 2: D910 - Target từ PLC
+    snprintf(line_str, sizeof(line_str), "Target(D910): %4d mm", g_vl53_app.d_calib_target);
+    OLED_DrawString_Font(0, 18, line_str, OLED_FONT_6x8, false);
+
+    // Dòng 3: D901 - Khoảng cách đo thô
+    snprintf(line_str, sizeof(line_str), "Raw   (D901): %4d mm", g_vl53_app.d_distance_raw);
+    OLED_DrawString_Font(0, 27, line_str, OLED_FONT_6x8, false);
+
+    // Dòng 4: D900 - Khoảng cách sau Calib
+    snprintf(line_str, sizeof(line_str), "Calib (D900): %4d mm", g_vl53_app.d_distance_filtered);
+    OLED_DrawString_Font(0, 36, line_str, OLED_FONT_6x8, false);
+
+    // Dòng 5: Offset tính toán & Payload thô byte 14-17 (D910 & D911)
+    snprintf(line_str, sizeof(line_str), "Off:%+4d|%02X%02X %02X%02X", 
+             g_vl53_app.d_calib_offset,
+             g_vl53_app.last_payload[14], g_vl53_app.last_payload[15],
+             g_vl53_app.last_payload[16], g_vl53_app.last_payload[17]);
+    OLED_DrawString_Font(0, 45, line_str, OLED_FONT_6x8, false);
+
+    // Dòng 6: Trạng thái Calib
+    snprintf(line_str, sizeof(line_str), "Status: %s", g_vl53_app.calib_done ? "CALIB SUCCESS -> 0" : "CALIBRATING...");
+    OLED_DrawString_Font(0, 54, line_str, OLED_FONT_6x8, false);
 
     OLED_UpdateScreen();
 }
@@ -348,9 +357,13 @@ void OLED_Task_Run(void) {
         return;
     }
 
-    if (g_oled_mode == OLED_VIEW_BIG_DISTANCE) {
+    // Kiểm tra xem có đang kích hoạt màn hình Calib hoặc trong thời gian giữ hiển thị không:
+    bool show_calib_screen = (g_vl53_app.d_calib_cmd_flag != 0) || (HAL_GetTick() < g_vl53_app.calib_display_hold_until);
+
+    if (!show_calib_screen) {
+        g_vl53_app.active_calib_mode = 0;
         OLED_Show_Big_Distance_View();
     } else {
-        OLED_Show_Full_6Registers();
+        OLED_Show_Parameter_Calib_View();
     }
 }

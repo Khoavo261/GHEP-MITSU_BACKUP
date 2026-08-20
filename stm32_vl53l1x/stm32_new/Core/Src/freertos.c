@@ -164,7 +164,7 @@ void PLC_F(void *argument)
   for(;;)
   {
     VL53L_Task_PLC();
-    osDelay(100);
+    osDelay(10);
   }
   /* USER CODE END PLC_F */
 }

@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "d:/data-2026/lap_top/GHEP-MITSU_BACKUP/stm32_vl53l1x/stm32_new/Core/Src",
-      "program": "d:/data-2026/lap_top/GHEP-MITSU_BACKUP/stm32_vl53l1x/stm32_new/Core/Src/build/Debug/outDebug",
+      "cwd": "d:/data-2026/lap_top/GHEP-MITSU_BACKUP/stm32_vl53l1x/stm32_new",
+      "program": "d:/data-2026/lap_top/GHEP-MITSU_BACKUP/stm32_vl53l1x/stm32_new/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

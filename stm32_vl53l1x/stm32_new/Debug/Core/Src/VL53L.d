@@ -30,7 +30,8 @@ Core/Src/VL53L.o: ../Core/Src/VL53L.c ../Core/Inc/VL53L.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
  ../Core/Inc/VL53L1X_api.h ../Core/Inc/vl53l1_platform.h \
- ../Core/Inc/vl53l1_types.h ../Core/Inc/vl53l1_platform.h \
+ ../Core/Inc/vl53l1_types.h ../Core/Inc/VL53L1X_calibration.h \
+ ../Core/Inc/VL53L1X_api.h ../Core/Inc/vl53l1_platform.h \
  ../Core/Inc/usart.h ../Core/Inc/i2c.h ../Core/Inc/gpio.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h \
@@ -78,6 +79,8 @@ Core/Src/VL53L.o: ../Core/Src/VL53L.c ../Core/Inc/VL53L.h \
 ../Core/Inc/VL53L1X_api.h:
 ../Core/Inc/vl53l1_platform.h:
 ../Core/Inc/vl53l1_types.h:
+../Core/Inc/VL53L1X_calibration.h:
+../Core/Inc/VL53L1X_api.h:
 ../Core/Inc/vl53l1_platform.h:
 ../Core/Inc/usart.h:
 ../Core/Inc/i2c.h:

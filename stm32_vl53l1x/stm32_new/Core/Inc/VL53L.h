@@ -41,10 +41,12 @@ typedef struct {
     uint16_t d_calib_cmd_flag;      // D911 / M910
     int16_t  d_calib_offset;
     bool     calib_done;
+    uint16_t active_calib_mode;
+    uint32_t calib_display_hold_until;
 
     uint16_t plc_last_end_code;
     uint8_t  plc_last_p_len;
-    uint8_t  last_payload[16];      // 16 byte payload giải mã gần nhất
+    uint8_t  last_payload[24];      // 24 byte payload giải mã gần nhất
     bool     sensor_ok;
     uint8_t  raw_range_status;
     uint32_t comm_success_count;

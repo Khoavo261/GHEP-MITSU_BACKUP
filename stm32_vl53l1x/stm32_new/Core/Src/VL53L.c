@@ -5,6 +5,7 @@
 
 #include "VL53L.h"
 #include "VL53L1X_api.h"
+#include "VL53L1X_calibration.h"
 #include "vl53l1_platform.h"
 #include "usart.h"
 #include "i2c.h"
@@ -57,7 +58,22 @@ static uint8_t  rx_raw_byte = 0;
 static uint8_t  rx_ring[256];
 static volatile uint16_t rx_head = 0;
 static volatile bool vl53_int_flag = false;
-static uint8_t  comm_phase = 0;
+
+typedef enum {
+    PLC_STATE_SEND_WRITE = 0,
+    PLC_STATE_WAIT_WRITE_RESP,
+    PLC_STATE_IDLE_BEFORE_READ,
+    PLC_STATE_SEND_READ,
+    PLC_STATE_WAIT_READ_RESP,
+    PLC_STATE_IDLE_BEFORE_WRITE
+} PLC_CommState_t;
+
+static PLC_CommState_t plc_state = PLC_STATE_SEND_WRITE;
+static uint32_t resp_timer = 0;
+static uint32_t state_delay_timer = 0;
+static volatile bool resp_received = false;
+static volatile bool need_write_d911_zero = false;
+static volatile uint16_t pending_calib_cmd = 0;
 
 /* ==============================================================================
  *                       ĐỌC & GHI FLASH STM32
@@ -142,44 +158,69 @@ void VL53L_Process_PLC_Response(const uint8_t *buf, uint16_t len) {
         payload[p_len++] = buf[i];
     }
 
+    if (p_len < 4) return;
+
+    // Bỏ qua TX Echo (Khi byte 10..11 là mã lệnh Request 0x0401 hoặc 0x1401)
+    if (p_len >= 12 && payload[10] == 0x01 && (payload[11] == 0x04 || payload[11] == 0x14)) {
+        return; // Bỏ qua gói phát lặp TX Echo của chính STM32
+    }
+
     memset(g_vl53_app.last_payload, 0, sizeof(g_vl53_app.last_payload));
-    for (uint8_t i = 0; i < p_len && i < 16; i++) {
+    for (uint8_t i = 0; i < p_len && i < 24; i++) {
         g_vl53_app.last_payload[i] = payload[i];
     }
     g_vl53_app.plc_last_p_len = (uint8_t)p_len;
 
-    // Gói phản hồi Q-Series 3E (Có Routing Header F8 00 ...)
-    if (p_len >= 12 && payload[2] == 0xF8) {
-        // Bỏ qua TX Echo
-        if (payload[10] == 0x01 && (payload[11] == 0x04 || payload[11] == 0x14)) {
-            return;
+    // Gói phản hồi chuẩn Q-Series Type 5 / 3E Frame
+    if (p_len >= 12) {
+        uint16_t end_code = 0xFFFF;
+        if (payload[8] == 0x00 && payload[9] == 0x00) {
+            end_code = 0x0000;
+        } else if (payload[10] == 0x00 && payload[11] == 0x00) {
+            end_code = 0x0000;
+        } else {
+            end_code = payload[10] | (payload[11] << 8);
         }
-
-        uint16_t end_code = payload[10] | (payload[11] << 8);
+        
         g_vl53_app.plc_last_end_code = end_code;
+        resp_received = true;
 
-        // Nếu EndCode == 0x0000 (Thành công hoàn toàn!)
-        if (end_code == 0x0000 && p_len >= 16) {
-            uint16_t plc_d910 = payload[12] | (payload[13] << 8);
-            uint16_t plc_d911 = payload[14] | (payload[15] << 8);
+        // Gói phản hồi Batch Read: D910 tại byte 14-15, D911 tại byte 16-17
+        if (p_len >= 18) {
+            uint16_t plc_d910 = payload[14] | (payload[15] << 8); // D910 (Target mm: Byte 14-15)
+            uint16_t plc_d911 = payload[16] | (payload[17] << 8); // D911 (Lệnh Calib: Byte 16-17)
 
             g_vl53_app.d_calib_target = plc_d910;
             g_vl53_app.d_calib_cmd_flag = plc_d911;
             g_vl53_app.read_success_count++;
 
-            // Kích hoạt Calib khi cờ M910 / D911 = 1
-            if (plc_d911 == 1 && g_vl53_app.d_distance_raw > 0) {
-                int32_t offset = (int32_t)g_vl53_app.d_calib_target - (int32_t)g_vl53_app.d_distance_raw;
-                g_vl53_app.d_calib_offset = (int16_t)offset;
-                g_vl53_app.calib_done = true;
-                Calib_Save_To_Flash();
+            // Khi nhận được lệnh Calib hợp lệ từ PLC (10, 20, 30 hoặc 1)
+            if ((plc_d911 == 10 || plc_d911 == 1 || plc_d911 == 20 || plc_d911 == 30) && pending_calib_cmd == 0) {
+                pending_calib_cmd = plc_d911;
+                g_vl53_app.active_calib_mode = plc_d911;
+                g_vl53_app.calib_display_hold_until = HAL_GetTick() + 4000; // Giữ màn hình Calib 4 giây
+            }
+        }
+        else if (p_len >= 16) {
+            uint16_t plc_d910 = payload[14] | (payload[15] << 8);
+            uint16_t plc_d911 = payload[12] | (payload[13] << 8);
+
+            g_vl53_app.d_calib_target = plc_d910;
+            g_vl53_app.d_calib_cmd_flag = plc_d911;
+            g_vl53_app.read_success_count++;
+
+            if ((plc_d911 == 10 || plc_d911 == 1 || plc_d911 == 20 || plc_d911 == 30) && pending_calib_cmd == 0) {
+                pending_calib_cmd = plc_d911;
+                g_vl53_app.active_calib_mode = plc_d911;
+                g_vl53_app.calib_display_hold_until = HAL_GetTick() + 4000;
             }
         }
     }
-    // Gói phản hồi ngắn không kèm Routing Header
-    else if (p_len >= 4 && payload[2] != 0xF8) {
+    // Gói phản hồi định dạng ngắn không kèm Routing Header
+    else if (p_len >= 4) {
         uint16_t end_code = payload[2] | (payload[3] << 8);
         g_vl53_app.plc_last_end_code = end_code;
+        resp_received = true;
 
         if (end_code == 0x0000 && p_len >= 8) {
             uint16_t plc_d910 = payload[4] | (payload[5] << 8);
@@ -189,11 +230,10 @@ void VL53L_Process_PLC_Response(const uint8_t *buf, uint16_t len) {
             g_vl53_app.d_calib_cmd_flag = plc_d911;
             g_vl53_app.read_success_count++;
 
-            if (plc_d911 == 1 && g_vl53_app.d_distance_raw > 0) {
-                int32_t offset = (int32_t)g_vl53_app.d_calib_target - (int32_t)g_vl53_app.d_distance_raw;
-                g_vl53_app.d_calib_offset = (int16_t)offset;
-                g_vl53_app.calib_done = true;
-                Calib_Save_To_Flash();
+            if ((plc_d911 == 10 || plc_d911 == 1 || plc_d911 == 20 || plc_d911 == 30) && pending_calib_cmd == 0) {
+                pending_calib_cmd = plc_d911;
+                g_vl53_app.active_calib_mode = plc_d911;
+                g_vl53_app.calib_display_hold_until = HAL_GetTick() + 4000;
             }
         }
     }
@@ -376,6 +416,39 @@ static uint16_t Build_Batch_Read_D910(uint8_t *out_buf) {
     return tx_idx;
 }
 
+// Gói Ghi D911 = 0 về PLC (Khi hoàn tất hiệu chuẩn Calib)
+static uint16_t Build_Write_D911_Zero(uint8_t *out_buf) {
+    uint8_t payload[24];
+    uint16_t p_len = 0;
+    
+    payload[p_len++] = 0x14; payload[p_len++] = 0x00; // Length: 20 bytes (0x0014)
+    payload[p_len++] = 0xF8; payload[p_len++] = 0x00; payload[p_len++] = 0x00;
+    payload[p_len++] = 0xFF; payload[p_len++] = 0xFF; payload[p_len++] = 0x03;
+    payload[p_len++] = 0x00; payload[p_len++] = 0x00; // Routing Header: 8 bytes
+    payload[p_len++] = 0x01; payload[p_len++] = 0x14; // Command 0x1401 (Batch Write)
+    payload[p_len++] = 0x00; payload[p_len++] = 0x00; // Subcommand: 0000
+    payload[p_len++] = (uint8_t)(911 & 0xFF);         // 0x8F (911 = 0x038F)
+    payload[p_len++] = (uint8_t)((911 >> 8) & 0xFF);  // 0x03
+    payload[p_len++] = 0x00;                          // 0x00 -> D911
+    payload[p_len++] = 0xA8;                          // Code D
+    payload[p_len++] = 0x01; payload[p_len++] = 0x00; // 1 Point
+    payload[p_len++] = 0x00; payload[p_len++] = 0x00; // Data = 0
+    
+    uint16_t sum = 0;
+    for (uint16_t i = 0; i < p_len; i++) sum += payload[i];
+    
+    uint16_t tx_idx = 0;
+    out_buf[tx_idx++] = 0x10; out_buf[tx_idx++] = 0x02;
+    for (uint16_t i = 0; i < p_len; i++) {
+        out_buf[tx_idx++] = payload[i];
+        if (payload[i] == 0x10) out_buf[tx_idx++] = 0x10;
+    }
+    out_buf[tx_idx++] = 0x10; out_buf[tx_idx++] = 0x03;
+    snprintf((char*)&out_buf[tx_idx], 3, "%02X", (uint8_t)(sum & 0xFF));
+    tx_idx += 2;
+    return tx_idx;
+}
+
 /* ==============================================================================
  *                       KHỞI TẠO CẢM BIẾN
  * ============================================================================== */
@@ -464,6 +537,42 @@ void VL53L_Task_Sensor(void) {
         g_vl53_app.d_distance_filtered = 2002;
     }
 
+    // Xử lý các chế độ Calib an toàn trong Task context (không chặn ISR):
+    if (pending_calib_cmd > 0) {
+        uint16_t cmd = pending_calib_cmd;
+        pending_calib_cmd = 0;
+
+        // MODE 10 (hoặc 1): Calib Offset phần mềm (Software Offset)
+        if ((cmd == 10 || cmd == 1) && g_vl53_app.d_distance_raw > 0) {
+            uint16_t target = (g_vl53_app.d_calib_target > 0) ? g_vl53_app.d_calib_target : g_vl53_app.d_distance_raw;
+            int32_t offset = (int32_t)target - (int32_t)g_vl53_app.d_distance_raw;
+            g_vl53_app.d_calib_offset = (int16_t)offset;
+            g_vl53_app.calib_done = true;
+            Calib_Save_To_Flash();
+            need_write_d911_zero = true; // Gửi xóa D911 = 0 về PLC
+        }
+        // MODE 20: Calib Offset phần cứng (Hardware ST API)
+        else if (cmd == 20) {
+            uint16_t target = (g_vl53_app.d_calib_target > 0) ? g_vl53_app.d_calib_target : 140;
+            int16_t hw_offset = 0;
+            VL53L1X_CalibrateOffset(VL53L_I2C_ADDR, target, &hw_offset);
+            g_vl53_app.d_calib_offset = hw_offset;
+            g_vl53_app.calib_done = true;
+            Calib_Save_To_Flash();
+            VL53L1X_StartRanging(VL53L_I2C_ADDR);
+            need_write_d911_zero = true;
+        }
+        // MODE 30: Calib Crosstalk (Xtalk khi có kính/mica bảo vệ)
+        else if (cmd == 30) {
+            uint16_t target = (g_vl53_app.d_calib_target > 0) ? g_vl53_app.d_calib_target : 500;
+            uint16_t xtalk_val = 0;
+            VL53L1X_CalibrateXtalk(VL53L_I2C_ADDR, target, &xtalk_val);
+            g_vl53_app.calib_done = true;
+            VL53L1X_StartRanging(VL53L_I2C_ADDR);
+            need_write_d911_zero = true;
+        }
+    }
+
     uint16_t status_word = 0;
     if (g_vl53_app.sensor_ok) status_word |= (1 << 0);
     if (g_vl53_app.d_distance_filtered > 0 && g_vl53_app.d_distance_filtered < 200) status_word |= (1 << 1);
@@ -473,28 +582,83 @@ void VL53L_Task_Sensor(void) {
 }
 
 void VL53L_Task_PLC(void) {
-    HAL_GPIO_TogglePin(led_GPIO_Port, led_Pin);
-    g_vl53_app.d_heartbeat++;
+    uint32_t now = HAL_GetTick();
 
-    uint16_t tx_len = 0;
+    switch (plc_state) {
+        case PLC_STATE_SEND_WRITE: {
+            HAL_GPIO_TogglePin(led_GPIO_Port, led_Pin);
+            g_vl53_app.d_heartbeat++;
 
-    if (comm_phase == 0) {
-        uint16_t d_table[VL53L_PLC_D_TOTAL_POINTS] = {
-            g_vl53_app.d_distance_filtered, // D900
-            g_vl53_app.d_distance_raw,      // D901
-            g_vl53_app.d_status,            // D902
-            g_vl53_app.d_error,             // D903
-            g_vl53_app.d_scan_time_ms,      // D904
-            g_vl53_app.d_heartbeat          // D905
-        };
-        tx_len = Build_Batch_Write_D900(tx_dma_buf, d_table);
-        comm_phase = 1;
-    } else {
-        tx_len = Build_Batch_Read_D910(tx_dma_buf);
-        comm_phase = 0;
-    }
+            uint16_t tx_len = 0;
+            if (need_write_d911_zero) {
+                need_write_d911_zero = false;
+                tx_len = Build_Write_D911_Zero(tx_dma_buf);
+            } else {
+                uint16_t d_table[VL53L_PLC_D_TOTAL_POINTS] = {
+                    g_vl53_app.d_distance_filtered, // D900
+                    g_vl53_app.d_distance_raw,      // D901
+                    g_vl53_app.d_status,            // D902
+                    g_vl53_app.d_error,             // D903
+                    g_vl53_app.d_scan_time_ms,      // D904
+                    g_vl53_app.d_heartbeat          // D905
+                };
+                tx_len = Build_Batch_Write_D900(tx_dma_buf, d_table);
+            }
 
-    if (VL53L_PLC_UART_HANDLE.gState == HAL_UART_STATE_READY && tx_len > 0) {
-        HAL_UART_Transmit_DMA(&VL53L_PLC_UART_HANDLE, tx_dma_buf, tx_len);
+            if (VL53L_PLC_UART_HANDLE.gState == HAL_UART_STATE_READY && tx_len > 0) {
+                rx_head = 0;
+                resp_received = false;
+                resp_timer = now;
+                HAL_UART_Transmit_DMA(&VL53L_PLC_UART_HANDLE, tx_dma_buf, tx_len);
+                plc_state = PLC_STATE_WAIT_WRITE_RESP;
+            }
+            break;
+        }
+
+        case PLC_STATE_WAIT_WRITE_RESP:
+            // Chờ nhận phản hồi từ PLC hoặc Timeout 300ms
+            if (resp_received || (now - resp_timer >= 300)) {
+                state_delay_timer = now;
+                plc_state = PLC_STATE_IDLE_BEFORE_READ;
+            }
+            break;
+
+        case PLC_STATE_IDLE_BEFORE_READ:
+            // Khoảng nghỉ Inter-frame 100ms để QJ71 hoàn tất giải phóng bộ đệm và đường truyền RS485
+            if (now - state_delay_timer >= 100) {
+                plc_state = PLC_STATE_SEND_READ;
+            }
+            break;
+
+        case PLC_STATE_SEND_READ: {
+            uint16_t tx_len = Build_Batch_Read_D910(tx_dma_buf);
+            if (VL53L_PLC_UART_HANDLE.gState == HAL_UART_STATE_READY && tx_len > 0) {
+                rx_head = 0;
+                resp_received = false;
+                resp_timer = now;
+                HAL_UART_Transmit_DMA(&VL53L_PLC_UART_HANDLE, tx_dma_buf, tx_len);
+                plc_state = PLC_STATE_WAIT_READ_RESP;
+            }
+            break;
+        }
+
+        case PLC_STATE_WAIT_READ_RESP:
+            // Chờ nhận phản hồi từ PLC hoặc Timeout 300ms
+            if (resp_received || (now - resp_timer >= 300)) {
+                state_delay_timer = now;
+                plc_state = PLC_STATE_IDLE_BEFORE_WRITE;
+            }
+            break;
+
+        case PLC_STATE_IDLE_BEFORE_WRITE:
+            // Khoảng nghỉ Inter-frame 100ms trước khi bắt đầu chu kỳ gửi ghi tiếp theo
+            if (now - state_delay_timer >= 100) {
+                plc_state = PLC_STATE_SEND_WRITE;
+            }
+            break;
+
+        default:
+            plc_state = PLC_STATE_SEND_WRITE;
+            break;
     }
 }
