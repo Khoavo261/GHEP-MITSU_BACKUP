@@ -6,6 +6,6 @@
 ../Core/Src/oled_ssd1306.c:204:6:OLED_DrawChar_Font	48	static
 ../Core/Src/oled_ssd1306.c:253:6:OLED_DrawString_Font	40	static
 ../Core/Src/oled_ssd1306.c:266:6:OLED_SetDisplayMode	16	static
-../Core/Src/oled_ssd1306.c:274:13:OLED_Show_Full_6Registers	72	static
-../Core/Src/oled_ssd1306.c:311:13:OLED_Show_Big_Distance_View	56	static
-../Core/Src/oled_ssd1306.c:334:6:OLED_Task_Run	8	static
+../Core/Src/oled_ssd1306.c:274:13:OLED_Show_Full_6Registers	40	static
+../Core/Src/oled_ssd1306.c:308:13:OLED_Show_Big_Distance_View	56	static
+../Core/Src/oled_ssd1306.c:331:6:OLED_Task_Run	8	static

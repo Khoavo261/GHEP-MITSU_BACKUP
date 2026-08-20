@@ -1,6 +1,6 @@
 /**
  * @file oled_ssd1306.c
- * @brief IMPLEMENTATION DRIVER OLED SSD1306 - HIỂN THỊ D910 & CHẨN ĐOÁN RX REALTIME
+ * @brief IMPLEMENTATION DRIVER OLED SSD1306 - HIỂN THỊ CHI TIẾT ENDCODE & GÓI ĐỌC D910
  */
 
 #include "oled_ssd1306.h"
@@ -134,9 +134,9 @@ bool OLED_Init(void) {
         return false;
     }
 
-    OLED_WriteCommand(0xAE); // Display OFF
-    OLED_WriteCommand(0x20); // Addressing Mode
-    OLED_WriteCommand(0x00); // Horizontal
+    OLED_WriteCommand(0xAE);
+    OLED_WriteCommand(0x20);
+    OLED_WriteCommand(0x00);
     OLED_WriteCommand(0xB0);
     OLED_WriteCommand(0xC8);
     OLED_WriteCommand(0x00);
@@ -161,7 +161,7 @@ bool OLED_Init(void) {
     OLED_WriteCommand(0x40);
     OLED_WriteCommand(0x8D);
     OLED_WriteCommand(0x14);
-    OLED_WriteCommand(0xAF); // Display ON!
+    OLED_WriteCommand(0xAF);
 
     OLED_Clear();
     OLED_UpdateScreen();
@@ -294,15 +294,12 @@ static void OLED_Show_Full_6Registers(void) {
     snprintf(line_str, sizeof(line_str), "Offset:%+4dmm %s", g_vl53_app.d_calib_offset, g_vl53_app.calib_done ? "[OK]" : "[--]");
     OLED_DrawString_Font(0, 36, line_str, OLED_FONT_6x8, false);
 
-    // Dòng 5: Chẩn đoán RX (Tổng byte nhận & Số gói đọc thành công)
-    snprintf(line_str, sizeof(line_str), "RX:%-5lu ReadOK:%-3lu", g_vl53_app.total_rx_bytes % 100000, g_vl53_app.read_success_count % 1000);
+    // Dòng 5: Mã phản hồi từ PLC (0x0000 = OK) và Độ dài gói nhận
+    snprintf(line_str, sizeof(line_str), "EndCode:0x%04X L:%d", g_vl53_app.plc_last_end_code, g_vl53_app.plc_last_p_len);
     OLED_DrawString_Font(0, 45, line_str, OLED_FONT_6x8, false);
 
-    // Dòng 6: Các byte hex gần nhất nhận từ UART để kiểm tra phản hồi PLC
-    snprintf(line_str, sizeof(line_str), "%02X %02X %02X %02X %02X %02X", 
-             g_vl53_app.last_rx_bytes[2], g_vl53_app.last_rx_bytes[3],
-             g_vl53_app.last_rx_bytes[4], g_vl53_app.last_rx_bytes[5],
-             g_vl53_app.last_rx_bytes[6], g_vl53_app.last_rx_bytes[7]);
+    // Dòng 6: Chẩn đoán RX (Tổng byte nhận & Số gói đọc thành công)
+    snprintf(line_str, sizeof(line_str), "RX:%-5lu ReadOK:%-3lu", g_vl53_app.total_rx_bytes % 100000, g_vl53_app.read_success_count % 1000);
     OLED_DrawString_Font(0, 54, line_str, OLED_FONT_6x8, false);
 
     OLED_UpdateScreen();

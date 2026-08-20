@@ -42,6 +42,8 @@ VL53L_AppData_t g_vl53_app = {
     .d_calib_cmd_flag = 0,
     .d_calib_offset = 0,
     .calib_done = false,
+    .plc_last_end_code = 0xFFFF,
+    .plc_last_p_len = 0,
     .sensor_ok = false,
     .raw_range_status = 0,
     .comm_success_count = 0,
@@ -142,13 +144,17 @@ void VL53L_Process_PLC_Response(const uint8_t *buf, uint16_t len) {
         payload[p_len++] = buf[i];
     }
 
-    // Nếu là gói phản hồi Đọc dữ liệu (Format 5 Read Response)
-    // Payload gồm: [Len 2B] [EndCode: 00 00] [D910: 2B] [D911/M910: 2B]
-    if (p_len >= 6) {
+    g_vl53_app.plc_last_p_len = (uint8_t)p_len;
+
+    // Gói phản hồi Mitsubishi Type 5: [Len 2B] [EndCode: 2B] [Data: N Bytes]
+    if (p_len >= 4) {
         uint16_t end_code = payload[2] | (payload[3] << 8);
-        if (end_code == 0x0000 && p_len >= 8) {
-            uint16_t plc_d910 = payload[4] | (payload[5] << 8); // Khoảng cách đặt D910
-            uint16_t plc_d911 = payload[6] | (payload[7] << 8); // Cờ Calib M910 / D911
+        g_vl53_app.plc_last_end_code = end_code;
+
+        // Nếu là phản hồi Đọc thành công có chứa dữ liệu D910/D911
+        if (p_len >= 8) {
+            uint16_t plc_d910 = payload[4] | (payload[5] << 8);
+            uint16_t plc_d911 = payload[6] | (payload[7] << 8);
 
             g_vl53_app.d_calib_target = plc_d910;
             g_vl53_app.d_calib_cmd_flag = plc_d911;
@@ -181,7 +187,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == VL53L_PLC_UART_HANDLE.Instance) {
         g_vl53_app.total_rx_bytes++;
 
-        // Lưu 8 byte gần nhất để xem trực tiếp trên OLED
         for (int i = 0; i < 7; i++) {
             g_vl53_app.last_rx_bytes[i] = g_vl53_app.last_rx_bytes[i + 1];
         }
@@ -191,11 +196,10 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
             rx_ring[rx_head++] = rx_raw_byte;
         }
 
-        // Quét gói tin khi nhận được Checksum sau DLE ETX (10 03 XX XX)
+        // Quét gói tin khi nhận được DLE ETX (10 03 XX XX)
         if (rx_head >= 4) {
             for (uint16_t i = 0; i < rx_head - 3; i++) {
                 if (rx_ring[i] == 0x10 && rx_ring[i + 1] == 0x03) {
-                    // Đã nhận trọn vẹn gói tin kèm 2 byte checksum
                     VL53L_Process_PLC_Response(rx_ring, i + 4);
                     rx_head = 0;
                     g_vl53_app.comm_success_count++;
@@ -204,7 +208,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
             }
         }
 
-        // Chống tràn bộ đệm nếu có nhiễu
         if (rx_head >= sizeof(rx_ring) - 10) {
             rx_head = 0;
         }
@@ -281,7 +284,6 @@ static uint16_t Filter_TrimmedMovingAverage(uint16_t raw_mm) {
  *                       XÂY DỰNG GÓI LỆNH MITSUBISHI TYPE 5
  * ============================================================================== */
 
-// Gói Ghi D900..D905 (Batch Write 0x1401)
 static uint16_t Build_Batch_Write_D900(uint8_t *out_buf, const uint16_t *data_6words) {
     uint8_t payload[48];
     uint16_t p_len = 0;
@@ -319,7 +321,6 @@ static uint16_t Build_Batch_Write_D900(uint8_t *out_buf, const uint16_t *data_6w
     return tx_idx;
 }
 
-// Gói Đọc D910..D911 (Batch Read 0x0401)
 static uint16_t Build_Batch_Read_D910(uint8_t *out_buf) {
     uint8_t payload[24];
     uint16_t p_len = 0;
@@ -454,7 +455,6 @@ void VL53L_Task_PLC(void) {
 
     uint16_t tx_len = 0;
 
-    // Gửi lệnh luân phiên: Ghi D900..D905 (100ms) rồi Đọc D910 (100ms)
     if (comm_phase == 0) {
         uint16_t d_table[VL53L_PLC_D_TOTAL_POINTS] = {
             g_vl53_app.d_distance_filtered, // D900
