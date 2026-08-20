@@ -7,23 +7,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
   1 .text         0000ac44  080001a0  080001a0  000011a0  2**4
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .rodata       00000478  0800ade4  0800ade4  0000bde4  2**2
+  2 .rodata       0000047c  0800ade4  0800ade4  0000bde4  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  3 .ARM.extab    00000000  0800b25c  0800b25c  0000d0a4  2**0
+  3 .ARM.extab    00000000  0800b260  0800b260  0000d0a4  2**0
                   CONTENTS, READONLY
-  4 .ARM          00000008  0800b25c  0800b25c  0000c25c  2**2
+  4 .ARM          00000008  0800b260  0800b260  0000c260  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  5 .preinit_array 00000000  0800b264  0800b264  0000d0a4  2**0
+  5 .preinit_array 00000000  0800b268  0800b268  0000d0a4  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  6 .init_array   00000004  0800b264  0800b264  0000c264  2**2
+  6 .init_array   00000004  0800b268  0800b268  0000c268  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  7 .fini_array   00000004  0800b268  0800b268  0000c268  2**2
+  7 .fini_array   00000004  0800b26c  0800b26c  0000c26c  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  8 .data         000000a4  20000000  0800b26c  0000d000  2**2
+  8 .data         000000a4  20000000  0800b270  0000d000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  9 .bss          00005280  200000a4  0800b310  0000d0a4  2**2
+  9 .bss          00005280  200000a4  0800b314  0000d0a4  2**2
                   ALLOC
- 10 ._user_heap_stack 00000604  20005324  0800b310  0000d324  2**0
+ 10 ._user_heap_stack 00000604  20005324  0800b314  0000d324  2**0
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  0000d0a4  2**0
                   CONTENTS, READONLY
@@ -37,11 +37,11 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  16 .debug_macro  0001af13  00000000  00000000  000351a6  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   00021bc7  00000000  00000000  000500b9  2**0
+ 17 .debug_line   00021bc8  00000000  00000000  000500b9  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    0009cb22  00000000  00000000  00071c80  2**0
+ 18 .debug_str    0009cb22  00000000  00000000  00071c81  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000043  00000000  00000000  0010e7a2  2**0
+ 19 .comment      00000043  00000000  00000000  0010e7a3  2**0
                   CONTENTS, READONLY
  20 .debug_frame  000074f4  00000000  00000000  0010e7e8  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
@@ -2518,7 +2518,7 @@ VL53L1X_ERROR VL53L1X_SensorInit(uint16_t dev) {
  8001476:	46bd      	mov	sp, r7
  8001478:	bd80      	pop	{r7, pc}
  800147a:	bf00      	nop
- 800147c:	0800af04 	.word	0x0800af04
+ 800147c:	0800af08 	.word	0x0800af08
 
 08001480 <VL53L1X_ClearInterrupt>:
 
@@ -3661,13 +3661,13 @@ void MX_FREERTOS_Init(void) {
 }
  8001c60:	bf00      	nop
  8001c62:	bd80      	pop	{r7, pc}
- 8001c64:	0800af60 	.word	0x0800af60
+ 8001c64:	0800af64 	.word	0x0800af64
  8001c68:	08001c89 	.word	0x08001c89
  8001c6c:	200001e0 	.word	0x200001e0
- 8001c70:	0800af84 	.word	0x0800af84
+ 8001c70:	0800af88 	.word	0x0800af88
  8001c74:	08001ca3 	.word	0x08001ca3
  8001c78:	200001e4 	.word	0x200001e4
- 8001c7c:	0800afa8 	.word	0x0800afa8
+ 8001c7c:	0800afac 	.word	0x0800afac
  8001c80:	08001cc1 	.word	0x08001cc1
  8001c84:	200001e8 	.word	0x200001e8
 
@@ -5159,7 +5159,7 @@ void OLED_DrawChar_Font(uint8_t x, uint8_t y, char c, OLED_Font_t font, bool inv
  80025e2:	46bd      	mov	sp, r7
  80025e4:	bd90      	pop	{r4, r7, pc}
  80025e6:	bf00      	nop
- 80025e8:	0800afcc 	.word	0x0800afcc
+ 80025e8:	0800afd0 	.word	0x0800afd0
  80025ec:	aaaaaaab 	.word	0xaaaaaaab
 
 080025f0 <OLED_DrawString_Font>:
@@ -5250,7 +5250,7 @@ static void OLED_Show_Full_6Registers(void) {
     OLED_Clear();
  800266a:	f7ff fdd9 	bl	8002220 <OLED_Clear>
 
-    // Dòng 0: Tiêu đề nổi bật
+    // Dòng 0: Tiêu đề nổi bật (Nền trắng chữ đen)
     OLED_DrawString_Font(0, 0, " [Q02U <-> VL53L1X] ", OLED_FONT_6x8, true);
  800266e:	2301      	movs	r3, #1
  8002670:	9300      	str	r3, [sp, #0]
@@ -5294,8 +5294,8 @@ static void OLED_Show_Full_6Registers(void) {
  80026b4:	2000      	movs	r0, #0
  80026b6:	f7ff ff9b 	bl	80025f0 <OLED_DrawString_Font>
 
-    // Dòng 3: D910 - Khoảng cách đặt chuẩn từ HMI & Cờ M910
-    snprintf(line_str, sizeof(line_str), "D910(Set):%4d mm", g_vl53_app.d_calib_target);
+    // Dòng 3: Ô NHỚ D910 - ĐỌC TRỰC TIẾP TỪ PLC/HMI (Rõ ràng 100%)
+    snprintf(line_str, sizeof(line_str), "D910(PLC):%4d mm", g_vl53_app.d_calib_target);
  80026ba:	4b27      	ldr	r3, [pc, #156]	@ (8002758 <OLED_Show_Full_6Registers+0xf4>)
  80026bc:	899b      	ldrh	r3, [r3, #12]
  80026be:	4638      	mov	r0, r7
@@ -5428,8 +5428,8 @@ static void OLED_Show_Big_Distance_View(void) {
  80027b2:	200c      	movs	r0, #12
  80027b4:	f7ff ff1c 	bl	80025f0 <OLED_DrawString_Font>
 
-    // Thông số Calib D910 & Offset
-    snprintf(sub_str, sizeof(sub_str), "Set:%4d Off:%+3d %s", g_vl53_app.d_calib_target, g_vl53_app.d_calib_offset, g_vl53_app.calib_done ? "OK" : "");
+    // Thông số ô nhớ D910 đọc từ PLC & Offset
+    snprintf(sub_str, sizeof(sub_str), "D910:%4d Off:%+3d %s", g_vl53_app.d_calib_target, g_vl53_app.d_calib_offset, g_vl53_app.calib_done ? "OK" : "");
  80027b8:	4b1c      	ldr	r3, [pc, #112]	@ (800282c <OLED_Show_Big_Distance_View+0xb0>)
  80027ba:	899b      	ldrh	r3, [r3, #12]
  80027bc:	4619      	mov	r1, r3
@@ -5494,7 +5494,7 @@ static void OLED_Show_Big_Distance_View(void) {
  8002834:	0800aec0 	.word	0x0800aec0
  8002838:	0800aec4 	.word	0x0800aec4
  800283c:	0800aec8 	.word	0x0800aec8
- 8002840:	0800aedc 	.word	0x0800aedc
+ 8002840:	0800aee0 	.word	0x0800aee0
 
 08002844 <OLED_Task_Run>:
 
@@ -6738,7 +6738,7 @@ LoopFillZerobss:
   ldr r1, =_edata
  8002eb4:	200000a4 	.word	0x200000a4
   ldr r2, =_sidata
- 8002eb8:	0800b26c 	.word	0x0800b26c
+ 8002eb8:	0800b270 	.word	0x0800b270
   ldr r2, =_sbss
  8002ebc:	200000a4 	.word	0x200000a4
   ldr r4, =_ebss
@@ -8543,7 +8543,7 @@ static uint32_t DMA_CalcBaseAndBitshift(DMA_HandleTypeDef *hdma)
  8003810:	4770      	bx	lr
  8003812:	bf00      	nop
  8003814:	aaaaaaab 	.word	0xaaaaaaab
- 8003818:	0800b220 	.word	0x0800b220
+ 8003818:	0800b224 	.word	0x0800b224
 
 0800381c <DMA_CheckFifoParam>:
   * @param  hdma       pointer to a DMA_HandleTypeDef structure that contains
@@ -15302,7 +15302,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef  *RCC_ClkInitStru
  8005ec6:	bf00      	nop
  8005ec8:	40023c00 	.word	0x40023c00
  8005ecc:	40023800 	.word	0x40023800
- 8005ed0:	0800b208 	.word	0x0800b208
+ 8005ed0:	0800b20c 	.word	0x0800b20c
  8005ed4:	20000024 	.word	0x20000024
  8005ed8:	20000028 	.word	0x20000028
 
@@ -15557,7 +15557,7 @@ uint32_t HAL_RCC_GetPCLK1Freq(void)
  8006098:	4618      	mov	r0, r3
  800609a:	bd80      	pop	{r7, pc}
  800609c:	40023800 	.word	0x40023800
- 80060a0:	0800b218 	.word	0x0800b218
+ 80060a0:	0800b21c 	.word	0x0800b21c
 
 080060a4 <HAL_RCC_GetPCLK2Freq>:
   * @note   Each time PCLK2 changes, this function must be called to update the
@@ -15583,7 +15583,7 @@ uint32_t HAL_RCC_GetPCLK2Freq(void)
  80060c0:	4618      	mov	r0, r3
  80060c2:	bd80      	pop	{r7, pc}
  80060c4:	40023800 	.word	0x40023800
- 80060c8:	0800b218 	.word	0x0800b218
+ 80060c8:	0800b21c 	.word	0x0800b21c
 
 080060cc <HAL_RCC_GetClockConfig>:
   * will be configured.
@@ -22956,7 +22956,7 @@ BaseType_t xReturn;
  8008a8e:	3718      	adds	r7, #24
  8008a90:	46bd      	mov	sp, r7
  8008a92:	bd80      	pop	{r7, pc}
- 8008a94:	0800aeec 	.word	0x0800aeec
+ 8008a94:	0800aef0 	.word	0x0800aef0
  8008a98:	080090e5 	.word	0x080090e5
  8008a9c:	20001480 	.word	0x20001480
  8008aa0:	20000f88 	.word	0x20000f88
@@ -24869,7 +24869,7 @@ BaseType_t xReturn = pdFAIL;
  80094e0:	bd80      	pop	{r7, pc}
  80094e2:	bf00      	nop
  80094e4:	200014b8 	.word	0x200014b8
- 80094e8:	0800aef4 	.word	0x0800aef4
+ 80094e8:	0800aef8 	.word	0x0800aef8
  80094ec:	0800962d 	.word	0x0800962d
  80094f0:	200014bc 	.word	0x200014bc
 
@@ -25978,7 +25978,7 @@ static void prvCheckForValidListAndQueue( void )
  8009b04:	200014b4 	.word	0x200014b4
  8009b08:	20001564 	.word	0x20001564
  8009b0c:	200014c4 	.word	0x200014c4
- 8009b10:	0800aefc 	.word	0x0800aefc
+ 8009b10:	0800af00 	.word	0x0800af00
 
 08009b14 <pxPortInitialiseStack>:
 
@@ -27670,10 +27670,10 @@ uint8_t *puc;
  800a50e:	4798      	blx	r3
  800a510:	3601      	adds	r6, #1
  800a512:	e7f2      	b.n	800a4fa <__libc_init_array+0x1e>
- 800a514:	0800b264 	.word	0x0800b264
- 800a518:	0800b264 	.word	0x0800b264
- 800a51c:	0800b264 	.word	0x0800b264
- 800a520:	0800b268 	.word	0x0800b268
+ 800a514:	0800b268 	.word	0x0800b268
+ 800a518:	0800b268 	.word	0x0800b268
+ 800a51c:	0800b268 	.word	0x0800b268
+ 800a520:	0800b26c 	.word	0x0800b26c
 
 0800a524 <__retarget_lock_acquire_recursive>:
  800a524:	4770      	bx	lr
@@ -28195,11 +28195,11 @@ uint8_t *puc;
  800a9c8:	f000 f87a 	bl	800aac0 <_printf_i>
  800a9cc:	e7ee      	b.n	800a9ac <_svfiprintf_r+0x1b8>
  800a9ce:	bf00      	nop
- 800a9d0:	0800b228 	.word	0x0800b228
- 800a9d4:	0800b232 	.word	0x0800b232
+ 800a9d0:	0800b22c 	.word	0x0800b22c
+ 800a9d4:	0800b236 	.word	0x0800b236
  800a9d8:	00000000 	.word	0x00000000
  800a9dc:	0800a735 	.word	0x0800a735
- 800a9e0:	0800b22e 	.word	0x0800b22e
+ 800a9e0:	0800b232 	.word	0x0800b232
 
 0800a9e4 <_printf_common>:
  800a9e4:	e92d 47f0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, lr}
@@ -28533,8 +28533,8 @@ uint8_t *puc;
  800acfc:	f104 0619 	add.w	r6, r4, #25
  800ad00:	e7f5      	b.n	800acee <_printf_i+0x22e>
  800ad02:	bf00      	nop
- 800ad04:	0800b239 	.word	0x0800b239
- 800ad08:	0800b24a 	.word	0x0800b24a
+ 800ad04:	0800b23d 	.word	0x0800b23d
+ 800ad08:	0800b24e 	.word	0x0800b24e
 
 0800ad0c <memmove>:
  800ad0c:	4288      	cmp	r0, r1

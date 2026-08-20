@@ -1,6 +1,6 @@
 /**
  * @file oled_ssd1306.c
- * @brief IMPLEMENTATION DRIVER OLED SSD1306 HỖ TRỢ ĐA FONT & HIỂN THỊ CALIB D910/M910
+ * @brief IMPLEMENTATION DRIVER OLED SSD1306 - HIỂN THỊ TRỰC QUAN Ô NHỚ D910 & D900..D905
  */
 
 #include "oled_ssd1306.h"
@@ -276,7 +276,7 @@ static void OLED_Show_Full_6Registers(void) {
     char line_str[24];
     OLED_Clear();
 
-    // Dòng 0: Tiêu đề nổi bật
+    // Dòng 0: Tiêu đề nổi bật (Nền trắng chữ đen)
     OLED_DrawString_Font(0, 0, " [Q02U <-> VL53L1X] ", OLED_FONT_6x8, true);
 
     // Dòng 1: D900 - Khoảng cách sau Calib
@@ -287,8 +287,8 @@ static void OLED_Show_Full_6Registers(void) {
     snprintf(line_str, sizeof(line_str), "D901(Raw):%4d mm", g_vl53_app.d_distance_raw);
     OLED_DrawString_Font(0, 18, line_str, OLED_FONT_6x8, false);
 
-    // Dòng 3: D910 - Khoảng cách đặt chuẩn từ HMI & Cờ M910
-    snprintf(line_str, sizeof(line_str), "D910(Set):%4d mm", g_vl53_app.d_calib_target);
+    // Dòng 3: Ô NHỚ D910 - ĐỌC TRỰC TIẾP TỪ PLC/HMI (Rõ ràng 100%)
+    snprintf(line_str, sizeof(line_str), "D910(PLC):%4d mm", g_vl53_app.d_calib_target);
     OLED_DrawString_Font(0, 27, line_str, OLED_FONT_6x8, false);
 
     // Dòng 4: Độ lệch Offset tính được & Trạng thái Calib
@@ -318,8 +318,8 @@ static void OLED_Show_Big_Distance_View(void) {
     snprintf(dist_str, sizeof(dist_str), "%4d mm", g_vl53_app.d_distance_filtered);
     OLED_DrawString_Font(12, 18, dist_str, OLED_FONT_16x26, false);
 
-    // Thông số Calib D910 & Offset
-    snprintf(sub_str, sizeof(sub_str), "Set:%4d Off:%+3d %s", g_vl53_app.d_calib_target, g_vl53_app.d_calib_offset, g_vl53_app.calib_done ? "OK" : "");
+    // Thông số ô nhớ D910 đọc từ PLC & Offset
+    snprintf(sub_str, sizeof(sub_str), "D910:%4d Off:%+3d %s", g_vl53_app.d_calib_target, g_vl53_app.d_calib_offset, g_vl53_app.calib_done ? "OK" : "");
     OLED_DrawString_Font(0, 48, sub_str, OLED_FONT_6x8, false);
 
     // Trạng thái truyền thông
