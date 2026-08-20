@@ -868,26 +868,26 @@ void VL53L_Process_PLC_Response(const uint8_t *buf, uint16_t len) {
 
         // Gói phản hồi Batch Read QJ71 Type 5 (16 bytes payload):
         // Byte 10-11: End Code (0x0000)
-        // Byte 12-13: Word 0 = D910 (Target mm: ví dụ 300)
-        // Byte 14-15: Word 1 = D911 (Mã lệnh Calib: 10, 20, 30)
+        // Byte 12-13: D911 (Mã lệnh Calib: 1, 10, 20, 30)
+        // Byte 14-15: D910 (Target mm: ví dụ 300)
         if (p_len >= 16) {
  80008ba:	f8b7 305a 	ldrh.w	r3, [r7, #90]	@ 0x5a
  80008be:	2b0f      	cmp	r3, #15
  80008c0:	f240 80b0 	bls.w	8000a24 <VL53L_Process_PLC_Response+0x354>
-            uint16_t plc_d910 = payload[12] | (payload[13] << 8); // D910 = Word 0 (Byte 12-13)
- 80008c4:	7d3b      	ldrb	r3, [r7, #20]
+            uint16_t plc_d910 = payload[14] | (payload[15] << 8); // D910 = Target mm (Byte 14-15)
+ 80008c4:	7dbb      	ldrb	r3, [r7, #22]
  80008c6:	b21a      	sxth	r2, r3
- 80008c8:	7d7b      	ldrb	r3, [r7, #21]
+ 80008c8:	7dfb      	ldrb	r3, [r7, #23]
  80008ca:	b21b      	sxth	r3, r3
  80008cc:	021b      	lsls	r3, r3, #8
  80008ce:	b21b      	sxth	r3, r3
  80008d0:	4313      	orrs	r3, r2
  80008d2:	b21b      	sxth	r3, r3
  80008d4:	f8a7 304c 	strh.w	r3, [r7, #76]	@ 0x4c
-            uint16_t plc_d911 = payload[14] | (payload[15] << 8); // D911 = Word 1 (Byte 14-15)
- 80008d8:	7dbb      	ldrb	r3, [r7, #22]
+            uint16_t plc_d911 = payload[12] | (payload[13] << 8); // D911 = Lệnh Calib (Byte 12-13)
+ 80008d8:	7d3b      	ldrb	r3, [r7, #20]
  80008da:	b21a      	sxth	r2, r3
- 80008dc:	7dfb      	ldrb	r3, [r7, #23]
+ 80008dc:	7d7b      	ldrb	r3, [r7, #21]
  80008de:	b21b      	sxth	r3, r3
  80008e0:	021b      	lsls	r3, r3, #8
  80008e2:	b21b      	sxth	r3, r3
@@ -910,7 +910,7 @@ void VL53L_Process_PLC_Response(const uint8_t *buf, uint16_t len) {
  8000902:	4a4b      	ldr	r2, [pc, #300]	@ (8000a30 <VL53L_Process_PLC_Response+0x360>)
  8000904:	6413      	str	r3, [r2, #64]	@ 0x40
 
-            // Khi nhận được lệnh Calib hợp lệ từ PLC (10, 20, 30 hoặc 1)
+            // Khi nhận được lệnh Calib hợp lệ từ PLC (1, 10, 20, 30)
             if ((plc_d911 == 10 || plc_d911 == 1 || plc_d911 == 20 || plc_d911 == 30) && pending_calib_cmd == 0) {
  8000906:	f8b7 304a 	ldrh.w	r3, [r7, #74]	@ 0x4a
  800090a:	2b0a      	cmp	r3, #10
@@ -978,20 +978,20 @@ void VL53L_Process_PLC_Response(const uint8_t *buf, uint16_t len) {
  8000982:	f8b7 305a 	ldrh.w	r3, [r7, #90]	@ 0x5a
  8000986:	2b07      	cmp	r3, #7
  8000988:	d94c      	bls.n	8000a24 <VL53L_Process_PLC_Response+0x354>
-            uint16_t plc_d910 = payload[4] | (payload[5] << 8);
- 800098a:	7b3b      	ldrb	r3, [r7, #12]
+            uint16_t plc_d910 = payload[6] | (payload[7] << 8);
+ 800098a:	7bbb      	ldrb	r3, [r7, #14]
  800098c:	b21a      	sxth	r2, r3
- 800098e:	7b7b      	ldrb	r3, [r7, #13]
+ 800098e:	7bfb      	ldrb	r3, [r7, #15]
  8000990:	b21b      	sxth	r3, r3
  8000992:	021b      	lsls	r3, r3, #8
  8000994:	b21b      	sxth	r3, r3
  8000996:	4313      	orrs	r3, r2
  8000998:	b21b      	sxth	r3, r3
  800099a:	f8a7 3050 	strh.w	r3, [r7, #80]	@ 0x50
-            uint16_t plc_d911 = payload[6] | (payload[7] << 8);
- 800099e:	7bbb      	ldrb	r3, [r7, #14]
+            uint16_t plc_d911 = payload[4] | (payload[5] << 8);
+ 800099e:	7b3b      	ldrb	r3, [r7, #12]
  80009a0:	b21a      	sxth	r2, r3
- 80009a2:	7bfb      	ldrb	r3, [r7, #15]
+ 80009a2:	7b7b      	ldrb	r3, [r7, #13]
  80009a4:	b21b      	sxth	r3, r3
  80009a6:	021b      	lsls	r3, r3, #8
  80009a8:	b21b      	sxth	r3, r3
