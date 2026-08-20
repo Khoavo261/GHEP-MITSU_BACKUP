@@ -38,7 +38,7 @@ VL53L_AppData_t g_vl53_app = {
     .d_error = 0,
     .d_scan_time_ms = 50,
     .d_heartbeat = 0,
-    .d_calib_target = 500,      // Mặc định D910 = 500 mm
+    .d_calib_target = 0,        // Giá trị ban đầu = 0, sẽ nhận trực tiếp từ PLC D910
     .d_calib_cmd_flag = 0,      // D911 / M910 từ PLC
     .d_calib_offset = 0,
     .calib_done = false,
@@ -141,16 +141,13 @@ void VL53L_Process_PLC_Response(const uint8_t *buf, uint16_t len) {
     }
 
     // Nếu là gói phản hồi đọc (Có EndCode 00 00 và có dữ liệu trả về)
-    // Payload phản hồi đọc: [Len 2B] [EndCode: 00 00] [D910: 2B] [D911/M910: 2B]
-    if (p_len >= 8) {
+     if (p_len >= 6) {
         uint16_t end_code = payload[2] | (payload[3] << 8);
-        if (end_code == 0x0000) {
-            uint16_t plc_d910 = payload[4] | (payload[5] << 8); // Khoảng cách đặt D910
-            uint16_t plc_d911 = payload[6] | (payload[7] << 8); // Cờ Calib M910 / D911
+        if (end_code == 0x0000 && p_len >= 8) {
+            uint16_t plc_d910 = payload[4] | (payload[5] << 8); // Khoảng cách đặt D910 từ PLC
+            uint16_t plc_d911 = payload[6] | (payload[7] << 8); // Cờ Calib M910 / D911 từ PLC
 
-            if (plc_d910 >= 30 && plc_d910 <= 4000) {
-                g_vl53_app.d_calib_target = plc_d910;
-            }
+            g_vl53_app.d_calib_target = plc_d910;
             g_vl53_app.d_calib_cmd_flag = plc_d911;
             g_vl53_app.read_success_count++;
 
@@ -183,8 +180,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
             rx_buf[rx_idx++] = rx_raw_byte;
         }
 
-        // Kiểm tra nếu nhận được ETX (0x03) sau DLE (0x10)
-        if (rx_idx >= 4 && rx_buf[rx_idx - 3] == 0x10 && rx_buf[rx_idx - 2] == 0x03) {
+        // Kiểm tra kết thúc gói tin DLE (0x10) ETX (0x03) + 2 bytes Checksum
+        if (rx_idx >= 4 && rx_buf[rx_idx - 4] == 0x10 && rx_buf[rx_idx - 3] == 0x03) {
             VL53L_Process_PLC_Response(rx_buf, rx_idx);
             rx_idx = 0;
             g_vl53_app.comm_success_count++;
