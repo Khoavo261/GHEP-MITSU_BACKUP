@@ -388,20 +388,25 @@ void OLED_Task_Run(void) {
         return;
     }
 
-    uint16_t mode = g_vl53_app.active_calib_mode ? g_vl53_app.active_calib_mode : g_vl53_app.d_calib_cmd_flag;
     bool is_holding_calib = (HAL_GetTick() < g_vl53_app.calib_display_hold_until);
 
-    // D911 == 0: Chế độ vận hành bình thường (Font lớn 16x26)
-    if (mode == 0 && !is_holding_calib) {
+    // Khi đã hết thời gian giữ màn hình Calib:
+    if (!is_holding_calib) {
         g_vl53_app.active_calib_mode = 0;
+    }
+
+    // 1. Khi D911 = 0 và không trong thời gian giữ Calib -> Chuyển về Font chữ SIÊU LỚN 16x26 (RUN MODE)
+    if (g_vl53_app.d_calib_cmd_flag == 0 && !is_holding_calib) {
         OLED_Show_Big_Distance_View();
     } 
-    // D911 == 10, 20, 30 hoặc đang giữ hiển thị sau khi Calib xong: Chế độ Calib
-    else if (mode == 10 || mode == 1 || mode == 20 || mode == 30 || is_holding_calib) {
+    // 2. Khi đang Calib (D911 = 10, 20, 30) hoặc trong thời gian giữ hiển thị kết quả Calib -> Hiện Màn hình Calib
+    else if (g_vl53_app.d_calib_cmd_flag == 10 || g_vl53_app.d_calib_cmd_flag == 1 ||
+             g_vl53_app.d_calib_cmd_flag == 20 || g_vl53_app.d_calib_cmd_flag == 30 ||
+             is_holding_calib) {
         OLED_Show_Parameter_Calib_View();
     } 
-    // D911 khác 0 và khác 10, 20, 30: Hiện bảng hướng dẫn nhập đúng số
+    // 3. Khi D911 khác 0 và khác 10, 20, 30: Hiện bảng hướng dẫn
     else {
-        OLED_Show_Invalid_Param_Guide_View(mode);
+        OLED_Show_Invalid_Param_Guide_View(g_vl53_app.d_calib_cmd_flag);
     }
 }
