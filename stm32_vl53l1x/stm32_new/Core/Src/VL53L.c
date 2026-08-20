@@ -185,13 +185,14 @@ void VL53L_Process_PLC_Response(const uint8_t *buf, uint16_t len) {
         g_vl53_app.plc_last_end_code = end_code;
         resp_received = true;
 
-        // Gói phản hồi Batch Read QJ71 Type 5 (16 bytes payload):
-        // Byte 10-11: End Code (0x0000)
-        // Byte 12-13: D911 (Mã lệnh Calib: 1, 10, 20, 30)
-        // Byte 14-15: D910 (Target mm: ví dụ 300)
-        if (p_len >= 16) {
-            uint16_t plc_d910 = payload[14] | (payload[15] << 8); // D910 = Target mm (Byte 14-15)
-            uint16_t plc_d911 = payload[12] | (payload[13] << 8); // D911 = Lệnh Calib (Byte 12-13)
+        // Gói phản hồi Batch Read QJ71 Type 5 (18 bytes payload):
+        // Byte 10-11: Routing / Subheader (0x0000)
+        // Byte 12-13: End Code (0x0000)
+        // Byte 14-15: Word 0 = D910 (Target mm: ví dụ 300)
+        // Byte 16-17: Word 1 = D911 (Mã lệnh Calib: 1, 10, 20, 30)
+        if (p_len >= 18) {
+            uint16_t plc_d910 = payload[14] | (payload[15] << 8); // D910 = Word 0 (Byte 14-15)
+            uint16_t plc_d911 = payload[16] | (payload[17] << 8); // D911 = Word 1 (Byte 16-17)
 
             g_vl53_app.d_calib_target = plc_d910;
             g_vl53_app.d_calib_cmd_flag = plc_d911;
@@ -204,6 +205,20 @@ void VL53L_Process_PLC_Response(const uint8_t *buf, uint16_t len) {
                 g_vl53_app.calib_display_hold_until = HAL_GetTick() + 4000; // Giữ màn hình Calib 4 giây
             }
         }
+        else if (p_len >= 16) {
+            uint16_t plc_d910 = payload[14] | (payload[15] << 8);
+            uint16_t plc_d911 = payload[12] | (payload[13] << 8);
+
+            g_vl53_app.d_calib_target = plc_d910;
+            g_vl53_app.d_calib_cmd_flag = plc_d911;
+            g_vl53_app.read_success_count++;
+
+            if ((plc_d911 == 10 || plc_d911 == 1 || plc_d911 == 20 || plc_d911 == 30) && pending_calib_cmd == 0) {
+                pending_calib_cmd = plc_d911;
+                g_vl53_app.active_calib_mode = plc_d911;
+                g_vl53_app.calib_display_hold_until = HAL_GetTick() + 4000;
+            }
+        }
     }
     // Gói phản hồi định dạng ngắn không kèm Routing Header
     else if (p_len >= 4) {
@@ -212,8 +227,8 @@ void VL53L_Process_PLC_Response(const uint8_t *buf, uint16_t len) {
         resp_received = true;
 
         if (end_code == 0x0000 && p_len >= 8) {
-            uint16_t plc_d910 = payload[6] | (payload[7] << 8);
-            uint16_t plc_d911 = payload[4] | (payload[5] << 8);
+            uint16_t plc_d910 = payload[4] | (payload[5] << 8);
+            uint16_t plc_d911 = payload[6] | (payload[7] << 8);
 
             g_vl53_app.d_calib_target = plc_d910;
             g_vl53_app.d_calib_cmd_flag = plc_d911;
