@@ -395,3 +395,1372 @@ COM9
 
 !ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-20 15:09:31.526
 !MESSAGE port: COM9
+!SESSION 2026-08-21 08:43:41.218 -----------------------------------------------
+eclipse.buildId=Version 2.2.0
+java.version=21.0.10
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2026-08-21 08:44:11.909
+!MESSAGE Log4j2 initialized with config file D:\data-2026\lap_top\GHEP-MITSU_BACKUP\stm32_vl53l1x\stm32_vll53l1\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2026-08-21 08:44:21.284
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 08:44:22.531
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 08:44:22.531
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:07.273
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:07.273
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:07.274
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:08.105
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:08.106
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:08.106
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:09.092
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:09.092
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:09.092
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:11.145
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:11.145
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:11.146
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:12.233
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:12.234
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:12.234
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:22.807
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:22.807
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:22.808
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:23.477
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:23.477
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:23.477
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:25.118
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:25.118
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:25.118
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:26.267
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:26.268
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:26.268
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:36.157
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:36.157
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:36.158
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:37.102
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:37.103
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:37.103
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:39.164
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:39.165
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:39.165
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:40.114
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:40.114
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:40.114
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:53.134
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:53.134
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:53.134
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:54.059
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:54.059
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:55:54.059
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:56:00.159
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:56:00.160
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:56:31.084
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:56:31.084
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:56:31.085
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:56:42.181
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:56:42.182
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:56:42.182
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:56:43.181
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:56:43.182
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:56:43.183
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:56:45.114
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:56:45.115
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:56:45.115
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:56:46.194
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:56:46.194
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:56:46.195
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:56:59.135
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:56:59.135
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:56:59.135
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:00.126
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:00.127
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:00.127
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:04.330
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:04.330
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:07.244
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:07.244
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:07.245
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:12.131
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:12.131
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:12.131
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:13.191
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:13.192
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:13.192
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:15.429
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:15.429
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:27.061
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:27.062
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:27.062
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:35.180
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:35.181
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:35.181
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:36.100
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:36.100
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:36.100
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:38.095
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:38.095
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:38.095
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:39.100
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:39.100
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:39.100
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:53.083
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:53.084
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:53.084
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:53.549
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:53.549
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:53.550
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:55.133
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:55.133
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:55.133
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:56.151
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:56.151
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:57:56.151
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:06.171
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:06.172
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:06.173
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:07.159
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:07.160
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:07.160
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:09.115
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:09.116
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:09.116
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:10.093
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:10.093
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:10.093
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:23.192
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:23.192
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:23.193
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:24.711
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:24.711
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:24.712
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:26.088
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:26.089
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:26.089
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:27.104
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:27.104
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:27.104
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:37.114
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:37.114
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:37.115
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:38.185
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:38.186
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:38.186
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:41.360
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:41.360
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:41.360
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:42.040
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:42.040
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:42.040
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:46.226
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 11:58:46.227
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:06.286
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM6
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:06.287
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:06.287
+!MESSAGE port: COM6
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:16.171
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM6
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:16.171
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:16.171
+!MESSAGE port: COM6
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:17.148
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM6
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:17.150
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:17.151
+!MESSAGE port: COM6
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:19.138
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM6
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:19.138
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:19.139
+!MESSAGE port: COM6
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:20.117
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM6
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:20.117
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:20.117
+!MESSAGE port: COM6
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:30.090
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM6
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:30.090
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:30.090
+!MESSAGE port: COM6
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:31.109
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM6
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:31.110
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:31.110
+!MESSAGE port: COM6
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:41.124
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM6
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:41.125
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:41.125
+!MESSAGE port: COM6
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:42.063
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+COM6
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:42.064
+!MESSAGE port: COM9
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:42.064
+!MESSAGE port: COM6
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:49.242
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:02:49.242
+!MESSAGE port: COM9
+
+!ENTRY org.eclipse.core.resources 2 10035 2026-08-21 12:41:00.064
+!MESSAGE The workspace will exit with unsaved changes in this session.
+!SESSION 2026-08-21 12:41:19.869 -----------------------------------------------
+eclipse.buildId=Version 2.2.0
+java.version=21.0.10
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Framework arguments:  D:\data-2026\lap_top\GHEP-MITSU_BACKUP\stm32_vl53l1x\STM32F103C8T6_VL53\STM32CubeIDE\.project
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 D:\data-2026\lap_top\GHEP-MITSU_BACKUP\stm32_vl53l1x\STM32F103C8T6_VL53\STM32CubeIDE\.project
+
+!ENTRY org.eclipse.core.resources 2 10035 2026-08-21 12:41:21.715
+!MESSAGE The workspace exited with unsaved changes in the previous session; refreshing workspace to recover changes.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2026-08-21 12:41:43.246
+!MESSAGE Log4j2 initialized with config file D:\data-2026\lap_top\GHEP-MITSU_BACKUP\stm32_vl53l1x\stm32_vll53l1\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2026-08-21 12:41:52.343
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.cdt.core 1 0 2026-08-21 12:42:00.080
+!MESSAGE Indexed 'STM32F103C8T6_VL53' (33 sources, 110 headers) in 4.29 sec: 7,942 declarations; 40,296 references; 0 unresolved inclusions; 1 syntax errors; 0 unresolved names (0%)
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:42:00.608
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 12:42:00.609
+!MESSAGE port: COM9
+
+!ENTRY org.eclipse.cdt.managedbuilder.core 4 0 2026-08-21 12:42:12.243
+!MESSAGE Project 'stm32_new' is not open.
+!STACK 1
+org.eclipse.core.internal.resources.ResourceException(/stm32_new)[372]: java.lang.Exception: Project 'stm32_new' is not open.
+	at org.eclipse.core.internal.resources.ResourceException.provideStackTrace(ResourceException.java:42)
+	at org.eclipse.core.internal.resources.ResourceException.<init>(ResourceException.java:38)
+	at org.eclipse.core.internal.resources.Project.checkAccessible(Project.java:192)
+	at org.eclipse.core.internal.resources.Project.getDescription(Project.java:445)
+	at org.eclipse.cdt.managedbuilder.internal.dataprovider.ConfigurationDataProvider.cacheNaturesIdsUsedOnCache(ConfigurationDataProvider.java:383)
+	at org.eclipse.cdt.managedbuilder.internal.dataprovider.ConfigurationDataProvider.loadConfiguration(ConfigurationDataProvider.java:580)
+	at org.eclipse.cdt.internal.core.settings.model.CConfigurationDescriptionCache.loadData(CConfigurationDescriptionCache.java:139)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescription.loadDatas(CProjectDescription.java:199)
+	at org.eclipse.cdt.internal.core.settings.model.xml.XmlProjectDescriptionStorage.loadProjectDescription(XmlProjectDescriptionStorage.java:509)
+	at org.eclipse.cdt.internal.core.settings.model.xml.XmlProjectDescriptionStorage.getProjectDescription(XmlProjectDescriptionStorage.java:239)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescriptionInternal(CProjectDescriptionManager.java:426)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:408)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:402)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:395)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.isNewStyleProject(CProjectDescriptionManager.java:2464)
+	at org.eclipse.cdt.core.model.CoreModel.isNewStyleProject(CoreModel.java:1457)
+	at org.eclipse.cdt.ui.newui.ManageConfigSelector.getProjects(ManageConfigSelector.java:104)
+	at org.eclipse.cdt.internal.ui.workingsets.HasManagedCdtProjectSelection.hasManagedCdtProjectSelection(HasManagedCdtProjectSelection.java:43)
+	at org.eclipse.cdt.internal.ui.workingsets.HasManagedCdtProjectSelection.test(HasManagedCdtProjectSelection.java:33)
+	at org.eclipse.core.internal.expressions.Property.test(Property.java:65)
+	at org.eclipse.core.expressions.TestExpression.evaluate(TestExpression.java:109)
+	at org.eclipse.ui.internal.services.EvaluationReference.evaluate(EvaluationReference.java:76)
+	at org.eclipse.ui.internal.services.EvaluationReference.evaluate(EvaluationReference.java:106)
+	at org.eclipse.ui.internal.services.EvaluationReference.changed(EvaluationReference.java:100)
+	at org.eclipse.e4.core.internal.contexts.TrackableComputationExt.update(TrackableComputationExt.java:109)
+	at org.eclipse.e4.core.internal.contexts.EclipseContext.processScheduled(EclipseContext.java:371)
+	at org.eclipse.e4.core.internal.contexts.EclipseContext.set(EclipseContext.java:387)
+	at org.eclipse.e4.core.internal.contexts.EclipseContext.deactivate(EclipseContext.java:716)
+	at org.eclipse.e4.ui.workbench.renderers.swt.MenuManagerHideProcessor.lambda$1(MenuManagerHideProcessor.java:140)
+	at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:40)
+	at org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:132)
+	at org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:4137)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3753)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$5.run(PartRenderingEngine.java:1147)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:339)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.run(PartRenderingEngine.java:1038)
+	at org.eclipse.e4.ui.internal.workbench.E4Workbench.createAndRunUI(E4Workbench.java:153)
+	at org.eclipse.ui.internal.Workbench.lambda$3(Workbench.java:677)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:339)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:583)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:173)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:185)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:219)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:149)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:115)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:467)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:298)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:615)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:563)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1415)
+!SUBENTRY 1 org.eclipse.core.resources 4 372 2026-08-21 12:42:12.249
+!MESSAGE Project 'stm32_new' is not open.
+!STACK 0
+java.lang.Exception: Project 'stm32_new' is not open.
+	at org.eclipse.core.internal.resources.ResourceException.provideStackTrace(ResourceException.java:42)
+	at org.eclipse.core.internal.resources.ResourceException.<init>(ResourceException.java:38)
+	at org.eclipse.core.internal.resources.Project.checkAccessible(Project.java:192)
+	at org.eclipse.core.internal.resources.Project.getDescription(Project.java:445)
+	at org.eclipse.cdt.managedbuilder.internal.dataprovider.ConfigurationDataProvider.cacheNaturesIdsUsedOnCache(ConfigurationDataProvider.java:383)
+	at org.eclipse.cdt.managedbuilder.internal.dataprovider.ConfigurationDataProvider.loadConfiguration(ConfigurationDataProvider.java:580)
+	at org.eclipse.cdt.internal.core.settings.model.CConfigurationDescriptionCache.loadData(CConfigurationDescriptionCache.java:139)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescription.loadDatas(CProjectDescription.java:199)
+	at org.eclipse.cdt.internal.core.settings.model.xml.XmlProjectDescriptionStorage.loadProjectDescription(XmlProjectDescriptionStorage.java:509)
+	at org.eclipse.cdt.internal.core.settings.model.xml.XmlProjectDescriptionStorage.getProjectDescription(XmlProjectDescriptionStorage.java:239)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescriptionInternal(CProjectDescriptionManager.java:426)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:408)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:402)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:395)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.isNewStyleProject(CProjectDescriptionManager.java:2464)
+	at org.eclipse.cdt.core.model.CoreModel.isNewStyleProject(CoreModel.java:1457)
+	at org.eclipse.cdt.ui.newui.ManageConfigSelector.getProjects(ManageConfigSelector.java:104)
+	at org.eclipse.cdt.internal.ui.workingsets.HasManagedCdtProjectSelection.hasManagedCdtProjectSelection(HasManagedCdtProjectSelection.java:43)
+	at org.eclipse.cdt.internal.ui.workingsets.HasManagedCdtProjectSelection.test(HasManagedCdtProjectSelection.java:33)
+	at org.eclipse.core.internal.expressions.Property.test(Property.java:65)
+	at org.eclipse.core.expressions.TestExpression.evaluate(TestExpression.java:109)
+	at org.eclipse.ui.internal.services.EvaluationReference.evaluate(EvaluationReference.java:76)
+	at org.eclipse.ui.internal.services.EvaluationReference.evaluate(EvaluationReference.java:106)
+	at org.eclipse.ui.internal.services.EvaluationReference.changed(EvaluationReference.java:100)
+	at org.eclipse.e4.core.internal.contexts.TrackableComputationExt.update(TrackableComputationExt.java:109)
+	at org.eclipse.e4.core.internal.contexts.EclipseContext.processScheduled(EclipseContext.java:371)
+	at org.eclipse.e4.core.internal.contexts.EclipseContext.set(EclipseContext.java:387)
+	at org.eclipse.e4.core.internal.contexts.EclipseContext.deactivate(EclipseContext.java:716)
+	at org.eclipse.e4.ui.workbench.renderers.swt.MenuManagerHideProcessor.lambda$1(MenuManagerHideProcessor.java:140)
+	at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:40)
+	at org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:132)
+	at org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:4137)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3753)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$5.run(PartRenderingEngine.java:1147)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:339)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.run(PartRenderingEngine.java:1038)
+	at org.eclipse.e4.ui.internal.workbench.E4Workbench.createAndRunUI(E4Workbench.java:153)
+	at org.eclipse.ui.internal.Workbench.lambda$3(Workbench.java:677)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:339)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:583)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:173)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:185)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:219)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:149)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:115)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:467)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:298)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:615)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:563)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1415)
+
+!ENTRY org.eclipse.cdt.managedbuilder.core 4 0 2026-08-21 12:42:12.285
+!MESSAGE Project 'stm32_new' is not open.
+!STACK 1
+org.eclipse.core.internal.resources.ResourceException(/stm32_new)[372]: java.lang.Exception: Project 'stm32_new' is not open.
+	at org.eclipse.core.internal.resources.ResourceException.provideStackTrace(ResourceException.java:42)
+	at org.eclipse.core.internal.resources.ResourceException.<init>(ResourceException.java:38)
+	at org.eclipse.core.internal.resources.Project.checkAccessible(Project.java:192)
+	at org.eclipse.core.internal.resources.Project.getDescription(Project.java:445)
+	at org.eclipse.cdt.managedbuilder.internal.dataprovider.ConfigurationDataProvider.cacheNaturesIdsUsedOnCache(ConfigurationDataProvider.java:383)
+	at org.eclipse.cdt.managedbuilder.internal.dataprovider.ConfigurationDataProvider.loadConfiguration(ConfigurationDataProvider.java:580)
+	at org.eclipse.cdt.internal.core.settings.model.CConfigurationDescriptionCache.loadData(CConfigurationDescriptionCache.java:139)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescription.loadDatas(CProjectDescription.java:199)
+	at org.eclipse.cdt.internal.core.settings.model.xml.XmlProjectDescriptionStorage.loadProjectDescription(XmlProjectDescriptionStorage.java:509)
+	at org.eclipse.cdt.internal.core.settings.model.xml.XmlProjectDescriptionStorage.getProjectDescription(XmlProjectDescriptionStorage.java:239)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescriptionInternal(CProjectDescriptionManager.java:426)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:408)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:402)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:395)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.isNewStyleProject(CProjectDescriptionManager.java:2464)
+	at org.eclipse.cdt.core.model.CoreModel.isNewStyleProject(CoreModel.java:1457)
+	at org.eclipse.cdt.ui.newui.ManageConfigSelector.getProjects(ManageConfigSelector.java:104)
+	at org.eclipse.cdt.internal.ui.workingsets.HasManagedCdtProjectSelection.hasManagedCdtProjectSelection(HasManagedCdtProjectSelection.java:43)
+	at org.eclipse.cdt.internal.ui.workingsets.HasManagedCdtProjectSelection.test(HasManagedCdtProjectSelection.java:33)
+	at org.eclipse.core.internal.expressions.Property.test(Property.java:65)
+	at org.eclipse.core.expressions.TestExpression.evaluate(TestExpression.java:109)
+	at org.eclipse.ui.internal.services.EvaluationReference.evaluate(EvaluationReference.java:76)
+	at org.eclipse.ui.internal.services.EvaluationReference.evaluate(EvaluationReference.java:106)
+	at org.eclipse.ui.internal.services.EvaluationReference.changed(EvaluationReference.java:100)
+	at org.eclipse.e4.core.internal.contexts.TrackableComputationExt.update(TrackableComputationExt.java:109)
+	at org.eclipse.e4.core.internal.contexts.EclipseContext.processScheduled(EclipseContext.java:371)
+	at org.eclipse.e4.core.internal.contexts.EclipseContext.set(EclipseContext.java:387)
+	at org.eclipse.e4.core.internal.contexts.EclipseContext.deactivate(EclipseContext.java:716)
+	at org.eclipse.e4.ui.workbench.renderers.swt.MenuManagerHideProcessor.lambda$1(MenuManagerHideProcessor.java:140)
+	at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:40)
+	at org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:132)
+	at org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:4137)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3753)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$5.run(PartRenderingEngine.java:1147)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:339)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.run(PartRenderingEngine.java:1038)
+	at org.eclipse.e4.ui.internal.workbench.E4Workbench.createAndRunUI(E4Workbench.java:153)
+	at org.eclipse.ui.internal.Workbench.lambda$3(Workbench.java:677)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:339)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:583)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:173)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:185)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:219)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:149)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:115)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:467)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:298)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:615)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:563)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1415)
+!SUBENTRY 1 org.eclipse.core.resources 4 372 2026-08-21 12:42:12.285
+!MESSAGE Project 'stm32_new' is not open.
+!STACK 0
+java.lang.Exception: Project 'stm32_new' is not open.
+	at org.eclipse.core.internal.resources.ResourceException.provideStackTrace(ResourceException.java:42)
+	at org.eclipse.core.internal.resources.ResourceException.<init>(ResourceException.java:38)
+	at org.eclipse.core.internal.resources.Project.checkAccessible(Project.java:192)
+	at org.eclipse.core.internal.resources.Project.getDescription(Project.java:445)
+	at org.eclipse.cdt.managedbuilder.internal.dataprovider.ConfigurationDataProvider.cacheNaturesIdsUsedOnCache(ConfigurationDataProvider.java:383)
+	at org.eclipse.cdt.managedbuilder.internal.dataprovider.ConfigurationDataProvider.loadConfiguration(ConfigurationDataProvider.java:580)
+	at org.eclipse.cdt.internal.core.settings.model.CConfigurationDescriptionCache.loadData(CConfigurationDescriptionCache.java:139)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescription.loadDatas(CProjectDescription.java:199)
+	at org.eclipse.cdt.internal.core.settings.model.xml.XmlProjectDescriptionStorage.loadProjectDescription(XmlProjectDescriptionStorage.java:509)
+	at org.eclipse.cdt.internal.core.settings.model.xml.XmlProjectDescriptionStorage.getProjectDescription(XmlProjectDescriptionStorage.java:239)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescriptionInternal(CProjectDescriptionManager.java:426)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:408)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:402)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:395)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.isNewStyleProject(CProjectDescriptionManager.java:2464)
+	at org.eclipse.cdt.core.model.CoreModel.isNewStyleProject(CoreModel.java:1457)
+	at org.eclipse.cdt.ui.newui.ManageConfigSelector.getProjects(ManageConfigSelector.java:104)
+	at org.eclipse.cdt.internal.ui.workingsets.HasManagedCdtProjectSelection.hasManagedCdtProjectSelection(HasManagedCdtProjectSelection.java:43)
+	at org.eclipse.cdt.internal.ui.workingsets.HasManagedCdtProjectSelection.test(HasManagedCdtProjectSelection.java:33)
+	at org.eclipse.core.internal.expressions.Property.test(Property.java:65)
+	at org.eclipse.core.expressions.TestExpression.evaluate(TestExpression.java:109)
+	at org.eclipse.ui.internal.services.EvaluationReference.evaluate(EvaluationReference.java:76)
+	at org.eclipse.ui.internal.services.EvaluationReference.evaluate(EvaluationReference.java:106)
+	at org.eclipse.ui.internal.services.EvaluationReference.changed(EvaluationReference.java:100)
+	at org.eclipse.e4.core.internal.contexts.TrackableComputationExt.update(TrackableComputationExt.java:109)
+	at org.eclipse.e4.core.internal.contexts.EclipseContext.processScheduled(EclipseContext.java:371)
+	at org.eclipse.e4.core.internal.contexts.EclipseContext.set(EclipseContext.java:387)
+	at org.eclipse.e4.core.internal.contexts.EclipseContext.deactivate(EclipseContext.java:716)
+	at org.eclipse.e4.ui.workbench.renderers.swt.MenuManagerHideProcessor.lambda$1(MenuManagerHideProcessor.java:140)
+	at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:40)
+	at org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:132)
+	at org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:4137)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3753)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$5.run(PartRenderingEngine.java:1147)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:339)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.run(PartRenderingEngine.java:1038)
+	at org.eclipse.e4.ui.internal.workbench.E4Workbench.createAndRunUI(E4Workbench.java:153)
+	at org.eclipse.ui.internal.Workbench.lambda$3(Workbench.java:677)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:339)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:583)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:173)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:185)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:219)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:149)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:115)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:467)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:298)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:615)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:563)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1415)
+
+!ENTRY org.eclipse.cdt.core 4 0 2026-08-21 12:42:12.299
+!MESSAGE Error
+!STACK 1
+org.eclipse.core.runtime.CoreException: attempt to set description for a project which does not exist or not open
+	at org.eclipse.cdt.internal.core.settings.model.xml.XmlProjectDescriptionStorage.setCurrentDescription(XmlProjectDescriptionStorage.java:382)
+	at org.eclipse.cdt.internal.core.settings.model.xml.XmlProjectDescriptionStorage.setLoaddedDescriptionOnLoad(XmlProjectDescriptionStorage.java:360)
+	at org.eclipse.cdt.internal.core.settings.model.xml.XmlProjectDescriptionStorage.getProjectDescription(XmlProjectDescriptionStorage.java:258)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescriptionInternal(CProjectDescriptionManager.java:426)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:408)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:402)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.getProjectDescription(CProjectDescriptionManager.java:395)
+	at org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager.isNewStyleProject(CProjectDescriptionManager.java:2464)
+	at org.eclipse.cdt.core.model.CoreModel.isNewStyleProject(CoreModel.java:1457)
+	at org.eclipse.cdt.ui.newui.ManageConfigSelector.getProjects(ManageConfigSelector.java:104)
+	at org.eclipse.cdt.internal.ui.workingsets.HasManagedCdtProjectSelection.hasManagedCdtProjectSelection(HasManagedCdtProjectSelection.java:43)
+	at org.eclipse.cdt.internal.ui.workingsets.HasManagedCdtProjectSelection.test(HasManagedCdtProjectSelection.java:33)
+	at org.eclipse.core.internal.expressions.Property.test(Property.java:65)
+	at org.eclipse.core.expressions.TestExpression.evaluate(TestExpression.java:109)
+	at org.eclipse.ui.internal.services.EvaluationReference.evaluate(EvaluationReference.java:76)
+	at org.eclipse.ui.internal.services.EvaluationReference.evaluate(EvaluationReference.java:106)
+	at org.eclipse.ui.internal.services.EvaluationReference.changed(EvaluationReference.java:100)
+	at org.eclipse.e4.core.internal.contexts.TrackableComputationExt.update(TrackableComputationExt.java:109)
+	at org.eclipse.e4.core.internal.contexts.EclipseContext.processScheduled(EclipseContext.java:371)
+	at org.eclipse.e4.core.internal.contexts.EclipseContext.set(EclipseContext.java:387)
+	at org.eclipse.e4.core.internal.contexts.EclipseContext.deactivate(EclipseContext.java:716)
+	at org.eclipse.e4.ui.workbench.renderers.swt.MenuManagerHideProcessor.lambda$1(MenuManagerHideProcessor.java:140)
+	at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:40)
+	at org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:132)
+	at org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:4137)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3753)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$5.run(PartRenderingEngine.java:1147)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:339)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.run(PartRenderingEngine.java:1038)
+	at org.eclipse.e4.ui.internal.workbench.E4Workbench.createAndRunUI(E4Workbench.java:153)
+	at org.eclipse.ui.internal.Workbench.lambda$3(Workbench.java:677)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:339)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:583)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:173)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:185)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:219)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:149)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:115)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:467)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:298)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:615)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:563)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1415)
+!SUBENTRY 1 org.eclipse.cdt.core 4 -1 2026-08-21 12:42:12.300
+!MESSAGE attempt to set description for a project which does not exist or not open
+
+!ENTRY org.eclipse.cdt.core 1 0 2026-08-21 13:10:33.661
+!MESSAGE Indexed 'STM32F103C8T6_VL53' (34 sources, 119 headers) in 1.93 sec: 8,235 declarations; 40,759 references; 0 unresolved inclusions; 1 syntax errors; 0 unresolved names (0%)
+!SESSION 2026-08-21 19:17:35.629 -----------------------------------------------
+eclipse.buildId=Version 2.2.0
+java.version=21.0.10
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2026-08-21 19:17:50.010
+!MESSAGE Log4j2 initialized with config file D:\data-2026\lap_top\GHEP-MITSU_BACKUP\stm32_vl53l1x\stm32_vll53l1\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2026-08-21 19:18:04.767
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 19:18:11.133
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-21 19:18:11.133
+!MESSAGE port: COM9
+
+!ENTRY org.eclipse.ui.workbench.texteditor 4 0 2026-08-21 22:55:54.640
+!MESSAGE Disconnected before saving. https://bugs.eclipse.org/bugs/show_bug.cgi?id=569286 org.eclipse.cdt.internal.ui.editor.CEditor VL53L.h
+!STACK 0
+java.lang.IllegalStateException: Disconnected before saving. https://bugs.eclipse.org/bugs/show_bug.cgi?id=569286 org.eclipse.cdt.internal.ui.editor.CEditor VL53L.h
+	at org.eclipse.ui.texteditor.AbstractTextEditor$TextEditorSavable.disconnectEditor(AbstractTextEditor.java:7672)
+	at org.eclipse.ui.texteditor.AbstractTextEditor.dispose(AbstractTextEditor.java:4604)
+	at org.eclipse.ui.texteditor.AbstractDecoratedTextEditor.dispose(AbstractDecoratedTextEditor.java:410)
+	at org.eclipse.ui.editors.text.TextEditor.dispose(TextEditor.java:94)
+	at org.eclipse.cdt.internal.ui.editor.CEditor.dispose(CEditor.java:2199)
+	at org.eclipse.ui.internal.e4.compatibility.CompatibilityPart.invalidate(CompatibilityPart.java:266)
+	at org.eclipse.ui.internal.e4.compatibility.CompatibilityPart.destroy(CompatibilityPart.java:423)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.eclipse.e4.core.internal.di.MethodRequestor.execute(MethodRequestor.java:58)
+	at org.eclipse.e4.core.internal.di.InjectorImpl.processAnnotated(InjectorImpl.java:1037)
+	at org.eclipse.e4.core.internal.di.InjectorImpl.processAnnotated(InjectorImpl.java:998)
+	at org.eclipse.e4.core.internal.di.InjectorImpl.uninject(InjectorImpl.java:186)
+	at org.eclipse.e4.core.internal.di.Requestor.uninject(Requestor.java:182)
+	at org.eclipse.e4.core.internal.contexts.ContextObjectSupplier$ContextInjectionListener.update(ContextObjectSupplier.java:93)
+	at org.eclipse.e4.core.internal.contexts.TrackableComputationExt.update(TrackableComputationExt.java:107)
+	at org.eclipse.e4.core.internal.contexts.EclipseContext.removeListenersTo(EclipseContext.java:512)
+	at org.eclipse.e4.core.contexts.ContextInjectionFactory.uninject(ContextInjectionFactory.java:185)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeRemoveGui(PartRenderingEngine.java:939)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$4.run(PartRenderingEngine.java:857)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:47)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.removeGui(PartRenderingEngine.java:841)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeRemoveGui(PartRenderingEngine.java:897)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$4.run(PartRenderingEngine.java:857)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:47)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.removeGui(PartRenderingEngine.java:841)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeRemoveGui(PartRenderingEngine.java:897)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$4.run(PartRenderingEngine.java:857)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:47)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.removeGui(PartRenderingEngine.java:841)
+	at org.eclipse.e4.ui.workbench.renderers.swt.ElementReferenceRenderer.disposeWidget(ElementReferenceRenderer.java:113)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeRemoveGui(PartRenderingEngine.java:931)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$4.run(PartRenderingEngine.java:857)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:47)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.removeGui(PartRenderingEngine.java:841)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeRemoveGui(PartRenderingEngine.java:890)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$4.run(PartRenderingEngine.java:857)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:47)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.removeGui(PartRenderingEngine.java:841)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeRemoveGui(PartRenderingEngine.java:897)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$4.run(PartRenderingEngine.java:857)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:47)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.removeGui(PartRenderingEngine.java:841)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeRemoveGui(PartRenderingEngine.java:897)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$4.run(PartRenderingEngine.java:857)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:47)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.removeGui(PartRenderingEngine.java:841)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeRemoveGui(PartRenderingEngine.java:897)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$4.run(PartRenderingEngine.java:857)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:47)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.removeGui(PartRenderingEngine.java:841)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeRemoveGui(PartRenderingEngine.java:897)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$4.run(PartRenderingEngine.java:857)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:47)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.removeGui(PartRenderingEngine.java:841)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeRemoveGui(PartRenderingEngine.java:897)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$4.run(PartRenderingEngine.java:857)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:47)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.removeGui(PartRenderingEngine.java:841)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeRemoveGui(PartRenderingEngine.java:897)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$4.run(PartRenderingEngine.java:857)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:47)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.removeGui(PartRenderingEngine.java:841)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.safeRemoveGui(PartRenderingEngine.java:897)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$4.run(PartRenderingEngine.java:857)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:47)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.removeGui(PartRenderingEngine.java:841)
+	at org.eclipse.ui.internal.WorkbenchWindow.hardClose(WorkbenchWindow.java:2082)
+	at org.eclipse.ui.internal.WorkbenchWindow.busyClose(WorkbenchWindow.java:1720)
+	at org.eclipse.ui.internal.WorkbenchWindow.lambda$5(WorkbenchWindow.java:1744)
+	at org.eclipse.swt.custom.BusyIndicator.showWhile(BusyIndicator.java:67)
+	at org.eclipse.ui.internal.WorkbenchWindow.close(WorkbenchWindow.java:1744)
+	at org.eclipse.ui.internal.Workbench$11.run(Workbench.java:1185)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:47)
+	at org.eclipse.ui.internal.Workbench.busyClose(Workbench.java:1168)
+	at org.eclipse.ui.internal.Workbench.lambda$5(Workbench.java:1474)
+	at org.eclipse.swt.custom.BusyIndicator.showWhile(BusyIndicator.java:67)
+	at org.eclipse.ui.internal.Workbench.close(Workbench.java:1474)
+	at org.eclipse.ui.internal.Workbench.close(Workbench.java:1445)
+	at org.eclipse.ui.internal.Workbench.lambda$17(Workbench.java:2871)
+	at org.eclipse.swt.widgets.EventTable.sendEvent(EventTable.java:91)
+	at org.eclipse.swt.widgets.Display.sendEvent(Display.java:4364)
+	at org.eclipse.swt.widgets.Display.sendEvent(Display.java:4356)
+	at org.eclipse.swt.widgets.Display.messageProc(Display.java:3353)
+	at org.eclipse.swt.internal.win32.OS.DefWindowProc(Native Method)
+	at org.eclipse.swt.widgets.Shell.callWindowProc(Shell.java:509)
+	at org.eclipse.swt.widgets.Control.windowProc(Control.java:4961)
+	at org.eclipse.swt.widgets.Canvas.windowProc(Canvas.java:336)
+	at org.eclipse.swt.widgets.Decorations.windowProc(Decorations.java:1499)
+	at org.eclipse.swt.widgets.Shell.windowProc(Shell.java:2395)
+	at org.eclipse.swt.widgets.Display.windowProc(Display.java:5132)
+	at org.eclipse.swt.internal.win32.OS.PeekMessage(Native Method)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3745)
+	at org.eclipse.jface.window.Window.runEventLoop(Window.java:824)
+	at org.eclipse.jface.window.Window.open(Window.java:804)
+	at org.eclipse.jface.dialogs.MessageDialog.open(MessageDialog.java:608)
+	at org.eclipse.ui.internal.SaveablesList.promptForSaving(SaveablesList.java:680)
+	at org.eclipse.ui.internal.SaveablesList.promptForSaving(SaveablesList.java:587)
+	at org.eclipse.ui.internal.SaveablesList.promptForSavingIfNecessary(SaveablesList.java:570)
+	at org.eclipse.ui.internal.SaveablesList.preCloseParts(SaveablesList.java:515)
+	at org.eclipse.ui.internal.SaveablesList.preCloseParts(SaveablesList.java:450)
+	at org.eclipse.ui.internal.WorkbenchWindow$2.saveParts(WorkbenchWindow.java:776)
+	at org.eclipse.ui.internal.Workbench.saveAllParts(Workbench.java:1403)
+	at org.eclipse.ui.internal.Workbench.busyClose(Workbench.java:1129)
+	at org.eclipse.ui.internal.Workbench.lambda$5(Workbench.java:1474)
+	at org.eclipse.swt.custom.BusyIndicator.showWhile(BusyIndicator.java:67)
+	at org.eclipse.ui.internal.Workbench.close(Workbench.java:1474)
+	at org.eclipse.ui.internal.Workbench.close(Workbench.java:1445)
+	at org.eclipse.ui.internal.WorkbenchWindow.busyClose(WorkbenchWindow.java:1717)
+	at org.eclipse.ui.internal.WorkbenchWindow.lambda$5(WorkbenchWindow.java:1744)
+	at org.eclipse.swt.custom.BusyIndicator.showWhile(BusyIndicator.java:67)
+	at org.eclipse.ui.internal.WorkbenchWindow.close(WorkbenchWindow.java:1744)
+	at org.eclipse.ui.internal.WorkbenchWindow.close(WorkbenchWindow.java:1753)
+	at org.eclipse.ui.internal.WorkbenchWindow.lambda$2(WorkbenchWindow.java:505)
+	at org.eclipse.e4.ui.workbench.renderers.swt.WBWRenderer.lambda$4(WBWRenderer.java:566)
+	at org.eclipse.swt.events.ShellListener$2.shellClosed(ShellListener.java:101)
+	at org.eclipse.swt.widgets.TypedListener.handleEvent(TypedListener.java:140)
+	at org.eclipse.swt.widgets.EventTable.sendEvent(EventTable.java:91)
+	at org.eclipse.swt.widgets.Display.sendEvent(Display.java:4364)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1217)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1241)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1226)
+	at org.eclipse.swt.widgets.Decorations.closeWidget(Decorations.java:268)
+	at org.eclipse.swt.widgets.Decorations.WM_CLOSE(Decorations.java:1571)
+	at org.eclipse.swt.widgets.Control.windowProc(Control.java:4861)
+	at org.eclipse.swt.widgets.Canvas.windowProc(Canvas.java:336)
+	at org.eclipse.swt.widgets.Decorations.windowProc(Decorations.java:1499)
+	at org.eclipse.swt.widgets.Shell.windowProc(Shell.java:2395)
+	at org.eclipse.swt.widgets.Display.windowProc(Display.java:5132)
+	at org.eclipse.swt.internal.win32.OS.DefWindowProc(Native Method)
+	at org.eclipse.swt.widgets.Shell.callWindowProc(Shell.java:509)
+	at org.eclipse.swt.widgets.Control.windowProc(Control.java:4961)
+	at org.eclipse.swt.widgets.Canvas.windowProc(Canvas.java:336)
+	at org.eclipse.swt.widgets.Decorations.windowProc(Decorations.java:1499)
+	at org.eclipse.swt.widgets.Shell.windowProc(Shell.java:2395)
+	at org.eclipse.swt.widgets.Display.windowProc(Display.java:5132)
+	at org.eclipse.swt.internal.win32.OS.DefWindowProc(Native Method)
+	at org.eclipse.swt.widgets.Shell.callWindowProc(Shell.java:509)
+	at org.eclipse.swt.widgets.Control.windowProc(Control.java:4961)
+	at org.eclipse.swt.widgets.Canvas.windowProc(Canvas.java:336)
+	at org.eclipse.swt.widgets.Decorations.windowProc(Decorations.java:1499)
+	at org.eclipse.swt.widgets.Shell.windowProc(Shell.java:2395)
+	at org.eclipse.swt.widgets.Display.windowProc(Display.java:5132)
+	at org.eclipse.swt.internal.win32.OS.DispatchMessage(Native Method)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3748)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$5.run(PartRenderingEngine.java:1147)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:339)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.run(PartRenderingEngine.java:1038)
+	at org.eclipse.e4.ui.internal.workbench.E4Workbench.createAndRunUI(E4Workbench.java:153)
+	at org.eclipse.ui.internal.Workbench.lambda$3(Workbench.java:677)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:339)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:583)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:173)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:185)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:219)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:149)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:115)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:467)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:298)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:615)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:563)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1415)
+	Suppressed: java.lang.IllegalStateException: isDirty check after disconnect
+		at org.eclipse.ui.texteditor.AbstractTextEditor$TextEditorSavable.isDirty(AbstractTextEditor.java:7721)
+		at org.eclipse.ui.internal.SaveablesList.lambda$2(SaveablesList.java:794)
+		at org.eclipse.ui.internal.SaveableHelper.lambda$3(SaveableHelper.java:261)
+		at org.eclipse.ui.internal.WorkbenchWindow.run(WorkbenchWindow.java:2285)
+		at org.eclipse.ui.internal.SaveableHelper.runProgressMonitorOperation(SaveableHelper.java:269)
+		at org.eclipse.ui.internal.SaveablesList.saveModels(SaveablesList.java:807)
+		at org.eclipse.ui.internal.SaveablesList.saveModels(SaveablesList.java:771)
+		at org.eclipse.ui.internal.SaveablesList.promptForSaving(SaveablesList.java:755)
+		... 67 more
+
+!ENTRY org.eclipse.ui 4 0 2026-08-21 22:55:54.736
+!MESSAGE Unhandled event loop exception
+!STACK 0
+java.lang.IllegalArgumentException: Argument cannot be null
+	at org.eclipse.swt.SWT.error(SWT.java:4931)
+	at org.eclipse.swt.SWT.error(SWT.java:4865)
+	at org.eclipse.swt.SWT.error(SWT.java:4836)
+	at org.eclipse.swt.widgets.Display.error(Display.java:1334)
+	at org.eclipse.swt.widgets.Display.removeFilter(Display.java:4071)
+	at org.eclipse.ui.internal.Workbench.shutdown(Workbench.java:3105)
+	at org.eclipse.ui.internal.Workbench.busyClose(Workbench.java:1201)
+	at org.eclipse.ui.internal.Workbench.lambda$5(Workbench.java:1474)
+	at org.eclipse.swt.custom.BusyIndicator.showWhile(BusyIndicator.java:67)
+	at org.eclipse.ui.internal.Workbench.close(Workbench.java:1474)
+	at org.eclipse.ui.internal.Workbench.close(Workbench.java:1445)
+	at org.eclipse.ui.internal.WorkbenchWindow.busyClose(WorkbenchWindow.java:1717)
+	at org.eclipse.ui.internal.WorkbenchWindow.lambda$5(WorkbenchWindow.java:1744)
+	at org.eclipse.swt.custom.BusyIndicator.showWhile(BusyIndicator.java:67)
+	at org.eclipse.ui.internal.WorkbenchWindow.close(WorkbenchWindow.java:1744)
+	at org.eclipse.ui.internal.WorkbenchWindow.close(WorkbenchWindow.java:1753)
+	at org.eclipse.ui.internal.WorkbenchWindow.lambda$2(WorkbenchWindow.java:505)
+	at org.eclipse.e4.ui.workbench.renderers.swt.WBWRenderer.lambda$4(WBWRenderer.java:566)
+	at org.eclipse.swt.events.ShellListener$2.shellClosed(ShellListener.java:101)
+	at org.eclipse.swt.widgets.TypedListener.handleEvent(TypedListener.java:140)
+	at org.eclipse.swt.widgets.EventTable.sendEvent(EventTable.java:91)
+	at org.eclipse.swt.widgets.Display.sendEvent(Display.java:4364)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1217)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1241)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1226)
+	at org.eclipse.swt.widgets.Decorations.closeWidget(Decorations.java:268)
+	at org.eclipse.swt.widgets.Decorations.WM_CLOSE(Decorations.java:1571)
+	at org.eclipse.swt.widgets.Control.windowProc(Control.java:4861)
+	at org.eclipse.swt.widgets.Canvas.windowProc(Canvas.java:336)
+	at org.eclipse.swt.widgets.Decorations.windowProc(Decorations.java:1499)
+	at org.eclipse.swt.widgets.Shell.windowProc(Shell.java:2395)
+	at org.eclipse.swt.widgets.Display.windowProc(Display.java:5132)
+	at org.eclipse.swt.internal.win32.OS.DefWindowProc(Native Method)
+	at org.eclipse.swt.widgets.Shell.callWindowProc(Shell.java:509)
+	at org.eclipse.swt.widgets.Control.windowProc(Control.java:4961)
+	at org.eclipse.swt.widgets.Canvas.windowProc(Canvas.java:336)
+	at org.eclipse.swt.widgets.Decorations.windowProc(Decorations.java:1499)
+	at org.eclipse.swt.widgets.Shell.windowProc(Shell.java:2395)
+	at org.eclipse.swt.widgets.Display.windowProc(Display.java:5132)
+	at org.eclipse.swt.internal.win32.OS.DefWindowProc(Native Method)
+	at org.eclipse.swt.widgets.Shell.callWindowProc(Shell.java:509)
+	at org.eclipse.swt.widgets.Control.windowProc(Control.java:4961)
+	at org.eclipse.swt.widgets.Canvas.windowProc(Canvas.java:336)
+	at org.eclipse.swt.widgets.Decorations.windowProc(Decorations.java:1499)
+	at org.eclipse.swt.widgets.Shell.windowProc(Shell.java:2395)
+	at org.eclipse.swt.widgets.Display.windowProc(Display.java:5132)
+	at org.eclipse.swt.internal.win32.OS.DispatchMessage(Native Method)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3748)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$5.run(PartRenderingEngine.java:1147)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:339)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.run(PartRenderingEngine.java:1038)
+	at org.eclipse.e4.ui.internal.workbench.E4Workbench.createAndRunUI(E4Workbench.java:153)
+	at org.eclipse.ui.internal.Workbench.lambda$3(Workbench.java:677)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:339)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:583)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:173)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:185)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:219)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:149)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:115)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:467)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:298)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:615)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:563)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1415)
+!SESSION 2026-08-22 08:51:36.998 -----------------------------------------------
+eclipse.buildId=Version 2.2.0
+java.version=21.0.10
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2026-08-22 08:51:51.899
+!MESSAGE Log4j2 initialized with config file D:\data-2026\lap_top\GHEP-MITSU_BACKUP\stm32_vl53l1x\stm32_vll53l1\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2026-08-22 08:52:11.686
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-22 08:52:15.336
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-22 08:52:15.337
+!MESSAGE port: COM9
+!SESSION 2026-08-22 09:14:36.735 -----------------------------------------------
+eclipse.buildId=Version 2.2.0
+java.version=21.0.10
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Framework arguments:  D:\data-2026\lap_top\GHEP-MITSU_BACKUP\stm32_vl53l1x\STM32F103C8T6_VL53\STM32CubeIDE\.project
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 D:\data-2026\lap_top\GHEP-MITSU_BACKUP\stm32_vl53l1x\STM32F103C8T6_VL53\STM32CubeIDE\.project
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2026-08-22 09:15:01.454
+!MESSAGE Log4j2 initialized with config file D:\data-2026\lap_top\GHEP-MITSU_BACKUP\stm32_vl53l1x\stm32_vll53l1\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2026-08-22 09:15:07.812
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-22 09:15:10.949
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-22 09:15:10.949
+!MESSAGE port: COM9
+
+!ENTRY org.eclipse.cdt.core 1 0 2026-08-22 09:15:12.680
+!MESSAGE Indexed 'STM32F103C8T6_VL53' (46 sources, 124 headers) in 3.49 sec: 10,415 declarations; 64,310 references; 0 unresolved inclusions; 1 syntax errors; 5 unresolved names (0.0067%)
+!SESSION 2026-08-23 11:12:07.182 -----------------------------------------------
+eclipse.buildId=Version 2.2.0
+java.version=21.0.10
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY org.eclipse.core.resources 2 10035 2026-08-23 11:12:15.603
+!MESSAGE The workspace exited with unsaved changes in the previous session; refreshing workspace to recover changes.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2026-08-23 11:12:48.435
+!MESSAGE Log4j2 initialized with config file D:\data-2026\lap_top\GHEP-MITSU_BACKUP\stm32_vl53l1x\stm32_vll53l1\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2026-08-23 11:13:03.322
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-23 11:13:04.528
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM9
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-08-23 11:13:04.529
+!MESSAGE port: COM9

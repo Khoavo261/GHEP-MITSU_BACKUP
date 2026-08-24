@@ -1,0 +1,494 @@
+/**
+ * @file VL53L.c
+ * @brief IMPLEMENTATION CẢM BIẾN VL53L1X TRÊN STM32F103C8T6 (HỖ TRỢ MULTI-NODE & FLASH)
+ */
+
+#include "VL53L.h"
+#include "VL53L1X_api.h"
+#include "VL53L1X_calibration.h"
+#include "vl53l1_platform.h"
+#include "can_vl53.h"
+#include "cmsis_os.h"
+#include "i2c.h"
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+/* ==============================================================================
+ *                       CẤU HÌNH FLASH LƯU CALIB & NODE ID CHO STM32F103
+ * ============================================================================== */
+#define CALIB_FLASH_MAGIC_KEY       0x55AA1235   // Key phiên bản Multi-Node
+#define CALIB_FLASH_ADDR            0x0800FC00   // Page 63 của 64KB Flash
+
+typedef struct {
+    uint32_t magic_key;
+    uint16_t calib_target;
+    int16_t  calib_offset;
+    uint8_t  node_id;
+    uint8_t  reserved[3];
+    uint32_t checksum;
+} Calib_Flash_Data_t;
+
+/* ==============================================================================
+ *                       BIẾN TOÀN CỤC & TRẠNG THÁI
+ * ============================================================================== */
+VL53L_AppData_t g_vl53_app = {
+    .node_id = DEFAULT_NODE_ID,
+    .d_distance_filtered = 2002,
+    .d_distance_raw = 2002,
+    .d_status = 1,
+    .d_error = 0,
+    .d_scan_time_ms = 50,
+    .d_heartbeat = 0,
+    .d_calib_target = 0,
+    .d_calib_cmd_flag = 0,
+    .d_calib_offset = 0,
+    .calib_done = false,
+    .sensor_ok = false,
+    .raw_range_status = 0
+};
+
+static volatile uint16_t pending_calib_cmd = 0;
+static volatile uint16_t pending_calib_target = 0;
+
+/* ==============================================================================
+ *          BỘ LỌC TRUNG BÌNH ĐỘNG (MOVING AVERAGE FILTER - 16 MẪU TỪ STM32_NEW)
+ * ============================================================================== */
+#define FILTER_SAMPLES 16
+
+static uint16_t Filter_MovingAverage(uint16_t raw_mm) {
+    static uint16_t filter_buf[FILTER_SAMPLES] = {0};
+    static uint8_t  filter_idx = 0;
+    static uint8_t  filter_cnt = 0;
+
+    // Loại bỏ mẫu rác ngoài dải hoạt động hoặc vật cản quá gần / quá xa
+    if (raw_mm < 25 || raw_mm > 4000 || raw_mm == 8190 || raw_mm == 8191) {
+        if (filter_cnt > 0) {
+            uint8_t prev_idx = (filter_idx == 0) ? (FILTER_SAMPLES - 1) : (filter_idx - 1);
+            return filter_buf[prev_idx];
+        }
+        return 2002;
+    }
+
+    filter_buf[filter_idx] = raw_mm;
+    filter_idx = (filter_idx + 1) % FILTER_SAMPLES;
+    if (filter_cnt < FILTER_SAMPLES) filter_cnt++;
+
+    uint32_t sum = 0;
+    for (uint8_t i = 0; i < filter_cnt; i++) {
+        sum += filter_buf[i];
+    }
+    return (uint16_t)(sum / filter_cnt);
+}
+
+/* ==============================================================================
+ *                       ĐỌC & GHI FLASH STM32F103 (PAGE ERASE)
+ * ============================================================================== */
+
+static void Calib_Load_From_Flash(void) {
+    const Calib_Flash_Data_t *flash_ptr = (const Calib_Flash_Data_t*)CALIB_FLASH_ADDR;
+
+    if (flash_ptr->magic_key == CALIB_FLASH_MAGIC_KEY) {
+        uint32_t check = flash_ptr->magic_key + flash_ptr->calib_target + (uint16_t)flash_ptr->calib_offset + flash_ptr->node_id;
+        if (check == flash_ptr->checksum) {
+            g_vl53_app.d_calib_target = flash_ptr->calib_target;
+            g_vl53_app.d_calib_offset = flash_ptr->calib_offset;
+            if (flash_ptr->node_id >= 1 && flash_ptr->node_id <= 64) {
+                g_vl53_app.node_id = flash_ptr->node_id;
+            }
+            g_vl53_app.calib_done = true;
+        }
+    }
+}
+
+static bool Calib_Save_To_Flash(void) {
+    Calib_Flash_Data_t save_data;
+    memset(&save_data, 0, sizeof(Calib_Flash_Data_t));
+    save_data.magic_key    = CALIB_FLASH_MAGIC_KEY;
+    save_data.calib_target = g_vl53_app.d_calib_target;
+    save_data.calib_offset = g_vl53_app.d_calib_offset;
+    save_data.node_id      = g_vl53_app.node_id;
+    save_data.checksum     = save_data.magic_key + save_data.calib_target + (uint16_t)save_data.calib_offset + save_data.node_id;
+
+    HAL_FLASH_Unlock();
+
+    FLASH_EraseInitTypeDef EraseInitStruct;
+    EraseInitStruct.TypeErase   = FLASH_TYPEERASE_PAGES;
+    EraseInitStruct.PageAddress = CALIB_FLASH_ADDR;
+    EraseInitStruct.NbPages     = 1;
+
+    uint32_t PageError = 0;
+    if (HAL_FLASHEx_Erase(&EraseInitStruct, &PageError) != HAL_OK) {
+        HAL_FLASH_Lock();
+        return false;
+    }
+
+    uint32_t *src = (uint32_t*)&save_data;
+    uint32_t addr = CALIB_FLASH_ADDR;
+    for (uint32_t i = 0; i < sizeof(Calib_Flash_Data_t) / 4; i++) {
+        if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, addr, src[i]) != HAL_OK) {
+            HAL_FLASH_Lock();
+            return false;
+        }
+        addr += 4;
+    }
+
+    HAL_FLASH_Lock();
+    return true;
+}
+
+bool VL53L_SaveNodeId_To_Flash(uint8_t new_node_id) {
+    if (new_node_id < 1 || new_node_id > 64) return false;
+    g_vl53_app.node_id = new_node_id;
+    return Calib_Save_To_Flash();
+}
+
+/* ==============================================================================
+ *                       KHỞI TẠO CẢM BIẾN VL53L1X (CHUẨN STM32_NEW)
+ * ============================================================================== */
+
+#if (DEFINE_VL53 == 1)
+/* ==============================================================================
+ *                       CHẾ ĐỘ CẢM BIẾN: VL53L1X (DEFINE_VL53 == 1)
+ * ============================================================================== */
+static bool Try_Init_Sensor(void) {
+    if (!I2C_Lock(100)) return false;
+    HAL_StatusTypeDef dev_ready = HAL_I2C_IsDeviceReady(&hi2c1, VL53L_I2C_ADDR, 3, 50);
+    I2C_Unlock();
+
+    if (dev_ready != HAL_OK) {
+        I2C_RecoverBus();
+        osDelay(10);
+        if (!I2C_Lock(100)) return false;
+        dev_ready = HAL_I2C_IsDeviceReady(&hi2c1, VL53L_I2C_ADDR, 3, 50);
+        I2C_Unlock();
+        if (dev_ready != HAL_OK) {
+            g_vl53_app.d_error = 10;
+            g_vl53_app.sensor_ok = false;
+            return false;
+        }
+    }
+
+    uint8_t boot_state = 0;
+    for (int i = 0; i < 20; i++) {
+        VL53L1X_BootState(VL53L_I2C_ADDR, &boot_state);
+        if (boot_state != 0) break;
+        osDelay(10);
+    }
+
+    if (VL53L1X_SensorInit(VL53L_I2C_ADDR) != VL53L1_ERROR_NONE) {
+        g_vl53_app.d_error = 20;
+        g_vl53_app.sensor_ok = false;
+        return false;
+    }
+
+    VL53L1X_SetDistanceMode(VL53L_I2C_ADDR, VL53L1X_DISTANCE_MODE_LONG);
+    VL53L1X_SetTimingBudgetInMs(VL53L_I2C_ADDR, 50);
+    VL53L1X_SetInterMeasurementInMs(VL53L_I2C_ADDR, 55);
+    VL53L1X_StartRanging(VL53L_I2C_ADDR);
+
+    g_vl53_app.sensor_ok = true;
+    g_vl53_app.d_error = 0;
+    return true;
+}
+
+static uint16_t Sensor_ReadDistance(uint8_t *p_status) {
+    uint8_t isDataReady = 0;
+    VL53L1X_CheckForDataReady(VL53L_I2C_ADDR, &isDataReady);
+
+    static uint32_t s_last_read = 0;
+    if (!isDataReady && (HAL_GetTick() - s_last_read > 80)) {
+        isDataReady = 1;
+    }
+
+    uint16_t dist = 0;
+    if (isDataReady) {
+        s_last_read = HAL_GetTick();
+        VL53L1X_GetRangeStatus(VL53L_I2C_ADDR, p_status);
+        VL53L1X_GetDistance(VL53L_I2C_ADDR, &dist);
+        VL53L1X_ClearInterrupt(VL53L_I2C_ADDR);
+    }
+    return dist;
+}
+
+#else
+/* ==============================================================================
+ *                       CHẾ ĐỘ CẢM BIẾN: VL53L0X (DEFINE_VL53 == 0)
+ * ============================================================================== */
+static uint8_t s_l0x_stop_variable = 0;
+
+static uint8_t L0X_Rd(uint8_t reg) {
+    uint8_t val = 0;
+    if (I2C_Lock(50)) {
+        HAL_I2C_Mem_Read(&hi2c1, VL53L_I2C_ADDR, reg, I2C_MEMADD_SIZE_8BIT, &val, 1, 50);
+        I2C_Unlock();
+    }
+    return val;
+}
+
+static void L0X_Wr(uint8_t reg, uint8_t val) {
+    if (I2C_Lock(50)) {
+        HAL_I2C_Mem_Write(&hi2c1, VL53L_I2C_ADDR, reg, I2C_MEMADD_SIZE_8BIT, &val, 1, 50);
+        I2C_Unlock();
+    }
+}
+
+static bool Try_Init_Sensor(void) {
+    if (!I2C_Lock(100)) return false;
+    HAL_StatusTypeDef dev_ready = HAL_I2C_IsDeviceReady(&hi2c1, VL53L_I2C_ADDR, 3, 50);
+    I2C_Unlock();
+
+    if (dev_ready != HAL_OK) {
+        I2C_RecoverBus();
+        osDelay(10);
+        if (!I2C_Lock(100)) return false;
+        dev_ready = HAL_I2C_IsDeviceReady(&hi2c1, VL53L_I2C_ADDR, 3, 50);
+        I2C_Unlock();
+        if (dev_ready != HAL_OK) {
+            g_vl53_app.d_error = 10;
+            g_vl53_app.sensor_ok = false;
+            return false;
+        }
+    }
+
+    // 1. Chế độ nguồn 2.8V
+    L0X_Wr(0x89, L0X_Rd(0x89) | 0x01);
+    L0X_Wr(0x88, 0x00);
+
+    L0X_Wr(0x80, 0x01);
+    L0X_Wr(0xFF, 0x01);
+    L0X_Wr(0x00, 0x00);
+    s_l0x_stop_variable = L0X_Rd(0x91);
+    L0X_Wr(0x00, 0x01);
+    L0X_Wr(0xFF, 0x00);
+    L0X_Wr(0x80, 0x00);
+
+    L0X_Wr(0x60, L0X_Rd(0x60) | 0x12);
+
+    // 2. Bảng Tuning ST chuẩn
+    L0X_Wr(0xFF, 0x01);
+    L0X_Wr(0x00, 0x00);
+    L0X_Wr(0xFF, 0x00);
+    L0X_Wr(0x09, 0x00);
+    L0X_Wr(0x10, 0x00);
+    L0X_Wr(0x11, 0x00);
+    L0X_Wr(0x24, 0x01);
+    L0X_Wr(0x25, 0xFF);
+    L0X_Wr(0x75, 0x00);
+    L0X_Wr(0xFF, 0x01);
+    L0X_Wr(0x4E, 0x2C);
+    L0X_Wr(0x48, 0x00);
+    L0X_Wr(0x30, 0x20);
+    L0X_Wr(0xFF, 0x00);
+    L0X_Wr(0x30, 0x09);
+    L0X_Wr(0x54, 0x00);
+    L0X_Wr(0x31, 0x04);
+    L0X_Wr(0x32, 0x03);
+    L0X_Wr(0x40, 0x83);
+    L0X_Wr(0x46, 0x25);
+    L0X_Wr(0x60, 0x00);
+    L0X_Wr(0x27, 0x00);
+    L0X_Wr(0x50, 0x06);
+    L0X_Wr(0x51, 0x00);
+    L0X_Wr(0x52, 0x96);
+    L0X_Wr(0x56, 0x08);
+    L0X_Wr(0x57, 0x30);
+    L0X_Wr(0x61, 0x00);
+    L0X_Wr(0x62, 0x00);
+    L0X_Wr(0x64, 0x00);
+    L0X_Wr(0x65, 0x00);
+    L0X_Wr(0x66, 0xA0);
+    L0X_Wr(0xFF, 0x01);
+    L0X_Wr(0x22, 0x32);
+    L0X_Wr(0x47, 0x14);
+    L0X_Wr(0x49, 0xFF);
+    L0X_Wr(0x4A, 0x00);
+    L0X_Wr(0xFF, 0x00);
+    L0X_Wr(0x7A, 0x0A);
+    L0X_Wr(0x7B, 0x00);
+    L0X_Wr(0x78, 0x21);
+    L0X_Wr(0xFF, 0x01);
+    L0X_Wr(0x23, 0x34);
+    L0X_Wr(0x42, 0x00);
+    L0X_Wr(0x44, 0xFF);
+    L0X_Wr(0x45, 0x26);
+    L0X_Wr(0x46, 0x05);
+    L0X_Wr(0x40, 0x40);
+    L0X_Wr(0x0E, 0x06);
+    L0X_Wr(0x20, 0x1A);
+    L0X_Wr(0x43, 0x40);
+    L0X_Wr(0xFF, 0x00);
+    L0X_Wr(0x34, 0x03);
+    L0X_Wr(0x35, 0x44);
+    L0X_Wr(0xFF, 0x01);
+    L0X_Wr(0x31, 0x04);
+    L0X_Wr(0x4B, 0x09);
+    L0X_Wr(0x4C, 0x05);
+    L0X_Wr(0x4D, 0x04);
+    L0X_Wr(0xFF, 0x00);
+    L0X_Wr(0x44, 0x00);
+    L0X_Wr(0x45, 0x20);
+    L0X_Wr(0x47, 0x08);
+    L0X_Wr(0x48, 0x28);
+    L0X_Wr(0x67, 0x00);
+    L0X_Wr(0x70, 0x04);
+    L0X_Wr(0x71, 0x01);
+    L0X_Wr(0x72, 0xFE);
+    L0X_Wr(0x76, 0x00);
+    L0X_Wr(0x77, 0x00);
+    L0X_Wr(0xFF, 0x01);
+    L0X_Wr(0x0D, 0x01);
+    L0X_Wr(0xFF, 0x00);
+    L0X_Wr(0x80, 0x01);
+    L0X_Wr(0x01, 0xF8);
+    L0X_Wr(0xFF, 0x01);
+    L0X_Wr(0x8E, 0x01);
+    L0X_Wr(0x00, 0x01);
+    L0X_Wr(0xFF, 0x00);
+    L0X_Wr(0x80, 0x00);
+
+    // 3. Cấu hình ngắt
+    L0X_Wr(0x0A, 0x04);
+    L0X_Wr(0x84, L0X_Rd(0x84) & ~0x10);
+    L0X_Wr(0x0B, 0x01);
+
+    // 4. Tự hiệu chuẩn VHV & Phase
+    L0X_Wr(0x01, 0x01);
+    L0X_Wr(0x00, 0x01);
+    uint32_t t = HAL_GetTick();
+    while ((L0X_Rd(0x00) & 0x01) != 0 && (HAL_GetTick() - t < 50)) osDelay(2);
+
+    L0X_Wr(0x01, 0x02);
+    L0X_Wr(0x00, 0x01);
+    t = HAL_GetTick();
+    while ((L0X_Rd(0x00) & 0x01) != 0 && (HAL_GetTick() - t < 50)) osDelay(2);
+    L0X_Wr(0x01, 0x00);
+
+    g_vl53_app.sensor_ok = true;
+    g_vl53_app.d_error = 0;
+    return true;
+}
+
+static uint16_t Sensor_ReadDistance(uint8_t *p_status) {
+    L0X_Wr(0x80, 0x01);
+    L0X_Wr(0xFF, 0x01);
+    L0X_Wr(0x00, 0x00);
+    L0X_Wr(0x91, s_l0x_stop_variable);
+    L0X_Wr(0x00, 0x01);
+    L0X_Wr(0xFF, 0x00);
+    L0X_Wr(0x80, 0x00);
+
+    L0X_Wr(0x00, 0x01); // Kích hoạt phát xung Laser
+
+    uint32_t start_tick = HAL_GetTick();
+    while ((L0X_Rd(0x00) & 0x01) != 0) {
+        if (HAL_GetTick() - start_tick > 40) break;
+        osDelay(2);
+    }
+
+    uint8_t buf[2] = {0};
+    uint16_t dist = 0;
+    if (I2C_Lock(50)) {
+        if (HAL_I2C_Mem_Read(&hi2c1, VL53L_I2C_ADDR, 0x1E, I2C_MEMADD_SIZE_8BIT, buf, 2, 50) == HAL_OK) {
+            dist = ((uint16_t)buf[0] << 8) | buf[1];
+        }
+        uint8_t clr = 0x01;
+        HAL_I2C_Mem_Write(&hi2c1, VL53L_I2C_ADDR, 0x0B, I2C_MEMADD_SIZE_8BIT, &clr, 1, 50);
+        I2C_Unlock();
+    }
+    *p_status = (dist == 0 || dist == 8190 || dist == 8191) ? 1 : 0;
+    return dist;
+}
+#endif
+
+void VL53L_Init(void) {
+    Calib_Load_From_Flash();
+    osDelay(100);
+    Try_Init_Sensor();
+}
+
+void VL53L_SetPendingCalib(uint16_t cmd, uint16_t target) {
+    pending_calib_cmd = cmd;
+    pending_calib_target = target;
+}
+
+/* ==============================================================================
+ *                       TÁC VỤ ĐỌC CẢM BIẾN & HIỆU CHUẨN
+ * ============================================================================== */
+
+void VL53L_Task_Sensor(void) {
+    if (g_vl53_app.sensor_ok) {
+        uint8_t status = 0;
+        uint16_t dist = Sensor_ReadDistance(&status);
+
+        g_vl53_app.d_distance_raw = dist;
+        g_vl53_app.raw_range_status = status;
+        g_vl53_app.d_error = status;
+
+        if (dist >= 20 && dist <= 4000 && dist != 8190 && dist != 8191) {
+            uint16_t raw_filtered = Filter_MovingAverage(dist);
+            int32_t calibrated_dist = (int32_t)raw_filtered + (int32_t)g_vl53_app.d_calib_offset;
+            if (calibrated_dist < 0) calibrated_dist = 0;
+            g_vl53_app.d_distance_filtered = (uint16_t)calibrated_dist;
+        } else {
+            g_vl53_app.d_distance_filtered = dist;
+        }
+    } else {
+        static uint32_t last_scan = 0;
+        if (HAL_GetTick() - last_scan >= 1000) {
+            last_scan = HAL_GetTick();
+            Try_Init_Sensor();
+        }
+        g_vl53_app.d_distance_raw = 2002;
+        g_vl53_app.d_distance_filtered = 2002;
+    }
+
+    // Xử lý các lệnh Calib & Cài đặt Node ID từ mạng CAN:
+    if (pending_calib_cmd > 0) {
+        uint16_t cmd = pending_calib_cmd;
+        uint16_t tgt = pending_calib_target;
+        pending_calib_cmd = 0;
+
+        // MODE 99: Đổi Node ID mới qua mạng CAN
+        if (cmd == 99 && tgt >= 1 && tgt <= 64) {
+            VL53L_SaveNodeId_To_Flash((uint8_t)tgt);
+            CAN_VL53_SetNodeId((uint8_t)tgt);
+        }
+        // MODE 10 (hoặc 1): Calib Offset phần mềm
+        else if ((cmd == 10 || cmd == 1) && g_vl53_app.d_distance_raw > 0) {
+            uint16_t target = (tgt > 0) ? tgt : g_vl53_app.d_distance_raw;
+            int32_t offset = (int32_t)target - (int32_t)g_vl53_app.d_distance_raw;
+            g_vl53_app.d_calib_target = target;
+            g_vl53_app.d_calib_offset = (int16_t)offset;
+            g_vl53_app.calib_done = true;
+            Calib_Save_To_Flash();
+        }
+        // MODE 20: Calib Offset phần cứng (Hardware ST API)
+        else if (cmd == 20) {
+            uint16_t target = (tgt > 0) ? tgt : 140;
+            int16_t hw_offset = 0;
+            VL53L1X_CalibrateOffset(VL53L_I2C_ADDR, target, &hw_offset);
+            g_vl53_app.d_calib_target = target;
+            g_vl53_app.d_calib_offset = hw_offset;
+            g_vl53_app.calib_done = true;
+            Calib_Save_To_Flash();
+            VL53L1X_StartRanging(VL53L_I2C_ADDR);
+        }
+        // MODE 30: Calib Crosstalk (Xtalk khi có kính/mica)
+        else if (cmd == 30) {
+            uint16_t target = (tgt > 0) ? tgt : 500;
+            uint16_t xtalk_val = 0;
+            VL53L1X_CalibrateXtalk(VL53L_I2C_ADDR, target, &xtalk_val);
+            g_vl53_app.d_calib_target = target;
+            g_vl53_app.calib_done = true;
+            VL53L1X_StartRanging(VL53L_I2C_ADDR);
+        }
+    }
+
+    uint16_t status_word = 0;
+    if (g_vl53_app.sensor_ok) status_word |= (1 << 0);
+    if (g_vl53_app.d_distance_filtered > 0 && g_vl53_app.d_distance_filtered < 200) status_word |= (1 << 1);
+    if (g_vl53_app.d_distance_filtered >= 30 && g_vl53_app.d_distance_filtered <= 3000) status_word |= (1 << 2);
+    if (g_vl53_app.calib_done) status_word |= (1 << 3);
+    g_vl53_app.d_status = status_word;
+}

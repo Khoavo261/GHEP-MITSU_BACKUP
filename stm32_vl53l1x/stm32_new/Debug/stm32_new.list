@@ -37,15 +37,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  16 .debug_macro  0001b223  00000000  00000000  00036d05  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   00022cf4  00000000  00000000  00051f28  2**0
+ 17 .debug_line   000234ec  00000000  00000000  00051f28  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    0009ce56  00000000  00000000  00074c1c  2**0
+ 18 .debug_str    0009ce56  00000000  00000000  00075414  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000043  00000000  00000000  00111a72  2**0
+ 19 .comment      00000043  00000000  00000000  0011226a  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  000075f8  00000000  00000000  00111ab8  2**2
+ 20 .debug_frame  000075f8  00000000  00000000  001122b0  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_line_str 0000006d  00000000  00000000  001190b0  2**0
+ 21 .debug_line_str 0000006d  00000000  00000000  001198a8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -5499,9 +5499,9 @@ void MX_GPIO_Init(void)
  8002a2a:	f002 fabd 	bl	8004fa8 <HAL_GPIO_Init>
 
   /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 5, 0);
  8002a2e:	2200      	movs	r2, #0
- 8002a30:	2100      	movs	r1, #0
+ 8002a30:	2105      	movs	r1, #5
  8002a32:	2017      	movs	r0, #23
  8002a34:	f001 fba8 	bl	8004188 <HAL_NVIC_SetPriority>
   HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
@@ -5604,7 +5604,7 @@ void MX_I2C2_Init(void)
  8002ab4:	4b12      	ldr	r3, [pc, #72]	@ (8002b00 <MX_I2C2_Init+0x50>)
  8002ab6:	4a13      	ldr	r2, [pc, #76]	@ (8002b04 <MX_I2C2_Init+0x54>)
  8002ab8:	601a      	str	r2, [r3, #0]
-  hi2c2.Init.ClockSpeed = 100000;
+  hi2c2.Init.ClockSpeed = 400000;
  8002aba:	4b11      	ldr	r3, [pc, #68]	@ (8002b00 <MX_I2C2_Init+0x50>)
  8002abc:	4a12      	ldr	r2, [pc, #72]	@ (8002b08 <MX_I2C2_Init+0x58>)
  8002abe:	605a      	str	r2, [r3, #4]
@@ -5655,7 +5655,7 @@ void MX_I2C2_Init(void)
  8002afe:	bd80      	pop	{r7, pc}
  8002b00:	20000300 	.word	0x20000300
  8002b04:	40005800 	.word	0x40005800
- 8002b08:	000186a0 	.word	0x000186a0
+ 8002b08:	00061a80 	.word	0x00061a80
 
 08002b0c <HAL_I2C_MspInit>:
 
