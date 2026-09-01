@@ -1,183 +1,191 @@
-VAR_GLOBAL	Servo_Ready_T	BOOL		M1104		Cam bien Servo Ready Truc Thu T (X0 16DT)
-VAR_GLOBAL	Servo_Ready_X1	BOOL		M1105		Cam bien Servo Ready Truc Xa X1 (X1 16DT)
-VAR_GLOBAL	Servo_Ready_X2	BOOL		M1106		Cam bien Servo Ready Truc Master X2 (X2 16DT)
-VAR_GLOBAL	Servo_Ready_Ms	BOOL		M1107		Cam bien Servo Ready Truc Ghep Ms (X3 16DT)
-VAR_GLOBAL	Servo_Ready_S	BOOL		M1108		Cam bien Servo Ready Truc Trang Dau S (X4 16DT)
-VAR_GLOBAL	Pen1_Input_16DT	BOOL		M1109		Tin hieu Pen 1 (X5 16DT)
-VAR_GLOBAL	Pen2_Input_16DT	BOOL		M1110		Tin hieu Pen 2 (X6 16DT)
-VAR_GLOBAL	Jog_Input_16DT	BOOL		M1111		Tin hieu Bo Cham 16DT (X7 16DT)
-VAR_GLOBAL	Sensor_Rev_M	BOOL		X50		Cam bien tiem can dem 1 vong cuon M (X50)
-VAR_GLOBAL	Sensor_Rev_U	BOOL		X51		Cam bien tiem can dem 1 vong cuon U (X51)
-VAR_GLOBAL	Physical_Start_PB	BOOL		X52		Nut nhan vat ly START QX40 (X52)
-VAR_GLOBAL	Physical_Stop_PB	BOOL		X53		Nut nhan vat ly STOP QX40 (X53)
-VAR_GLOBAL	Physical_Inc_PB	BOOL		X54		Nut nhan vat ly TANG TOC INC QX40 (X54)
-VAR_GLOBAL	Physical_Dec_PB	BOOL		X55		Nut nhan vat ly GIAM TOC DEC QX40 (X55)
-VAR_GLOBAL	Pen1_Toggle_PB	BOOL		X56		Nut nhan Toggle Pen 1 QX40 (X56)
-VAR_GLOBAL	Pen2_Toggle_PB	BOOL		X57		Nut nhan Toggle Pen 2 QX40 (X57)
-VAR_GLOBAL	Switch_Hold_M	BOOL		X58		Cong tac giu Torque Thang M khi dung (X58)
-VAR_GLOBAL	Switch_Hold_U	BOOL		X59		Cong tac giu Torque Xa U khi dung (X59)
-VAR_GLOBAL	Switch_Wash_Ms	BOOL		X5A		Cong tac quay rua may bo cham Ms khi dung (X5A)
-VAR_GLOBAL	Switch_Wash_S	BOOL		X5B		Cong tac quay rua may bo cham S khi dung (X5B)
-VAR_GLOBAL	Physical_Jog_PB	BOOL		X5C		Nut nhan co ben ngoai BO CHAM NOI MANG QX40 (X5C)
-VAR_GLOBAL	Servo_ON_T	BOOL		M1304		Ngo ra Servo ON Truc Thu T (Y8 16DT)
-VAR_GLOBAL	Servo_ON_X1	BOOL		M1305		Ngo ra Servo ON Truc Xa X1 (Y9 16DT)
-VAR_GLOBAL	Servo_ON_X2	BOOL		M1306		Ngo ra Servo ON Truc Master X2 (YA 16DT)
-VAR_GLOBAL	Servo_ON_Ms	BOOL		M1307		Ngo ra Servo ON Truc Ghep Ms (YB 16DT)
-VAR_GLOBAL	Servo_ON_S	BOOL		M1308		Ngo ra Servo ON Truc Trang Dau S (YC 16DT)
-VAR_GLOBAL	Pen1_Output	BOOL		M1309		Ngo ra Ben Ep Pen 1 (YD 16DT)
-VAR_GLOBAL	Pen2_Output	BOOL		M1310		Ngo ra Ben Ep Pen 2 (YE 16DT)
-VAR_GLOBAL	HMI_Auto_Mode	BOOL		M100		Che do Auto / Manual
-VAR_GLOBAL	HMI_Reset_Error	BOOL		M101		Reset loi he thong
-VAR_GLOBAL	HMI_Start	BOOL		M102		Nut Start khoi dong HMI
-VAR_GLOBAL	HMI_Stop	BOOL		M103		Nut Stop dung may HMI
-VAR_GLOBAL	HMI_Reset_Length	BOOL		M104		Reset tong chieu dai met hang
-VAR_GLOBAL	HMI_Reset_Roll_T	BOOL		M105		Nap lai duong kinh cuon moi T
-VAR_GLOBAL	HMI_Reset_Roll_M	BOOL		M106		Nap lai duong kinh cuon moi M
-VAR_GLOBAL	HMI_Reset_Roll_U	BOOL		M107		Nap lai duong kinh cuon moi U
-VAR_GLOBAL	HMI_PID_Enable	BOOL		M108		Bat tat che do PID
-VAR_GLOBAL	HMI_Inc_Hold	BOOL		M109		Phim INC tang toc HMI
-VAR_GLOBAL	HMI_Dec_Hold	BOOL		M114		Phim DEC giam toc HMI
-VAR_GLOBAL	HMI_Pen1_Cmd	BOOL		M115		Lenh ON/OFF Pen 1 tu HMI
-VAR_GLOBAL	HMI_Pen2_Cmd	BOOL		M116		Lenh ON/OFF Pen 2 tu HMI
-VAR_GLOBAL	Zero_Set_T	BOOL		M110		Nut Set Zero Loadcell T
-VAR_GLOBAL	Zero_Set_X1	BOOL		M111		Nut Set Zero Loadcell X1
-VAR_GLOBAL	Zero_Set_M	BOOL		M112		Nut Set Zero Loadcell M
-VAR_GLOBAL	Zero_Set_U	BOOL		M113		Nut Set Zero Loadcell U
-VAR_GLOBAL	HMI_Test_T	BOOL		M170		Co Test chay thu rieng Truc Thu T
-VAR_GLOBAL	HMI_Test_X1	BOOL		M171		Co Test chay thu rieng Truc Xa X1
-VAR_GLOBAL	HMI_Test_X2	BOOL		M172		Co Test chay thu rieng Truc Master X2
-VAR_GLOBAL	HMI_Test_Ms	BOOL		M173		Co Test chay thu rieng Truc Ghep Ms
-VAR_GLOBAL	HMI_Test_S	BOOL		M174		Co Test chay thu rieng Truc Trang Dau S
-VAR_GLOBAL	HMI_Test_M	BOOL		M175		Co Test thu Luc Thang Tu M
-VAR_GLOBAL	HMI_Test_U	BOOL		M176		Co Test chay thu rieng Truc Xa Metalize U
-VAR_GLOBAL	Calib_Set_T	BOOL		M120		Nut Calib Span Loadcell T
-VAR_GLOBAL	Calib_Set_X1	BOOL		M121		Nut Calib Span Loadcell X1
-VAR_GLOBAL	Calib_Set_M	BOOL		M122		Nut Calib Span Loadcell M
-VAR_GLOBAL	Calib_Set_U	BOOL		M123		Nut Calib Span Loadcell U
-VAR_GLOBAL	Servo_Not_Ready_Fault	BOOL		M134		Co bao loi Servo Not Ready
-VAR_GLOBAL	Hold_Torque_Stop_M	BOOL		M130		Giu Torque M khi dung may
-VAR_GLOBAL	Hold_Torque_Stop_U	BOOL		M131		Giu Torque U khi dung may
-VAR_GLOBAL	Anti_Dry_Rotate_S	BOOL		M132		Bo cham S khi dung may
-VAR_GLOBAL	Anti_Dry_Rotate_Ms	BOOL		M133		Bo cham Ms khi dung may
-VAR_GLOBAL	HMI_Reset_All_Rolls	BOOL		M135		Nut thay cuon moi toan bo (Reset ca 3 cuon va xoa met)
-VAR_GLOBAL	HMI_Jog_Crawl_Cmd	BOOL		M136		Nut bo cham noi mang 2 m/p giu de chay tha de dung
-VAR_GLOBAL	HMI_Cmd_Apply_Recipe	BOOL		M137		Nut ap dung cong thuc don hang da chon
-VAR_GLOBAL	HMI_Cmd_Save_Recipe	BOOL		M138		Nut luu thong so hien tai vao cong thuc
-VAR_GLOBAL	Weight_Net_T	REAL		D510		Trong luong Luc cang thuc te T (kg/N)
-VAR_GLOBAL	Weight_Net_X1	REAL		D512		Trong luong Luc cang thuc te X1 (kg/N)
-VAR_GLOBAL	Weight_Net_M	REAL		D514		Trong luong Luc cang thuc te M (kg/N)
-VAR_GLOBAL	Weight_Net_U	REAL		D516		Trong luong Luc cang thuc te U (kg/N)
-VAR_GLOBAL	HMI_Cmd_Zero_Set	BOOL		M118		Nut bam Set Zero chung cho truc dang chon tren HMI
-VAR_GLOBAL	HMI_Cmd_Calib_Set	BOOL		M119		Nut bam Calib Span chung cho truc dang chon tren HMI
-VAR_GLOBAL	HMI_Cmd_Save_PID	BOOL		M125		Nut bam Luu cai dat PID / Calib tren HMI
-VAR_GLOBAL	HMI_Cmd_AutoTune	BOOL		M126		Nut bam Kich hoat Auto-Tuning PID cho truc dang chon
-VAR_GLOBAL	HMI_Status_AT_Busy	BOOL		M127		Den bao dang chay Auto-Tuning
-VAR_GLOBAL	HMI_Status_AT_Done	BOOL		M128		Den bao da Auto-Tuning xong va da tu cap nhat Kp Ki Kd
-VAR_GLOBAL	HMI_Status_Text_Code	INT		D602		Ma trang thai van hanh hien thi tieng Viet tren HMI
-VAR_GLOBAL	HMI_Recipe_Select	INT		D604		Chon cong thuc don hang Recipe (1..5)
-VAR_GLOBAL	HMI_Disp_Zero_Offset	REAL		D608		O nhap Zero Offset duy nhat tren HMI
-VAR_GLOBAL	HMI_Axis_Select	INT		D610		Chon truc tren HMI (1=Thu T, 2=Xa X1, 3=Master X2, 4=Ghep Ms, 5=Dau S, 6=Thang M, 7=Xa U)
-VAR_GLOBAL	HMI_Disp_Kp	REAL		D612		O nhap Kp duy nhat tren HMI
-VAR_GLOBAL	HMI_Disp_Ki	REAL		D614		O nhap Ki duy nhat tren HMI
-VAR_GLOBAL	HMI_Disp_Kd	REAL		D616		O nhap Kd duy nhat tren HMI
-VAR_GLOBAL	HMI_Disp_Calib_Gain	REAL		D618		O nhap Calib Gain duy nhat tren HMI
-VAR_GLOBAL	Gear_Ratio_T	REAL		D620		Ty so truyen Hop so Thu T (vi du 10.1)
-VAR_GLOBAL	Gear_Ratio_X1	REAL		D622		Ty so truyen Hop so Xa X1 (vi du 8.0)
-VAR_GLOBAL	Gear_Ratio_X2	REAL		D624		Ty so truyen Hop so Master X2 (vi du 8.0)
-VAR_GLOBAL	Gear_Ratio_Ms	REAL		D626		Ty so truyen Hop so Ghep Ms (vi du 10.0)
-VAR_GLOBAL	Gear_Ratio_S	REAL		D628		Ty so truyen Hop so Trang Dau S (vi du 10.0)
-VAR_GLOBAL	Gear_Ratio_U	REAL		D630		Ty so truyen Hop so Xa U (vi du 1.0)
-VAR_GLOBAL	Dia_X1_Roller_mm	REAL		D638		Duong kinh lo Keo X1 (mm, vi du 300.5)
-VAR_GLOBAL	Dia_Ms_Roller_mm	REAL		D640		Duong kinh lo ghep Ms (mm, vi du 200.0)
-VAR_GLOBAL	Dia_X2_Roller_mm	REAL		D642		Duong kinh lo Master X2 (mm, vi du 300.5)
-VAR_GLOBAL	Dia_S_Roller_mm	REAL		D648		Duong kinh lo Dau S (mm, vi du 100.0)
-VAR_GLOBAL	SP_Tension_T	REAL		D660		Luc cang SP Truc T (kg)
-VAR_GLOBAL	SP_Tension_X1	REAL		D662		Luc cang SP Truc X1 (kg)
-VAR_GLOBAL	SP_Tension_M	REAL		D664		Luc cang SP Truc M (kg)
-VAR_GLOBAL	Taper_Percent_T	REAL		D666		Ty le Con giam luc cang cuon thu T (%)
-VAR_GLOBAL	SP_Tension_U	REAL		D668		Luc cang SP Truc U (kg)
-VAR_GLOBAL	Kp_T	REAL		D670		He so Kp PID Truc T
-VAR_GLOBAL	Ki_T	REAL		D672		He so Ki PID Truc T
-VAR_GLOBAL	Kd_T	REAL		D674		He so Kd PID Truc T
-VAR_GLOBAL	Kp_X1	REAL		D676		He so Kp PID Truc X1
-VAR_GLOBAL	Ki_X1	REAL		D678		He so Ki PID Truc X1
-VAR_GLOBAL	Kd_X1	REAL		D680		He so Kd PID Truc X1
-VAR_GLOBAL	Kp_X2	REAL		D682		He so Kp PID Toc do Master X2
-VAR_GLOBAL	Ki_X2	REAL		D684		He so Ki PID Toc do Master X2
-VAR_GLOBAL	Kd_X2	REAL		D686		He so Kd PID Toc do Master X2
-VAR_GLOBAL	Kp_Ms	REAL		D688		He so Kp PID Toc do Ghep Ms
-VAR_GLOBAL	Ki_Ms	REAL		D689		He so Ki PID Toc do Ghep Ms
-VAR_GLOBAL	Kd_Ms	REAL		D692		He so Kd PID Toc do Ghep Ms
-VAR_GLOBAL	Kp_S	REAL		D694		He so Kp PID Toc do Truc S
-VAR_GLOBAL	Ki_S	REAL		D696		He so Ki PID Toc do Truc S
-VAR_GLOBAL	Kd_S	REAL		D698		He so Kd PID Toc do Truc S
-VAR_GLOBAL	Set_Target_Length	REAL		D700		Chieu dai met hang cai dat tu dung (m)
-VAR_GLOBAL	Decel_Distance_Meters	REAL		D702		Khoang cach bao giam toc truoc khi dung (m)
-VAR_GLOBAL	Ramp_Accel_Rate	REAL		D704		Thanh ghi gia toc ACC (m/p/s)
-VAR_GLOBAL	Ramp_Decel_Rate	REAL		D706		Thanh ghi giam toc DEC (m/p/s)
-VAR_GLOBAL	Total_Length_Meters	REAL		D708		Tong so met hang da ghep (m)
-VAR_GLOBAL	Release_Pen_Speed_MPM	REAL		D710		Toc do nhan bi 2 Pen ep mang (m/p)
-VAR_GLOBAL	Real_Dia_U_mm	REAL		D720		Duong kinh thuc cuon U (mm)
-VAR_GLOBAL	Real_Dia_M_mm	REAL		D722		Duong kinh thuc cuon M (mm)
-VAR_GLOBAL	Real_Dia_T_mm	REAL		D724		Duong kinh thuc cuon T (mm)
-VAR_GLOBAL	Current_Line_MPM	REAL		D730		Toc do hien tai (m/p)
-VAR_GLOBAL	Target_Line_MPM	REAL		D732		Toc do muc tieu (m/p)
-VAR_GLOBAL	Max_Speed_MPM	REAL		D734		Toc do Max (100.0 m/p)
-VAR_GLOBAL	Min_Speed_MPM	REAL		D736		Toc do Min (2.0 m/p)
-VAR_GLOBAL	Anti_Dry_Crawl_Speed	REAL		D738		Toc do bo cham rua may (1.0 m/p)
-VAR_GLOBAL	Core_Dia_T_mm	REAL		D740		Duong kinh loi cuon T (mm)
-VAR_GLOBAL	Core_Dia_M_mm	REAL		D742		Duong kinh loi cuon M (mm)
-VAR_GLOBAL	Core_Dia_U_mm	REAL		D744		Duong kinh loi cuon U (mm)
-VAR_GLOBAL	Max_Dia_T_mm	REAL		D750		Duong kinh Max cuon T (mm)
-VAR_GLOBAL	Max_Dia_M_mm	REAL		D752		Duong kinh Max cuon M (mm)
-VAR_GLOBAL	Max_Dia_U_mm	REAL		D754		Duong kinh Max cuon U (mm)
-VAR_GLOBAL	Speed_Ratio_T	REAL		D756		Ty le toc do Truc T giu Torque (vi du 1.05)
-VAR_GLOBAL	Speed_Ratio_X1	REAL		D758		Ty le toc do Truc Xa X1 (vi du 1.00)
-VAR_GLOBAL	Speed_Offset_X1	REAL		D760		Bu toc do Truc Xa X1
-VAR_GLOBAL	Speed_Ratio_Ms	REAL		D762		Ty le dong bo toc do Truc Ms (vi du 1.00)
-VAR_GLOBAL	Speed_Offset_Ms	REAL		D764		Bu toc do Truc Ghep Ms
-VAR_GLOBAL	Speed_Ratio_S	REAL		D766		Ty le toc do Truc S (vi du 1.00)
-VAR_GLOBAL	Speed_Offset_S	REAL		D768		Bu toc do Truc Trang Dau S
-VAR_GLOBAL	Min_Torque_M	REAL		D770		Torque Min Thang M (%)
-VAR_GLOBAL	Max_Torque_M	REAL		D772		Torque Max Thang M (%)
-VAR_GLOBAL	Init_Holding_Torque_M	REAL		D774		Torque ban dau Thang M (%)
-VAR_GLOBAL	Init_Holding_Torque_U	REAL		D776		Torque ban dau giu cuon U (%)
-VAR_GLOBAL	Min_Torque_U	REAL		D778		Torque Min Xa U (%)
-VAR_GLOBAL	Max_Torque_U	REAL		D780		Torque Max Xa U (%)
-VAR_GLOBAL	SP_Speed_S	REAL		D782		Toc do Setpoint Truc S
-VAR_GLOBAL	Feedback_Speed_S	REAL		D784		Toc do Feedback Truc S
-VAR_GLOBAL	Feedback_Speed_X2	REAL		D786		Toc do Feedback Master X2
-VAR_GLOBAL	Feedback_Speed_Ms	REAL		D788		Toc do Feedback Ghep Ms
-VAR_GLOBAL	Test_Speed_T	REAL		D800		Toc do cai dat Test Truc T (0..16000)
-VAR_GLOBAL	Test_Torque_T	REAL		D802		Torque cai dat Test Truc T (0..16000)
-VAR_GLOBAL	Test_Speed_X1	REAL		D804		Toc do cai dat Test Truc X1 (0..16000)
-VAR_GLOBAL	Test_Speed_X2	REAL		D806		Toc do cai dat Test Truc X2 (0..16000)
-VAR_GLOBAL	Test_Speed_Ms	REAL		D808		Toc do cai dat Test Truc Ms (0..16000)
-VAR_GLOBAL	Test_Speed_S	REAL		D810		Toc do cai dat Test Truc S (0..16000)
-VAR_GLOBAL	Test_Torque_M	REAL		D812		Torque cai dat Test Thang M (0..16000)
-VAR_GLOBAL	Test_Speed_U	REAL		D814		Toc do cai dat Test Truc U (0..16000)
-VAR_GLOBAL	Max_RPM_X2	REAL		D820		Toc do Max RPM Master X2 (1000.0)
-VAR_GLOBAL	Max_RPM_X1	REAL		D822		Toc do Max RPM Xa X1 (1000.0)
-VAR_GLOBAL	Max_RPM_Ms	REAL		D824		Toc do Max RPM Ghep Ms (3000.0)
-VAR_GLOBAL	Max_RPM_S	REAL		D826		Toc do Max RPM Trang Dau S (3000.0)
-VAR_GLOBAL	Max_RPM_T	REAL		D828		Toc do Max RPM Thu T (1500.0)
-VAR_GLOBAL	Calib_Gain_T	REAL		D830		He so Calib Gain Loadcell T
-VAR_GLOBAL	Calib_Gain_X1	REAL		D832		He so Calib Gain Loadcell X1
-VAR_GLOBAL	Calib_Gain_M	REAL		D834		He so Calib Gain Loadcell M
-VAR_GLOBAL	Calib_Gain_U	REAL		D836		He so Calib Gain Loadcell U
-VAR_GLOBAL	Kp_M	REAL		D840		He so Kp PID Truc M
-VAR_GLOBAL	Ki_M	REAL		D842		He so Ki PID Truc M
-VAR_GLOBAL	Kd_M	REAL		D844		He so Kd PID Truc M
-VAR_GLOBAL	Kp_U	REAL		D846		He so Kp PID Truc U
-VAR_GLOBAL	Ki_U	REAL		D848		He so Ki PID Truc U
-VAR_GLOBAL	Kd_U	REAL		D850		He so Kd PID Truc U
-VAR_GLOBAL	Zero_Offset_T	REAL		D852		Diem 0 Zero Offset Loadcell Thu T
-VAR_GLOBAL	Zero_Offset_X1	REAL		D854		Diem 0 Zero Offset Loadcell Xa X1
-VAR_GLOBAL	Zero_Offset_M	REAL		D856		Diem 0 Zero Offset Thang Tu Metalize M
-VAR_GLOBAL	Zero_Offset_U	REAL		D858		Diem 0 Zero Offset Cuon Xa Sau Cung U
-VAR_GLOBAL	CCLink_AD_Avg_Mode	WORD		D860		Che do lay trung binh BFM 0 64AD (H3333=Moving Avg)
-VAR_GLOBAL	CCLink_AD_Avg_CH1	INT		D861		So mau trung binh CH1 BFM 1 (Loadcell Thu T)
-VAR_GLOBAL	CCLink_AD_Avg_CH2	INT		D862		So mau trung binh CH2 BFM 2 (Loadcell Xa X1)
-VAR_GLOBAL	CCLink_AD_Avg_CH3	INT		D863		So mau trung binh CH3 BFM 3 (Loadcell Thang M)
-VAR_GLOBAL	CCLink_AD_Avg_CH4	INT		D864		So mau trung binh CH4 BFM 4 (Loadcell Xa U)
-VAR_GLOBAL	CCLink_AD_Conv_En	INT		D865		Cho phep chuyen doi AD 4 kenh BFM 10 (0=Enable)
+VAR_GLOBAL	Servo_Ready_T	BOOL		X40	Cam bien Servo Ready Truc Thu T (QX40 X40)
+VAR_GLOBAL	Servo_Ready_X1	BOOL		X41	Cam bien Servo Ready Truc Xa X1 (QX40 X41)
+VAR_GLOBAL	Servo_Ready_X2	BOOL		X42	Cam bien Servo Ready Truc Master X2 (QX40 X42)
+VAR_GLOBAL	Servo_Ready_Ms	BOOL		X43	Cam bien Servo Ready Truc Ghep Ms (QX40 X43)
+VAR_GLOBAL	Servo_Ready_S	BOOL		X44	Cam bien Servo Ready Truc Trang Dau S (QX40 X44)
+VAR_GLOBAL	Physical_Start_PB	BOOL		X45	Nut nhan vat ly START QX40 (X45)
+VAR_GLOBAL	Physical_Stop_PB	BOOL		X46	Nut nhan vat ly STOP QX40 (X46)
+VAR_GLOBAL	Physical_Inc_PB	BOOL		X47	Nut nhan vat ly TANG TOC INC QX40 (X47)
+VAR_GLOBAL	Physical_Dec_PB	BOOL		X48	Nut nhan vat ly GIAM TOC DEC QX40 (X48)
+VAR_GLOBAL	Physical_Jog_PB	BOOL		X49	Nut nhan co ben ngoai BO CHAM NOI MANG QX40 (X49)
+VAR_GLOBAL	Sensor_Rev_M	BOOL		X4A	Cam bien tiem can dem 1 vong cuon M (QX40 X4A)
+VAR_GLOBAL	Sensor_Rev_U	BOOL		X4B	Cam bien tiem can dem 1 vong cuon U (QX40 X4B)
+VAR_GLOBAL	Pen1_Toggle_PB	BOOL		X4C	Nut nhan Toggle Pen 1 QX40 (X4C)
+VAR_GLOBAL	Pen2_Toggle_PB	BOOL		X4D	Nut nhan Toggle Pen 2 QX40 (X4D)
+VAR_GLOBAL	Switch_Hold_M	BOOL		X4E	Cong tac giu Torque Thang M khi dung (QX40 X4E)
+VAR_GLOBAL	Switch_Hold_U	BOOL		X4F	Cong tac giu Torque Xa U khi dung (QX40 X4F)
+VAR_GLOBAL	Servo_ON_T	BOOL		Y50	Ngo ra Servo ON Truc Thu T (QY40 Y50)
+VAR_GLOBAL	Servo_ON_X1	BOOL		Y51	Ngo ra Servo ON Truc Xa X1 (QY40 Y51)
+VAR_GLOBAL	Servo_ON_X2	BOOL		Y52	Ngo ra Servo ON Truc Master X2 (QY40 Y52)
+VAR_GLOBAL	Servo_ON_Ms	BOOL		Y53	Ngo ra Servo ON Truc Ghep Ms (QY40 Y53)
+VAR_GLOBAL	Servo_ON_S	BOOL		Y54	Ngo ra Servo ON Truc Trang Dau S (QY40 Y54)
+VAR_GLOBAL	DO_Pen1	BOOL		Y55	Ngo ra Van Solenoid Pen 1 (QY40 Y55)
+VAR_GLOBAL	DO_Pen2	BOOL		Y56	Ngo ra Van Solenoid Pen 2 (QY40 Y56)
+VAR_GLOBAL	DO_Alarm_Horn	BOOL		Y57	Ngo ra Coi bao dong loi he thong (QY40 Y57)
+VAR_GLOBAL	Tower_Light_Green	BOOL		Y58	Den thap Xanh chay Auto (QY40 Y58)
+VAR_GLOBAL	Tower_Light_Yellow	BOOL		Y59	Den thap Vang Cho / Bo cham (QY40 Y59)
+VAR_GLOBAL	Tower_Light_Red	BOOL		Y5A	Den thap Do bao loi (QY40 Y5A)
+VAR_GLOBAL	HMI_Auto_Mode	BOOL		M100	Che do Auto / Manual
+VAR_GLOBAL	HMI_Reset_Error	BOOL		M101	Reset loi he thong
+VAR_GLOBAL	HMI_Start	BOOL		M102	Nut Start khoi dong HMI
+VAR_GLOBAL	HMI_Stop	BOOL		M103	Nut Stop dung may HMI
+VAR_GLOBAL	HMI_Reset_Length	BOOL		M104	Reset tong chieu dai met hang
+VAR_GLOBAL	HMI_Reset_Roll_T	BOOL		M105	Nap lai duong kinh cuon moi T
+VAR_GLOBAL	HMI_Reset_Roll_M	BOOL		M106	Nap lai duong kinh cuon moi M
+VAR_GLOBAL	HMI_Reset_Roll_U	BOOL		M107	Nap lai duong kinh cuon moi U
+VAR_GLOBAL	HMI_PID_Enable	BOOL		M108	Bat tat che do PID
+VAR_GLOBAL	HMI_Inc_Hold	BOOL		M109	Phim INC tang toc HMI
+VAR_GLOBAL	HMI_Dec_Hold	BOOL		M114	Phim DEC giam toc HMI
+VAR_GLOBAL	HMI_Pen1_Cmd	BOOL		M115	Lenh ON/OFF Pen 1 tu HMI
+VAR_GLOBAL	HMI_Pen2_Cmd	BOOL		M116	Lenh ON/OFF Pen 2 tu HMI
+VAR_GLOBAL	HMI_Jog_Crawl_Cmd	BOOL		M117	Nut nhan Bo cham HMI
+VAR_GLOBAL	HMI_Reset_All_Rolls	BOOL		M118	Nut thay cuon moi toan bo 1-click
+VAR_GLOBAL	HMI_Cmd_Apply_Recipe	BOOL		M119	Nut ap dung Recipe don hang
+VAR_GLOBAL	HMI_Cmd_Save_Recipe	BOOL		M124	Nut luu Recipe vao Slot Custom
+VAR_GLOBAL	Zero_Set_T	BOOL		M110	Nut Set Zero Loadcell T
+VAR_GLOBAL	Zero_Set_X1	BOOL		M111	Nut Set Zero Loadcell X1
+VAR_GLOBAL	Zero_Set_M	BOOL		M112	Nut Set Zero Loadcell M
+VAR_GLOBAL	Zero_Set_U	BOOL		M113	Nut Set Zero Loadcell U
+VAR_GLOBAL	Calib_Set_T	BOOL		M120	Nut Calib Span Loadcell T
+VAR_GLOBAL	Calib_Set_X1	BOOL		M121	Nut Calib Span Loadcell X1
+VAR_GLOBAL	Calib_Set_M	BOOL		M122	Nut Calib Span Loadcell M
+VAR_GLOBAL	Calib_Set_U	BOOL		M123	Nut Calib Span Loadcell U
+VAR_GLOBAL	HMI_Test_T	BOOL		M170	Co Test chay thu rieng Truc Thu T
+VAR_GLOBAL	HMI_Test_X1	BOOL		M171	Co Test chay thu rieng Truc Xa X1
+VAR_GLOBAL	HMI_Test_X2	BOOL		M172	Co Test chay thu rieng Truc Master X2
+VAR_GLOBAL	HMI_Test_Ms	BOOL		M173	Co Test chay thu rieng Truc Ghep Ms
+VAR_GLOBAL	HMI_Test_S	BOOL		M174	Co Test chay thu rieng Truc Trang Dau S
+VAR_GLOBAL	HMI_Test_M	BOOL		M175	Co Test thu Luc Thang Tu M
+VAR_GLOBAL	HMI_Test_U	BOOL		M176	Co Test chay thu rieng Truc Xa Metalize U
+VAR_GLOBAL	HMI_Cmd_AutoTune	BOOL		M180	Nut bat Auto-Tuning PID
+VAR_GLOBAL	HMI_Cmd_Save_PID	BOOL		M181	Nut luu thong so PID
+VAR_GLOBAL	HMI_Cmd_Zero_Set	BOOL		M182	Nut Zero tong hop HMI
+VAR_GLOBAL	HMI_Cmd_Calib_Set	BOOL		M183	Nut Calib tong hop HMI
+VAR_GLOBAL	HMI_Status_AT_Busy	BOOL		M184	Den bao dang Auto-Tuning PID
+VAR_GLOBAL	HMI_Status_AT_Done	BOOL		M185	Den bao hoan tat Auto-Tuning PID
+VAR_GLOBAL	Servo_Not_Ready_Fault	BOOL		M134	Co bao loi Servo Not Ready
+VAR_GLOBAL	Hold_Torque_Stop_M	BOOL		M130	Giu Torque M khi dung may
+VAR_GLOBAL	Hold_Torque_Stop_U	BOOL		M131	Giu Torque U khi dung may
+VAR_GLOBAL	Pen1_State	BOOL		M1309	Trang thai dong mo Pen 1
+VAR_GLOBAL	Pen2_State	BOOL		M1310	Trang thai dong mo Pen 2
+VAR_GLOBAL	Pen_Auto_Engaged	BOOL		M1311	Co bao Pen da tu dong dong
+VAR_GLOBAL	Auto_Decel_Flag	BOOL		M1312	Co bao he thong dang giam toc ve dich
+VAR_GLOBAL	State_Machine	INT		D700	Trang thai van hanh (0=Stop, 1=Run)
+VAR_GLOBAL	HMI_Status_Text_Code	INT		D701	Ma trang thai hien thi tieng Viet tren HMI
+VAR_GLOBAL	HMI_Recipe_Select	INT		D702	Chon Recipe don hang (1..5)
+VAR_GLOBAL	Prev_Recipe_Select	INT		D703	Luu Recipe chu ky truoc
+VAR_GLOBAL	HMI_Axis_Select	INT		D704	Chon truc can chinh PID/Calib (1..7)
+VAR_GLOBAL	Target_Line_MPM	REAL		D600	Toc do cai dat m/phut
+VAR_GLOBAL	Max_Speed_MPM	REAL		D602	Toc do toi da m/phut
+VAR_GLOBAL	Min_Speed_MPM	REAL		D604	Toc do toi thieu m/phut
+VAR_GLOBAL	Release_Pen_Speed_MPM	REAL		D606	Toc do nha pen ep m/phut
+VAR_GLOBAL	Ramp_Accel_Rate	REAL		D608	Gia toc tang toc m/p tren chu ky
+VAR_GLOBAL	Ramp_Decel_Rate	REAL		D610	Gia toc giam toc m/p tren chu ky
+VAR_GLOBAL	Decel_Distance_Meters	REAL		D612	Khoang cach ham dung som (m)
+VAR_GLOBAL	Current_Line_MPM	REAL		D614	Toc do thuc te m/phut
+VAR_GLOBAL	Gear_Ratio_T	REAL		D620	Ty so truyen hop so Thu T
+VAR_GLOBAL	Gear_Ratio_X1	REAL		D622	Ty so truyen hop so Xa X1
+VAR_GLOBAL	Gear_Ratio_X2	REAL		D624	Ty so truyen hop so Master X2
+VAR_GLOBAL	Gear_Ratio_Ms	REAL		D626	Ty so truyen hop so Ghep Ms
+VAR_GLOBAL	Gear_Ratio_S	REAL		D628	Ty so truyen hop so Dau S
+VAR_GLOBAL	Gear_Ratio_U	REAL		D630	Ty so truyen hop so Xa U
+VAR_GLOBAL	Max_RPM_T	REAL		D632	RPM Max Motor Thu T
+VAR_GLOBAL	Max_RPM_X1	REAL		D634	RPM Max Motor Xa X1
+VAR_GLOBAL	Max_RPM_X2	REAL		D636	RPM Max Motor Master X2
+VAR_GLOBAL	Max_RPM_Ms	REAL		D638	RPM Max Motor Ghep Ms
+VAR_GLOBAL	Max_RPM_S	REAL		D640	RPM Max Motor Dau S
+VAR_GLOBAL	Dia_X1_Roller_mm	REAL		D642	Duong kinh lo Keo X1 (mm)
+VAR_GLOBAL	Dia_X2_Roller_mm	REAL		D644	Duong kinh lo Master X2 (mm)
+VAR_GLOBAL	Dia_Ms_Roller_mm	REAL		D646	Duong kinh lo Ghep Ms (mm)
+VAR_GLOBAL	Dia_S_Roller_mm	REAL		D648	Duong kinh lo Dau S (mm)
+VAR_GLOBAL	Core_Dia_T_mm	REAL		D650	Duong kinh loi Thu T (mm)
+VAR_GLOBAL	Core_Dia_M_mm	REAL		D652	Duong kinh loi Thang M (mm)
+VAR_GLOBAL	Core_Dia_U_mm	REAL		D654	Duong kinh loi Xa U (mm)
+VAR_GLOBAL	Max_Dia_T_mm	REAL		D656	Duong kinh max cuon Thu T (mm)
+VAR_GLOBAL	Max_Dia_M_mm	REAL		D658	Duong kinh max cuon Thang M (mm)
+VAR_GLOBAL	Max_Dia_U_mm	REAL		D660	Duong kinh max cuon Xa U (mm)
+VAR_GLOBAL	SP_Tension_T	REAL		D662	SP Luc cang Thu T (kg)
+VAR_GLOBAL	SP_Tension_X1	REAL		D664	SP Luc cang Xa X1 (kg)
+VAR_GLOBAL	SP_Tension_M	REAL		D666	SP Luc cang Thang M (kg)
+VAR_GLOBAL	SP_Tension_U	REAL		D668	SP Luc cang Xa U (kg)
+VAR_GLOBAL	Taper_Percent_T	REAL		D670	Phan tram con luc Thu T (%)
+VAR_GLOBAL	Effective_SP_T	REAL		D672	SP Luc cang Thu T sau khi tru con luc (kg)
+VAR_GLOBAL	Total_Length_Meters	REAL		D708	Tong so met mang da chay (m)
+VAR_GLOBAL	Set_Target_Length	REAL		D710	Cai dat so met dich can dung (m)
+VAR_GLOBAL	Real_Dia_U_mm	REAL		D720	Duong kinh thuc cuon Xa U (mm)
+VAR_GLOBAL	Real_Dia_M_mm	REAL		D722	Duong kinh thuc cuon Thang M (mm)
+VAR_GLOBAL	Real_Dia_T_mm	REAL		D724	Duong kinh thuc cuon Thu T (mm)
+VAR_GLOBAL	Weight_Net_T	REAL		D510	Trong luong Luc cang thuc te T (kg)
+VAR_GLOBAL	Weight_Net_X1	REAL		D512	Trong luong Luc cang thuc te X1 (kg)
+VAR_GLOBAL	Weight_Net_M	REAL		D514	Trong luong Luc cang thuc te M (kg)
+VAR_GLOBAL	Weight_Net_U	REAL		D516	Trong luong Luc cang thuc te U (kg)
+VAR_GLOBAL	Zero_Offset_T	REAL		D518	Zero Offset Loadcell T
+VAR_GLOBAL	Zero_Offset_X1	REAL		D520	Zero Offset Loadcell X1
+VAR_GLOBAL	Zero_Offset_M	REAL		D522	Zero Offset Loadcell M
+VAR_GLOBAL	Zero_Offset_U	REAL		D524	Zero Offset Loadcell U
+VAR_GLOBAL	Calib_Gain_T	REAL		D540	He so Calib Gain Loadcell T
+VAR_GLOBAL	Calib_Gain_X1	REAL		D542	He so Calib Gain Loadcell X1
+VAR_GLOBAL	Calib_Gain_M	REAL		D544	He so Calib Gain Loadcell M
+VAR_GLOBAL	Calib_Gain_U	REAL		D546	He so Calib Gain Loadcell U
+VAR_GLOBAL	Speed_Ratio_T	REAL		D750	Ty le toc do Thu T (1.0 = 100%)
+VAR_GLOBAL	Speed_Ratio_X1	REAL		D752	Ty le toc do Xa X1 (1.0 = 100%)
+VAR_GLOBAL	Speed_Ratio_Ms	REAL		D754	Ty le toc do Ghep Ms (1.0 = 100%)
+VAR_GLOBAL	Speed_Ratio_S	REAL		D756	Ty le toc do Dau S (1.0 = 100%)
+VAR_GLOBAL	Speed_Offset_X1	REAL		D760	Bu toc do Xa X1
+VAR_GLOBAL	Speed_Offset_Ms	REAL		D764	Bu toc do Ghep Ms
+VAR_GLOBAL	Speed_Offset_S	REAL		D768	Bu toc do Dau S
+VAR_GLOBAL	Min_Torque_M	REAL		D770	Torque ham min Thang M (%)
+VAR_GLOBAL	Max_Torque_M	REAL		D772	Torque ham max Thang M (%)
+VAR_GLOBAL	Init_Holding_Torque_M	REAL		D774	Torque giu ban dau Thang M (%)
+VAR_GLOBAL	Min_Torque_U	REAL		D776	Torque ham min Xa U (%)
+VAR_GLOBAL	Max_Torque_U	REAL		D778	Torque ham max Xa U (%)
+VAR_GLOBAL	Init_Holding_Torque_U	REAL		D780	Torque giu ban dau Xa U (%)
+VAR_GLOBAL	Test_Speed_T	REAL		D800	Toc do test manual Thu T (0..16000)
+VAR_GLOBAL	Test_Torque_T	REAL		D802	Torque test manual Thu T (0..16000)
+VAR_GLOBAL	Test_Speed_X1	REAL		D804	Toc do test manual Xa X1 (0..16000)
+VAR_GLOBAL	Test_Speed_X2	REAL		D806	Toc do test manual Master X2 (0..16000)
+VAR_GLOBAL	Test_Speed_Ms	REAL		D808	Toc do test manual Ghep Ms (0..16000)
+VAR_GLOBAL	Test_Speed_S	REAL		D810	Toc do test manual Dau S (0..16000)
+VAR_GLOBAL	Test_Torque_M	REAL		D812	Torque test manual Thang M (0..16000)
+VAR_GLOBAL	Test_Speed_U	REAL		D814	Toc do test manual Xa U (0..16000)
+VAR_GLOBAL	Kp_T	REAL		D820	Kp PID Thu T
+VAR_GLOBAL	Ki_T	REAL		D822	Ki PID Thu T
+VAR_GLOBAL	Kd_T	REAL		D824	Kd PID Thu T
+VAR_GLOBAL	Kp_X1	REAL		D826	Kp PID Xa X1
+VAR_GLOBAL	Ki_X1	REAL		D828	Ki PID Xa X1
+VAR_GLOBAL	Kd_X1	REAL		D830	Kd PID Xa X1
+VAR_GLOBAL	Kp_X2	REAL		D832	Kp PID Master X2
+VAR_GLOBAL	Ki_X2	REAL		D834	Ki PID Master X2
+VAR_GLOBAL	Kd_X2	REAL		D836	Kd PID Master X2
+VAR_GLOBAL	Kp_Ms	REAL		D838	Kp PID Ghep Ms
+VAR_GLOBAL	Ki_Ms	REAL		D840	Ki PID Ghep Ms
+VAR_GLOBAL	Kd_Ms	REAL		D842	Kd PID Ghep Ms
+VAR_GLOBAL	Kp_S	REAL		D844	Kp PID Dau S
+VAR_GLOBAL	Ki_S	REAL		D846	Ki PID Dau S
+VAR_GLOBAL	Kd_S	REAL		D848	Kd PID Dau S
+VAR_GLOBAL	Kp_M	REAL		D850	Kp PID Thang M
+VAR_GLOBAL	Ki_M	REAL		D852	Ki PID Thang M
+VAR_GLOBAL	Kd_M	REAL		D854	Kd PID Thang M
+VAR_GLOBAL	Kp_U	REAL		D856	Kp PID Xa U
+VAR_GLOBAL	Ki_U	REAL		D858	Ki PID Xa U
+VAR_GLOBAL	Kd_U	REAL		D860	Kd PID Xa U
+VAR_GLOBAL	HMI_Disp_Kp	REAL		D870	O hien thi/cai dat Kp HMI
+VAR_GLOBAL	HMI_Disp_Ki	REAL		D872	O hien thi/cai dat Ki HMI
+VAR_GLOBAL	HMI_Disp_Kd	REAL		D874	O hien thi/cai dat Kd HMI
+VAR_GLOBAL	HMI_Disp_Calib_Gain	REAL		D876	O hien thi/cai dat Calib Gain HMI
+VAR_GLOBAL	HMI_Disp_Zero_Offset	REAL		D878	O hien thi/cai dat Zero Offset HMI
+VAR_GLOBAL	RPM_T	DINT		D5010	Toc do vong phut Thu T (RPM x10)
+VAR_GLOBAL	RPM_X1	DINT		D5012	Toc do vong phut Xa X1 (RPM x10)
+VAR_GLOBAL	RPM_X2	DINT		D5014	Toc do vong phut Master X2 (RPM x10)
+VAR_GLOBAL	RPM_Ms	DINT		D5016	Toc do vong phut Ghep Ms (RPM x10)
+VAR_GLOBAL	RPM_S	DINT		D5018	Toc do vong phut Dau S (RPM x10)
+VAR_GLOBAL	MPM_T	DINT		D5020	Van toc day Thu T (MPM x10)
+VAR_GLOBAL	MPM_X1	DINT		D5022	Van toc day Xa X1 (MPM x10)
+VAR_GLOBAL	MPM_X2	DINT		D5024	Van toc day Master X2 (MPM x10)
+VAR_GLOBAL	MPM_Ms	DINT		D5026	Van toc day Ghep Ms (MPM x10)
+VAR_GLOBAL	MPM_S	DINT		D5028	Van toc day Dau S (MPM x10)
+VAR_GLOBAL	Curr_Pulse_T	DINT		D5000	Gia tri xung dem hien tai Truc T
+VAR_GLOBAL	Curr_Pulse_X1	DINT		D5002	Gia tri xung dem hien tai Truc X1
+VAR_GLOBAL	Curr_Pulse_X2	DINT		D5004	Gia tri xung dem hien tai Truc X2
+VAR_GLOBAL	Curr_Pulse_Ms	DINT		D5006	Gia tri xung dem hien tai Truc Ms
+VAR_GLOBAL	PPR_Encoder	DINT		D5008	Do phan giai Encoder (PPR)

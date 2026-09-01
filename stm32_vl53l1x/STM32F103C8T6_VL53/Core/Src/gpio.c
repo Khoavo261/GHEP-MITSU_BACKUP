@@ -45,42 +45,42 @@ void MX_GPIO_Init(void)
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
-  __HAL_RCC_AFIO_CLK_ENABLE();
-  __HAL_AFIO_REMAP_SWJ_NOJTAG(); // Giải phóng chân PB4 (NJTRST) để làm GPIO chuẩn
-
+  __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, LED_Pin, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(GPIOB, VL53_XSHUT_Pin, GPIO_PIN_SET); // Bật chip VL53 (XSHUT = HIGH)
+  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : LED_Pin */
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(VL53_XSHUT_GPIO_Port, VL53_XSHUT_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : LED_Pin */
   GPIO_InitStruct.Pin = LED_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(LED_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : CAN_ADDR_BIT1_Pin CAN_ADDR_BIT0_Pin */
+  GPIO_InitStruct.Pin = CAN_ADDR_BIT1_Pin|CAN_ADDR_BIT0_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : VL53_XSHUT_Pin */
+  /*Configure GPIO pin : VL53_XSHUT_Pin */
   GPIO_InitStruct.Pin = VL53_XSHUT_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  HAL_GPIO_Init(VL53_XSHUT_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : VL53_INT_Pin */
   GPIO_InitStruct.Pin = VL53_INT_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(VL53_INT_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : CAN_ADDR_BIT0_Pin, CAN_ADDR_BIT1_Pin (PB8, PB9) */
-  GPIO_InitStruct.Pin = CAN_ADDR_BIT0_Pin | CAN_ADDR_BIT1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI9_5_IRQn, 5, 0);

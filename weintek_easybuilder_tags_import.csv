@@ -1,156 +1,134 @@
-Tag Name,Device Name,Address Type,Address,Comment,Data Format
-HMI_Cmd_Zero_Set,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,118,Nut bam Set Zero chung cho truc dang chon tren HMI,Bit
-HMI_Cmd_Calib_Set,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,119,Nut bam Calib Span chung cho truc dang chon tren HMI,Bit
-HMI_Cmd_Save_PID,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,125,Nut bam Luu cai dat PID Calib tren HMI,Bit
-HMI_Cmd_AutoTune,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,126,Nut bam Kich hoat Auto-Tuning PID cho truc dang chon,Bit
-HMI_Status_AT_Busy,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,127,Den bao dang chay Auto-Tuning,Bit
-HMI_Status_AT_Done,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,128,Den bao da Auto-Tuning xong va da tu cap nhat Kp Ki Kd,Bit
-HMI_Status_Text_Code,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,602,Ma trang thai van hanh hien thi tieng Viet tren HMI,16-bit Signed
-HMI_Recipe_Select,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,604,Chon cong thuc don hang Recipe (1..5),16-bit Signed
-HMI_Disp_Zero_Offset,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,608,O nhap Zero Offset duy nhat tren HMI,32-bit Float
-HMI_Axis_Select,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,610,Chon truc tren HMI (1=Thu T 2=Xa X1 3=Master X2 4=Ghep Ms 5=Dau S 6=Thang M 7=Xa U),16-bit Signed
-HMI_Disp_Kp,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,612,O nhap Kp duy nhat tren HMI,32-bit Float
-HMI_Disp_Ki,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,614,O nhap Ki duy nhat tren HMI,32-bit Float
-HMI_Disp_Kd,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,616,O nhap Kd duy nhat tren HMI,32-bit Float
-HMI_Disp_Calib_Gain,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,618,O nhap Calib Gain duy nhat tren HMI,32-bit Float
-HMI_Auto_Mode,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,100,Che do Auto / Manual,Bit
-HMI_Reset_Error,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,101,Reset loi he thong,Bit
-HMI_Start,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,102,Nut Start HMI,Bit
-HMI_Stop,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,103,Nut Stop HMI,Bit
-HMI_Reset_Length,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,104,Reset tong chieu dai met hang,Bit
-HMI_Reset_Roll_T,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,105,Nap lai duong kinh cuon moi T,Bit
-HMI_Reset_Roll_M,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,106,Nap lai duong kinh cuon moi M,Bit
-HMI_Reset_Roll_U,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,107,Nap lai duong kinh cuon moi U,Bit
-HMI_Reset_All_Rolls,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,135,Nut thay cuon moi toan bo (Reset ca 3 cuon va xoa met),Bit
-HMI_Jog_Crawl_Cmd,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,136,Nut bo cham noi mang 2 m/p giu de chay tha de dung,Bit
-HMI_Cmd_Apply_Recipe,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,137,Nut ap dung cong thuc don hang da chon,Bit
-HMI_Cmd_Save_Recipe,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,138,Nut luu thong so hien tai vao cong thuc,Bit
-HMI_PID_Enable,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,108,Bat tat che do PID,Bit
-HMI_Inc_Hold,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,109,Phim INC tang toc HMI,Bit
-HMI_Dec_Hold,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,114,Phim DEC giam toc HMI,Bit
-HMI_Pen1_Cmd,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,115,Lenh ON/OFF Pen 1 tu HMI,Bit
-HMI_Pen2_Cmd,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,116,Lenh ON/OFF Pen 2 tu HMI,Bit
-Zero_Set_T,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,110,Nut Set Zero Tare T,Bit
-Zero_Set_X1,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,111,Nut Set Zero Tare X1,Bit
-Zero_Set_M,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,112,Nut Set Zero Tare M,Bit
-Zero_Set_U,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,113,Nut Set Zero Tare U,Bit
-Calib_Set_T,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,120,Nut Calib Span T,Bit
-Calib_Set_X1,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,121,Nut Calib Span X1,Bit
-Calib_Set_M,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,122,Nut Calib Span M,Bit
-Calib_Set_U,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,123,Nut Calib Span U,Bit
-Hold_Torque_Stop_M,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,130,Giu Torque M khi dung may,Bit
-Hold_Torque_Stop_U,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,131,Giu Torque U khi dung may,Bit
-Anti_Dry_Rotate_S,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,132,Bo cham S khi dung may,Bit
-Anti_Dry_Rotate_Ms,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,133,Bo cham Ms khi dung may,Bit
-Servo_Not_Ready_Fault,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,134,Co bao loi Servo Not Ready,Bit
-HMI_Test_T,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,170,Co Test chay thu rieng Truc Thu T,Bit
-HMI_Test_X1,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,171,Co Test chay thu rieng Truc Xa X1,Bit
-HMI_Test_X2,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,172,Co Test chay thu rieng Truc Master X2,Bit
-HMI_Test_Ms,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,173,Co Test chay thu rieng Truc Ghep Ms,Bit
-HMI_Test_S,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,174,Co Test chay thu rieng Truc Trang Dau S,Bit
-HMI_Test_M,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,175,Co Test thu Luc Thang Tu M,Bit
-HMI_Test_U,Mitsubishi Q00/Q00UJ/Q01/QJ71,M,176,Co Test chay thu rieng Truc Xa U,Bit
-Weight_Net_T,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,510,Trong luong Luc cang thuc te T (kg),32-bit Float
-Weight_Net_X1,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,512,Trong luong Luc cang thuc te X1 (kg),32-bit Float
-Weight_Net_M,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,514,Trong luong Luc cang thuc te M (kg),32-bit Float
-Weight_Net_U,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,516,Trong luong Luc cang thuc te U (kg),32-bit Float
-Gear_Ratio_T,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,620,Ty so truyen Hop so Thu T,32-bit Float
-Gear_Ratio_X1,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,622,Ty so truyen Hop so Xa X1,32-bit Float
-Gear_Ratio_X2,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,624,Ty so truyen Hop so Master X2,32-bit Float
-Gear_Ratio_Ms,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,626,Ty so truyen Hop so Ghep Ms,32-bit Float
-Gear_Ratio_S,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,628,Ty so truyen Hop so Trang Dau S,32-bit Float
-Gear_Ratio_U,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,630,Ty so truyen Hop so Xa U,32-bit Float
-Dia_X1_Roller_mm,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,638,Duong kinh lo Keo X1 (mm),32-bit Float
-Dia_Ms_Roller_mm,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,640,Duong kinh lo ghep Ms (mm),32-bit Float
-Dia_X2_Roller_mm,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,642,Duong kinh lo Master X2 (mm),32-bit Float
-Dia_S_Roller_mm,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,648,Duong kinh lo Dau S (mm),32-bit Float
-Core_Dia_T_mm,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,644,Duong kinh loi cuon Thu T (mm),32-bit Float
-Core_Dia_M_mm,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,645,Duong kinh loi cuon Xa M (mm),32-bit Float
-Core_Dia_U_mm,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,647,Duong kinh loi cuon Xa U (mm),32-bit Float
-Max_Dia_T_mm,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,646,Duong kinh Max cuon Thu T (mm),32-bit Float
-Max_Dia_M_mm,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,649,Duong kinh Max cuon Xa M (mm),32-bit Float
-Max_Dia_U_mm,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,650,Duong kinh Max cuon Xa U (mm),32-bit Float
-SP_Tension_T,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,660,Luc cang cai dat SP Truc T (kg),32-bit Float
-SP_Tension_X1,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,662,Luc cang cai dat SP Truc X1 (kg),32-bit Float
-SP_Tension_M,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,664,Luc cang cai dat SP Truc M (kg),32-bit Float
-Taper_Percent_T,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,666,Ty le Con luc giam cang cuon T (%),32-bit Float
-SP_Tension_U,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,668,Luc cang cai dat SP Truc U (kg),32-bit Float
-Kp_T,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,670,He so Kp PID cuon T,32-bit Float
-Ki_T,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,672,He so Ki PID cuon T,32-bit Float
-Kd_T,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,674,He so Kd PID cuon T,32-bit Float
-Kp_X1,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,676,He so Kp PID cuon X1,32-bit Float
-Ki_X1,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,678,He so Ki PID cuon X1,32-bit Float
-Kd_X1,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,680,He so Kd PID cuon X1,32-bit Float
-Kp_X2,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,682,He so Kp PID Toc do Master X2,32-bit Float
-Ki_X2,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,684,He so Ki PID Toc do Master X2,32-bit Float
-Kd_X2,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,686,He so Kd PID Toc do Master X2,32-bit Float
-Kp_Ms,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,688,He so Kp PID Toc do Ghep Ms,32-bit Float
-Ki_Ms,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,689,He so Ki PID Toc do Ghep Ms,32-bit Float
-Kd_Ms,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,692,He so Kd PID Toc do Ghep Ms,32-bit Float
-Kp_S,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,694,He so Kp PID Toc do Truc S,32-bit Float
-Ki_S,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,696,He so Ki PID Toc do Truc S,32-bit Float
-Kd_S,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,698,He so Kd PID Toc do Truc S,32-bit Float
-Kp_M,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,840,He so Kp PID Truc M,32-bit Float
-Ki_M,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,842,He so Ki PID Truc M,32-bit Float
-Kd_M,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,844,He so Kd PID Truc M,32-bit Float
-Kp_U,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,846,He so Kp PID Truc U,32-bit Float
-Ki_U,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,848,He so Ki PID Truc U,32-bit Float
-Kd_U,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,850,He so Kd PID Truc U,32-bit Float
-Calib_Gain_T,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,830,He so Calib Gain Loadcell T,32-bit Float
-Calib_Gain_X1,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,832,He so Calib Gain Loadcell X1,32-bit Float
-Calib_Gain_M,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,834,He so Calib Gain Loadcell M,32-bit Float
-Calib_Gain_U,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,836,He so Calib Gain Loadcell U,32-bit Float
-Zero_Offset_T,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,852,Diem 0 Zero Offset Loadcell Thu T,32-bit Float
-Zero_Offset_X1,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,854,Diem 0 Zero Offset Loadcell Xa X1,32-bit Float
-Zero_Offset_M,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,856,Diem 0 Zero Offset Thang Tu Metalize M,32-bit Float
-Zero_Offset_U,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,858,Diem 0 Zero Offset Cuon Xa Sau Cung U,32-bit Float
-Set_Target_Length,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,700,Chieu dai met hang cai dat tu dung (m),32-bit Float
-Decel_Distance_Meters,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,702,Khoang cach bao giam toc truoc khi dung (m),32-bit Float
-Ramp_Accel_Rate,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,704,Thanh ghi gia toc ACC (m/p/s),32-bit Float
-Ramp_Decel_Rate,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,706,Thanh ghi giam toc DEC (m/p/s),32-bit Float
-Total_Length_Meters,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,708,Tong so met hang da ghep (m),32-bit Float
-Release_Pen_Speed_MPM,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,710,Toc do nhan bi 2 Pen ep mang (m/p),32-bit Float
-Real_Dia_U_mm,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,720,Duong kinh thuc cuon U (mm),32-bit Float
-Real_Dia_M_mm,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,722,Duong kinh thuc cuon M (mm),32-bit Float
-Real_Dia_T_mm,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,724,Duong kinh thuc cuon T (mm),32-bit Float
-Current_Line_MPM,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,730,Toc do hien tai (m/p),32-bit Float
-Target_Line_MPM,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,732,Toc do muc tieu (m/p),32-bit Float
-Max_Speed_MPM,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,734,Toc do Max (100.0 m/p),32-bit Float
-Min_Speed_MPM,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,736,Toc do Min (2.0 m/p),32-bit Float
-Anti_Dry_Crawl_Speed,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,738,Toc do bo cham rua may (1.0 m/p),32-bit Float
-Speed_Ratio_T,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,756,Ty le toc do Truc T giu Torque,32-bit Float
-Speed_Ratio_X1,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,758,Ty le toc do Truc Xa X1,32-bit Float
-Speed_Offset_X1,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,760,Bu toc do Truc Xa X1,32-bit Float
-Speed_Ratio_Ms,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,762,Ty le dong bo toc do Truc Ms,32-bit Float
-Speed_Offset_Ms,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,764,Bu toc do Truc Ghep Ms,32-bit Float
-Speed_Ratio_S,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,766,Ty le toc do Truc S,32-bit Float
-Speed_Offset_S,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,768,Bu toc do Truc Trang Dau S,32-bit Float
-Min_Torque_M,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,770,Torque Min Thang M (%),32-bit Float
-Max_Torque_M,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,772,Torque Max Thang M (%),32-bit Float
-Init_Holding_Torque_M,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,774,Torque ban dau Thang M (%),32-bit Float
-Init_Holding_Torque_U,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,776,Torque ban dau giu cuon U (%),32-bit Float
-Min_Torque_U,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,778,Torque Min Xa U (%),32-bit Float
-Max_Torque_U,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,780,Torque Max Xa U (%),32-bit Float
-SP_Speed_S,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,782,Toc do Setpoint Truc S,32-bit Float
-Feedback_Speed_S,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,784,Toc do Feedback Truc S,32-bit Float
-Feedback_Speed_X2,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,786,Toc do Feedback Master X2,32-bit Float
-Feedback_Speed_Ms,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,788,Toc do Feedback Ghep Ms,32-bit Float
-Test_Speed_T,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,800,Toc do cai dat Test Truc T (0..16000),32-bit Float
-Test_Torque_T,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,802,Torque cai dat Test Truc T (0..16000),32-bit Float
-Test_Speed_X1,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,804,Toc do cai dat Test Truc X1 (0..16000),32-bit Float
-Test_Speed_X2,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,806,Toc do cai dat Test Truc X2 (0..16000),32-bit Float
-Test_Speed_Ms,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,808,Toc do cai dat Test Truc Ms (0..16000),32-bit Float
-Test_Speed_S,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,810,Toc do cai dat Test Truc S (0..16000),32-bit Float
-Test_Torque_M,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,812,Torque cai dat Test Thang M (0..16000),32-bit Float
-Test_Speed_U,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,814,Toc do cai dat Test Truc U (0..16000),32-bit Float
-Max_RPM_X2,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,820,Toc do Max RPM Master X2 (1000.0),32-bit Float
-Max_RPM_X1,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,822,Toc do Max RPM Xa X1 (1000.0),32-bit Float
-Max_RPM_Ms,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,824,Toc do Max RPM Ghep Ms (3000.0),32-bit Float
-Max_RPM_S,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,826,Toc do Max RPM Trang Dau S (3000.0),32-bit Float
-Max_RPM_T,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,828,Toc do Max RPM Thu T (1500.0),32-bit Float
-CCLink_AD_Avg_Mode,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,860,Che do lay trung binh BFM 0 64AD (H3333=Moving Avg),16-bit Hex
-CCLink_AD_Avg_CH1,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,861,So mau trung binh CH1 BFM 1 (Loadcell Thu T),16-bit Signed
-CCLink_AD_Avg_CH2,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,862,So mau trung binh CH2 BFM 2 (Loadcell Xa X1),16-bit Signed
-CCLink_AD_Avg_CH3,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,863,So mau trung binh CH3 BFM 3 (Loadcell Thang M),16-bit Signed
-CCLink_AD_Avg_CH4,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,864,So mau trung binh CH4 BFM 4 (Loadcell Xa U),16-bit Signed
-CCLink_AD_Conv_En,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,865,Cho phep chuyen doi AD 4 kenh BFM 10 (0=Enable),16-bit Signed
+Name,Address,Type,Comment
+HMI_Auto_Mode,M-100,bit,Chế độ Auto / Manual
+HMI_Reset_Error,M-101,bit,Reset lỗi hệ thống
+HMI_Start,M-102,bit,Nút Start khởi động máy
+HMI_Stop,M-103,bit,Nút Stop dừng máy
+HMI_Reset_Length,M-104,bit,Reset tổng chiều dài mét hàng về 0
+HMI_Reset_Roll_T,M-105,bit,Nạp lại đường kính cuộn mới Thu T
+HMI_Reset_Roll_M,M-106,bit,Nạp lại đường kính cuộn mới Xả M
+HMI_Reset_Roll_U,M-107,bit,Nạp lại đường kính cuộn mới Xả U
+HMI_PID_Enable,M-108,bit,Bật / Tắt chế độ PID tự động
+HMI_Inc_Hold,M-109,bit,Phím INC tăng tốc trên màn hình
+HMI_Dec_Hold,M-114,bit,Phím DEC giảm tốc trên màn hình
+HMI_Pen1_Cmd,M-115,bit,Lệnh đóng mở Pen 1 từ HMI
+HMI_Pen2_Cmd,M-116,bit,Lệnh đóng mở Pen 2 từ HMI
+HMI_Jog_Crawl_Cmd,M-117,bit,Nút nhấn Bò chậm luồn màng HMI
+HMI_Reset_All_Rolls,M-118,bit,Nút thay cuộn mới toàn bộ 1-Click
+HMI_Cmd_Apply_Recipe,M-119,bit,Nút áp dụng công thức đơn hàng
+HMI_Cmd_Save_Recipe,M-124,bit,Nút lưu cài đặt vào Recipe Tùy chỉnh
+Zero_Set_T,M-110,bit,Nút Set Zero Loadcell Thu T
+Zero_Set_X1,M-111,bit,Nút Set Zero Loadcell Xả X1
+Zero_Set_M,M-112,bit,Nút Set Zero Loadcell Thắng M
+Zero_Set_U,M-113,bit,Nút Set Zero Loadcell Xả U
+Calib_Set_T,M-120,bit,Nút Calib Span Loadcell Thu T
+Calib_Set_X1,M-121,bit,Nút Calib Span Loadcell Xả X1
+Calib_Set_M,M-122,bit,Nút Calib Span Loadcell Thắng M
+Calib_Set_U,M-123,bit,Nút Calib Span Loadcell Xả U
+HMI_Cmd_AutoTune,M-180,bit,Nút kích hoạt Auto-Tuning PID
+HMI_Cmd_Save_PID,M-181,bit,Nút lưu thông số PID đã chỉnh
+HMI_Cmd_Zero_Set,M-182,bit,Nút Zero tổng hợp trên HMI
+HMI_Cmd_Calib_Set,M-183,bit,Nút Calib tổng hợp trên HMI
+HMI_Status_AT_Busy,M-184,bit,Đèn báo đang Auto-Tuning PID
+HMI_Status_AT_Done,M-185,bit,Đèn báo hoàn tất Auto-Tuning PID
+Servo_Not_Ready_Fault,M-134,bit,Cờ báo sự cố 5 Servo Not Ready
+Pen1_State,M-1309,bit,Trạng thái Pen 1
+Pen2_State,M-1310,bit,Trạng thái Pen 2
+Pen_Auto_Engaged,M-1311,bit,Cờ báo Pen đã tự động hạ
+Auto_Decel_Flag,M-1312,bit,Cờ báo hệ thống đang hãm dừng về đích
+State_Machine,D-700,16-bit Signed,Trạng thái vận hành máy (0=Stop 1=Run)
+HMI_Status_Text_Code,D-701,16-bit Signed,Mã trạng thái hiển thị tiếng Việt trên HMI
+HMI_Recipe_Select,D-702,16-bit Signed,Chọn Recipe công thức (1..5)
+HMI_Axis_Select,D-704,16-bit Signed,Chọn trục chỉnh PID / Calib (1..7)
+Target_Line_MPM,D-600,32-bit Float,Tốc độ máy cài đặt (m/phút)
+Max_Speed_MPM,D-602,32-bit Float,Tốc độ tối đa dây chuyền (m/phút)
+Min_Speed_MPM,D-604,32-bit Float,Tốc độ tối thiểu dây chuyền (m/phút)
+Release_Pen_Speed_MPM,D-606,32-bit Float,Tốc độ nhả Pen tự động (m/phút)
+Ramp_Accel_Rate,D-608,32-bit Float,Gia tốc tăng tốc (m/p trên scan)
+Ramp_Decel_Rate,D-610,32-bit Float,Gia tốc giảm tốc (m/p trên scan)
+Decel_Distance_Meters,D-612,32-bit Float,Khoảng cách hãm dừng tự động (m)
+Current_Line_MPM,D-614,32-bit Float,Tốc độ máy thực tế (m/phút)
+Gear_Ratio_T,D-620,32-bit Float,Tỷ số truyền hộp số Thu T
+Gear_Ratio_X1,D-622,32-bit Float,Tỷ số truyền hộp số Xả X1
+Gear_Ratio_X2,D-624,32-bit Float,Tỷ số truyền hộp số Master X2
+Gear_Ratio_Ms,D-626,32-bit Float,Tỷ số truyền hộp số Ghép Ms
+Gear_Ratio_S,D-628,32-bit Float,Tỷ số truyền hộp số Tráng Dầu S
+Gear_Ratio_U,D-630,32-bit Float,Tỷ số truyền hộp số Xả Metalize U
+Max_RPM_T,D-632,32-bit Float,Tốc độ tối đa motor Thu T (RPM)
+Max_RPM_X1,D-634,32-bit Float,Tốc độ tối đa motor Xả X1 (RPM)
+Max_RPM_X2,D-636,32-bit Float,Tốc độ tối đa motor Master X2 (RPM)
+Max_RPM_Ms,D-638,32-bit Float,Tốc độ tối đa motor Ghép Ms (RPM)
+Max_RPM_S,D-640,32-bit Float,Tốc độ tối đa motor Dầu S (RPM)
+Dia_X1_Roller_mm,D-642,32-bit Float,Đường kính lô Kéo X1 (mm)
+Dia_X2_Roller_mm,D-644,32-bit Float,Đường kính lô Master X2 (mm)
+Dia_Ms_Roller_mm,D-646,32-bit Float,Đường kính lô Ghép Ms (mm)
+Dia_S_Roller_mm,D-648,32-bit Float,Đường kính lô Dầu S (mm)
+Core_Dia_T_mm,D-650,32-bit Float,Đường kính lõi cuộn Thu T (mm)
+Core_Dia_M_mm,D-652,32-bit Float,Đường kính lõi cuộn Thắng M (mm)
+Core_Dia_U_mm,D-654,32-bit Float,Đường kính lõi cuộn Xả U (mm)
+Max_Dia_T_mm,D-656,32-bit Float,Đường kính cực đại cuộn Thu T (mm)
+Max_Dia_M_mm,D-658,32-bit Float,Đường kính cực đại cuộn Thắng M (mm)
+Max_Dia_U_mm,D-660,32-bit Float,Đường kính cực đại cuộn Xả U (mm)
+SP_Tension_T,D-662,32-bit Float,Cài đặt lực căng cuộn Thu T (kg)
+SP_Tension_X1,D-664,32-bit Float,Cài đặt lực căng cuộn Xả X1 (kg)
+SP_Tension_M,D-666,32-bit Float,Cài đặt lực căng Thắng M (kg)
+SP_Tension_U,D-668,32-bit Float,Cài đặt lực căng Xả U (kg)
+Taper_Percent_T,D-670,32-bit Float,Cài đặt phần trăm côn lực Thu T (%)
+Effective_SP_T,D-672,32-bit Float,Lực căng SP thực tế Thu T (kg)
+Total_Length_Meters,D-708,32-bit Float,Tổng số mét màng đã chạy (m)
+Set_Target_Length,D-710,32-bit Float,Cài đặt số mét đơn hàng dừng máy (m)
+Real_Dia_U_mm,D-720,32-bit Float,Đường kính cuộn thực tế Xả U (mm)
+Real_Dia_M_mm,D-722,32-bit Float,Đường kính cuộn thực tế Thắng M (mm)
+Real_Dia_T_mm,D-724,32-bit Float,Đường kính cuộn thực tế Thu T (mm)
+Weight_Net_T,D-510,32-bit Float,Lực căng Loadcell thực tế Thu T (kg)
+Weight_Net_X1,D-512,32-bit Float,Lực căng Loadcell thực tế Xả X1 (kg)
+Weight_Net_M,D-514,32-bit Float,Lực căng Loadcell thực tế Thắng M (kg)
+Weight_Net_U,D-516,32-bit Float,Lực căng Loadcell thực tế Xả U (kg)
+Zero_Offset_T,D-518,32-bit Float,Zero Offset Loadcell T
+Zero_Offset_X1,D-520,32-bit Float,Zero Offset Loadcell X1
+Zero_Offset_M,D-522,32-bit Float,Zero Offset Loadcell M
+Zero_Offset_U,D-524,32-bit Float,Zero Offset Loadcell U
+Calib_Gain_T,D-540,32-bit Float,Hệ số Calib Gain Loadcell T
+Calib_Gain_X1,D-542,32-bit Float,Hệ số Calib Gain Loadcell X1
+Calib_Gain_M,D-544,32-bit Float,Hệ số Calib Gain Loadcell M
+Calib_Gain_U,D-546,32-bit Float,Hệ số Calib Gain Loadcell U
+Speed_Ratio_T,D-750,32-bit Float,Tỷ lệ tốc độ Thu T (1.0 = 100%)
+Speed_Ratio_X1,D-752,32-bit Float,Tỷ lệ tốc độ Xả X1 (1.0 = 100%)
+Speed_Ratio_Ms,D-754,32-bit Float,Tỷ lệ tốc độ Ghép Ms (1.0 = 100%)
+Speed_Ratio_S,D-756,32-bit Float,Tỷ lệ tốc độ Dầu S (1.0 = 100%)
+Speed_Offset_X1,D-760,32-bit Float,Bù tốc độ Xả X1
+Speed_Offset_Ms,D-764,32-bit Float,Bù tốc độ Ghép Ms
+Speed_Offset_S,D-768,32-bit Float,Bù tốc độ Dầu S
+Min_Torque_M,D-770,32-bit Float,Torque hãm min Thắng M (%)
+Max_Torque_M,D-772,32-bit Float,Torque hãm max Thắng M (%)
+Init_Holding_Torque_M,D-774,32-bit Float,Torque giữ ban đầu Thắng M (%)
+Min_Torque_U,D-776,32-bit Float,Torque hãm min Xả U (%)
+Max_Torque_U,D-778,32-bit Float,Torque hãm max Xả U (%)
+Init_Holding_Torque_U,D-780,32-bit Float,Torque giữ ban đầu Xả U (%)
+Test_Speed_T,D-800,32-bit Float,Tốc độ test manual Thu T (0..16000)
+Test_Torque_T,D-802,32-bit Float,Torque test manual Thu T (0..16000)
+Test_Speed_X1,D-804,32-bit Float,Tốc độ test manual Xả X1 (0..16000)
+Test_Speed_X2,D-806,32-bit Float,Tốc độ test manual Master X2 (0..16000)
+Test_Speed_Ms,D-808,32-bit Float,Tốc độ test manual Ghép Ms (0..16000)
+Test_Speed_S,D-810,32-bit Float,Tốc độ test manual Dầu S (0..16000)
+Test_Torque_M,D-812,32-bit Float,Torque test manual Thắng M (0..16000)
+Test_Speed_U,D-814,32-bit Float,Tốc độ test manual Xả U (0..16000)
+HMI_Disp_Kp,D-870,32-bit Float,Ô hiển thị / cài đặt Kp HMI
+HMI_Disp_Ki,D-872,32-bit Float,Ô hiển thị / cài đặt Ki HMI
+HMI_Disp_Kd,D-874,32-bit Float,Ô hiển thị / cài đặt Kd HMI
+HMI_Disp_Calib_Gain,D-876,32-bit Float,Ô hiển thị / cài đặt Calib Gain HMI
+HMI_Disp_Zero_Offset,D-878,32-bit Float,Ô hiển thị / cài đặt Zero Offset HMI
+RPM_T,D-5010,32-bit Signed,Tốc độ vòng/phút Thu T (RPM x10)
+RPM_X1,D-5012,32-bit Signed,Tốc độ vòng/phút Xả X1 (RPM x10)
+RPM_X2,D-5014,32-bit Signed,Tốc độ vòng/phút Master X2 (RPM x10)
+RPM_Ms,D-5016,32-bit Signed,Tốc độ vòng/phút Ghép Ms (RPM x10)
+RPM_S,D-5018,32-bit Signed,Tốc độ vòng/phút Dầu S (RPM x10)
+MPM_T,D-5020,32-bit Signed,Vận tốc màng Thu T (MPM x10)
+MPM_X1,D-5022,32-bit Signed,Vận tốc màng Xả X1 (MPM x10)
+MPM_X2,D-5024,32-bit Signed,Vận tốc màng Master X2 (MPM x10)
+MPM_Ms,D-5026,32-bit Signed,Vận tốc màng Ghép Ms (MPM x10)
+MPM_S,D-5028,32-bit Signed,Vận tốc màng Dầu S (MPM x10)
+Curr_Pulse_T,D-5000,32-bit Signed,Giá trị xung đếm hiện tại Trục T
+Curr_Pulse_X1,D-5002,32-bit Signed,Giá trị xung đếm hiện tại Trục X1
+Curr_Pulse_X2,D-5004,32-bit Signed,Giá trị xung đếm hiện tại Trục X2
+Curr_Pulse_Ms,D-5006,32-bit Signed,Giá trị xung đếm hiện tại Trục Ms
+PPR_Encoder,D-5008,32-bit Signed,Độ phân giải Encoder (PPR)

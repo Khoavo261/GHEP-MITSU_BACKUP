@@ -94,17 +94,14 @@ Nếu bạn muốn tự tạo dự án mới từ đầu trên GX Works2:
 ## 🔗 4. CÁCH TÍNH & PHÂN BỔ ĐỊA CHỈ CC-LINK DỄ HIỂU NHẤT
 
 ### A. Quy Tắc Nhớ Nhanh (Dành Cho 1 Trạm = 1 Station)
-Khi cấu hình CC-Link ở chế độ Ver.1 Mode, cứ **1 Trạm (1 Station)** phần mềm sẽ tự động cấp:
-- **32 Bits ngõ vào RX** (Trong PLC ánh xạ sang dải rơ-le `M`)
-- **32 Bits ngõ ra RY** (Trong PLC ánh xạ sang dải rơ-le `M`)
-- **4 Thanh ghi đọc RWr** (Trong PLC ánh xạ sang dải thanh ghi `D`)
-- **4 Thanh ghi ghi RWw** (Trong PLC ánh xạ sang dải thanh ghi `D`)
-
-Nếu 1 thiết bị chiếm **2 Trạm (2 Stations)** (như module DAC 88DAVN) $\rightarrow$ Nó sẽ lấy gấp đôi: **64 Bits (2 trạm x 32)** và **8 Thanh ghi (2 trạm x 4)**.
+Khi cấu hình CC-Link ở chế độ Ver.1 Mode:
+- **1 Trạm (1 Station):** Cấp 32 Bits RX, 32 Bits RY, 4 Words RWr, 4 Words RWw.
+- **2 Trạm (2 Stations):** Cấp 64 Bits RX, 64 Bits RY, 8 Words RWr, 8 Words RWw.
+*(Cả module ADC 8 kênh `AJ65VBT-68ADV` và DAC 8 kênh `AJ65VBTCU-68DAVN` đều chiếm **2 Stations** để đủ 8 thanh ghi dữ liệu).*
 
 ---
 
-### B. Bảng Phân Bổ Địa Chỉ Chi Tiết Dự Án GHEP-MITSU
+### B. Bảng Phân Bổ Địa Chỉ Chi Tiết Dự Án GHEP-MITSU (3 Module - 5 Trạm)
 
 Dự án cài đặt địa chỉ gốc trong GX Works2:
 - Bit ngõ vào gốc **`RX`**: Bắt đầu từ **`M1008`**
@@ -114,27 +111,30 @@ Dự án cài đặt địa chỉ gốc trong GX Works2:
 
 | Trạm Phần Cứng | Thiết Bị Thực Tế | Số Trạm Chiếm | Dải Bit Đọc `RX` (Vùng `M` PLC) | Dải Bit Ghi `RY` (Vùng `M` PLC) | Dải Thanh Ghi Đọc `RWr` | Dải Thanh Ghi Ghi `RWw` |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Trạm 1** | Module ADC 4CH (`64AD`) | **1 Station** (32 bits / 4 Words) | `M1008` ~ `M1039` *(RX0 ~ RX1F)* | `M1200` ~ `M1231` *(RY0 ~ RY1F)* | **`D500` ~ `D503`** *(RWr0~RWr3)* | `D520` ~ `D523` *(RWw0~RWw3)* |
-| **Trạm 2 & 3** | Module DAC 8CH (`68DAVN`) | **2 Stations** (64 bits / 8 Words) | `M1040` ~ `M1103` *(RX20 ~ RX5F)* | `M1232` ~ `M1295` *(RY20 ~ RY5F)* | `D504` ~ `D511` *(RWr4~RWrB)* | **`D524` ~ `D531`** *(RWw4~RWwB)* |
-| **Trạm 4** | Digital Remote (`16DT`) | **1 Station** (32 bits / 4 Words) | `M1104` ~ `M1135` *(RX60 ~ RX7F)* | `M1296` ~ `M1327` *(RY60 ~ RY7F)* | `D512` ~ `D515` *(RWrC~RWrF)* | `D532` ~ `D535` *(RWwC~RWwF)* |
+| **Trạm 1 & 2** | Module ADC 8CH (`AJ65VBT-68ADV`) | **2 Stations** (64 bits / 8 Words) | `M1008` ~ `M1071` *(RX0 ~ RX3F)* | `M1200` ~ `M1263` *(RY0 ~ RY3F)* | **`D500` ~ `D507`** *(RWr0~RWr7)* | `D520` ~ `D527` *(RWw0~RWw7)* |
+| **Trạm 3 & 4** | Module DAC 8CH (`AJ65VBTCU-68DAVN`) | **2 Stations** (64 bits / 8 Words) | `M1072` ~ `M1135` *(RX40 ~ RX7F)* | `M1264` ~ `M1327` *(RY40 ~ RY7F)* | `D508` ~ `D515` *(RWr8~RWrF)* | **`D528` ~ `D535`** *(RWw8~RWwF)* |
+| **Trạm 5** | Digital Remote (`AJ65SBTB1-16DT`) | **1 Station** (32 bits / 4 Words) | `M1136` ~ `M1167` *(RX80 ~ RX9F)* | `M1328` ~ `M1359` *(RY80 ~ RY9F)* | `D516` ~ `D519` *(RWr10~RWr13)*| `D536` ~ `D539` *(RWw10~RWw13)*|
 
 ---
 
 ### C. Giải Thích Cụ Thể Từng Trạm:
 
-#### 🔹 1. Trạm 1 (`AJ65SBT-64AD` - Chiếm 1 Trạm):
-* **Đọc 4 kênh ADC (RWr0 ~ RWr3):** Nằm tại **`D500` đến `D503`**. (`D500` = Kênh 1, `D501` = Kênh 2, `D502` = Kênh 3, `D503` = Kênh 4).
-* **Cờ báo trạng thái (RX/RY):** Nằm tại **`M1008` đến `M1039`**. (`M1016` là cờ báo ADC đổi xong, `M1208` là bit lệnh cho phép A/D).
+#### 🔹 1. Trạm 1 & 2 (`AJ65VBT-68ADV` - Chiếm 2 Trạm, Công tắc gạt = `1`):
+* **Đọc 8 kênh ADC (RWr0 ~ RWr7):** Nằm tại **`D500` đến `D507`** (`D500` = CH1 Loadcell Thu T, `D501` = CH2 Loadcell Kéo X1, `D502` = CH3 Loadcell Thắng M, `D503` = CH4 Loadcell Xả U, `D504..D507` = CH5..CH8 mở rộng).
+* **Cờ báo trạng thái & Lệnh cho phép (RX/RY):**
+  - **`M1200` đến `M1207` (`RY0` đến `RY7`):** **BẮT BUỘC BẬT ON = 1** để cho phép chuyển đổi A/D từng kênh CH1 ~ CH8 (Nếu các bit này OFF thì `D500..D507` luôn bằng 0!).
+  - `M1208` (`RY8`): Cho phép chuyển đổi tổng.
+  - `M1016` (`RX8`/`RX19`): Cờ báo ADC đổi xong.
+  - `M1034` (`RX1A`): Cờ báo lỗi ADC.
+  - `M1226` (`RY1A`): Bit reset lỗi ADC.
 
-#### 🔹 2. Trạm 2 & 3 (`AJ65VBTCU-68DAVN` - Chiếm 2 Trạm):
-* Vì trạm 1 đã dùng 4 thanh ghi `RWw` đầu (`D520..D523`), nên trạm 2 bắt đầu từ thanh ghi thứ 5 là **`D524`**.
-* Do chiếm 2 trạm (lấy 8 thanh ghi), dải thanh ghi xuất 8 kênh DAC là **`D524` đến `D531`** (`D524` = CH1, `D525` = CH2 ... `D531` = CH8).
-* **Cờ báo trạng thái (RX/RY):** Lấy tiếp 64 bits từ **`M1040` đến `M1103`**. (`M1064` là cờ báo DAC sẵn sàng, `M1240` là bit cho phép D/A).
+#### 🔹 2. Trạm 3 & 4 (`AJ65VBTCU-68DAVN` - Chiếm 2 Trạm, Công tắc gạt = `3`):
+* **Ghi 8 kênh DAC xuất áp (RWw8 ~ RWwF):** Nằm tại **`D528` đến `D535`** (`D528` = CH1 Speed T, `D529` = CH2 Torque T, `D530` = CH3 Speed X1, `D531` = CH4 Speed X2, `D532` = CH5 Speed Ms, `D533` = CH6 Torque M, `D534` = CH7 Speed S, `D535` = CH8 Speed U).
+* **Cờ báo trạng thái (RX/RY):** Lấy tiếp 64 bits từ **`M1072` đến `M1135`** (`M1096` cờ DAC Ready, `M1098` cờ lỗi DAC, `M1272` bit cho phép D/A, `M1290` bit reset lỗi DAC).
 
-#### 🔹 3. Trạm 4 (`AJ65SBTB1-16DT` - Chiếm 1 Trạm):
-* Tín hiệu ngõ vào (X0, X1...): 8 ngõ vào tại **`M1104` đến `M1111`** (`M1104` = Ngõ vào X0, `M1105` = Ngõ vào X1...).
-* Tín hiệu ngõ ra (Y8, Y9... YF): 8 ngõ ra tại **`M1304` đến `M1311`** (`M1304` = Ngõ ra Y8, `M1305` = Ngõ ra Y9... `M1311` = Ngõ ra YF).
-
+#### 🔹 3. Trạm 5 (`AJ65SBTB1-16DT` - Chiếm 1 Trạm, Công tắc gạt = `5`):
+* **8 Ngõ vào Digital (X0 ~ X7):** Nằm tại **`M1136` đến `M1143`** (`M1136..M1140` = Ready 5 Servo T, X1, X2, Ms, S; `M1141` = Nút Jog bò chậm).
+* **8 Ngõ ra Digital (Y8 ~ YF):** Nằm tại **`M1336` đến `M1343`** (`M1336..M1340` = Servo ON 5 Trục T, X1, X2, Ms, S; `M1341..M1342` = Van Solenoid Pen 1, Pen 2; `M1343` = Còi/Đèn báo lỗi).
 
 ---
 
@@ -142,12 +142,13 @@ Dự án cài đặt địa chỉ gốc trong GX Works2:
 
 | Tên Tài Liệu Nội Bộ | Đường Dẫn Mở Trực Tiếp | Nội Dung Kỹ Thuật Chi Tiết |
 | :--- | :--- | :--- |
-| **Bảng Mapping Thanh Ghi CC-Link & HMI** | [`notes_cclink_mapping.md`](file:///d:/data-2026/lap_top/GHEP-MITSU_BACKUP/notes_cclink_mapping.md) | Ánh xạ chi tiết biến D600~D617, D500~D531, M1104, M1296 giữa PLC, CC-Link và HMI |
+| **Bảng Mapping Thanh Ghi CC-Link & HMI** | [`notes_cclink_mapping.md`](file:///d:/data-2026/lap_top/GHEP-MITSU_BACKUP/notes_cclink_mapping.md) | Ánh xạ chi tiết biến D600~D617, D500~D507, D528~D535, M1136, M1336 giữa PLC, CC-Link và HMI |
 | **Kịch Bản Vận Hành 6 Trục & Lực Căng** | [`metalize_system_master_guide.md`](file:///d:/data-2026/lap_top/GHEP-MITSU_BACKUP/metalize_system_master_guide.md) | Tỷ số truyền 6 trục (T, X1, X2, Ms, S, U), thắng từ M, đo đường kính X50/X51, chu trình Start/Stop |
-| **Hướng Dẫn Đấu Nối & Cấu HÌnh HMI** | [`wiring_and_hmi_guide.md`](file:///d:/data-2026/lap_top/GHEP-MITSU_BACKUP/wiring_and_hmi_guide.md) | Sơ đồ dây CC-Link, điện trở 110$\Omega$, sơ đồ chân ADC 64AD, DAC 68DAVN & kết nối HMI |
-| **Hướng Dẫn CC-Link QJ61BT11N & Q02U** | [`cclink_q02u_guide.md`](file:///d:/data-2026/lap_top/GHEP-MITSU_BACKUP/cclink_q02u_guide.md) | Quy định chọn 2 Stations cho 68DAVN, bảng Station Information, vùng nhớ RX/RY/RWr/RWw |
+| **Hướng Dẫn Đấu Nối & Cấu HÌnh HMI** | [`wiring_and_hmi_guide.md`](file:///d:/data-2026/lap_top/GHEP-MITSU_BACKUP/wiring_and_hmi_guide.md) | Sơ đồ dây CC-Link, điện trở 110$\Omega$, sơ đồ chân ADC 68ADV, DAC 68DAVN & kết nối HMI |
+| **Hướng Dẫn CC-Link QJ61BT11N & Q02U** | [`cclink_q02u_guide.md`](file:///d:/data-2026/lap_top/GHEP-MITSU_BACKUP/cclink_q02u_guide.md) | Cấu hình 2 Stations cho 68ADV & 68DAVN, bảng Station Information 5 trạm, vùng nhớ RX/RY/RWr/RWw |
 | **Hướng Dẫn Encoder QD62** | [`encoder_speed_guide.md`](file:///d:/data-2026/lap_top/GHEP-MITSU_BACKUP/encoder_speed_guide.md) | Cấu hình module đếm xung tốc độ cao QD62 đọc Encoder đo tốc độ dây chuyền |
 | **Hướng Dẫn Modbus QJ71C24N / STM32** | [`stm32_qj71c24_guide.md`](file:///d:/data-2026/lap_top/GHEP-MITSU_BACKUP/stm32_qj71c24_guide.md) | Truyền thông RS-485 Modbus RTU giữa PLC Q02U và bo mạch vi điều khiển STM32 |
 | **Sơ Đồ Đấu Nối Cáp CC-Link (PDF)** | [`CCLINK.pdf`](file:///d:/data-2026/lap_top/GHEP-MITSU_BACKUP/CCLINK.pdf) | Bản vẽ sơ đồ đấu nối cáp và phân bổ trạm CC-Link gốc |
 | **Thông Số Phần Cứng CC-Link (PDF)** | [`PARA-CCLINK.pdf`](file:///d:/data-2026/lap_top/GHEP-MITSU_BACKUP/PARA-CCLINK.pdf) | Tài liệu tra cứu thông số Parameter phần cứng CC-Link |
+
 

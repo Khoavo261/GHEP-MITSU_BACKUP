@@ -148,9 +148,9 @@ Max_RPM_X1,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,822,Toc do Max RPM Xa X1 (1000.0),32-
 Max_RPM_Ms,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,824,Toc do Max RPM Ghep Ms (3000.0),32-bit Float
 Max_RPM_S,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,826,Toc do Max RPM Trang Dau S (3000.0),32-bit Float
 Max_RPM_T,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,828,Toc do Max RPM Thu T (1500.0),32-bit Float
-CCLink_AD_Avg_Mode,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,860,Che do lay trung binh BFM 0 64AD (H3333=Moving Avg),16-bit Hex
+CCLink_AD_Avg_Mode,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,860,Che do lay trung binh BFM 0 68ADV (H3333=Moving Avg),16-bit Hex
 CCLink_AD_Avg_CH1,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,861,So mau trung binh CH1 BFM 1 (Loadcell Thu T),16-bit Signed
 CCLink_AD_Avg_CH2,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,862,So mau trung binh CH2 BFM 2 (Loadcell Xa X1),16-bit Signed
 CCLink_AD_Avg_CH3,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,863,So mau trung binh CH3 BFM 3 (Loadcell Thang M),16-bit Signed
 CCLink_AD_Avg_CH4,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,864,So mau trung binh CH4 BFM 4 (Loadcell Xa U),16-bit Signed
-CCLink_AD_Conv_En,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,865,Cho phep chuyen doi AD 4 kenh BFM 10 (0=Enable),16-bit Signed
+CCLink_AD_Conv_En,Mitsubishi Q00/Q00UJ/Q01/QJ71,D,865,Cho phep chuyen doi AD 8 kenh BFM 10 (0=Enable),16-bit Signed

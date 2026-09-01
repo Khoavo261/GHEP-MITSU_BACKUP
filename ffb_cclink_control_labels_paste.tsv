@@ -9,17 +9,25 @@ VAR_INPUT	Set_Speed_Ms	REAL		CH5 Speed Ghep Ms (0.0..16000.0)
 VAR_INPUT	Set_Torque_M	REAL		CH6 Torque Thang M (0.0..16000.0)
 VAR_INPUT	Set_Speed_S	REAL		CH7 Speed Trang Dau S (0.0..16000.0)
 VAR_INPUT	Set_Speed_U	REAL		CH8 Speed Xa U (0.0..16000.0)
-VAR_INPUT	DO_Y8_Cmd	BOOL		Lenh ngo ra Y8 St 4 (M1304)
-VAR_INPUT	DO_Y9_Cmd	BOOL		Lenh ngo ra Y9 St 4 (M1305)
+VAR_INPUT	DO_Y8_Cmd	BOOL		Lenh ngo ra Y8 St 5 (M1336)
+VAR_INPUT	DO_Y9_Cmd	BOOL		Lenh ngo ra Y9 St 5 (M1337)
 VAR_OUTPUT	CCLink_OK	BOOL		Trang thai mang CC-Link OK
 VAR_OUTPUT	HasError	BOOL		Bao loi tong truyen thong module
 VAR_OUTPUT	ADC_CH1_Val	REAL		Gia tri thuc ADC CH1 (REAL)
 VAR_OUTPUT	ADC_CH2_Val	REAL		Gia tri thuc ADC CH2 (REAL)
 VAR_OUTPUT	ADC_CH3_Val	REAL		Gia tri thuc ADC CH3 (REAL)
 VAR_OUTPUT	ADC_CH4_Val	REAL		Gia tri thuc ADC CH4 (REAL)
+VAR_OUTPUT	ADC_CH5_Val	REAL		Gia tri thuc ADC CH5 (REAL)
+VAR_OUTPUT	ADC_CH6_Val	REAL		Gia tri thuc ADC CH6 (REAL)
+VAR_OUTPUT	ADC_CH7_Val	REAL		Gia tri thuc ADC CH7 (REAL)
+VAR_OUTPUT	ADC_CH8_Val	REAL		Gia tri thuc ADC CH8 (REAL)
 VAR_OUTPUT	ADC_CH1_Raw	WORD		Gia tri tho D500 ADC CH1
 VAR_OUTPUT	ADC_CH2_Raw	WORD		Gia tri tho D501 ADC CH2
 VAR_OUTPUT	ADC_CH3_Raw	WORD		Gia tri tho D502 ADC CH3
 VAR_OUTPUT	ADC_CH4_Raw	WORD		Gia tri tho D503 ADC CH4
-VAR_OUTPUT	DI_X0_State	BOOL		Trang thai ngo vao X0 St 4
-VAR_OUTPUT	DI_X1_State	BOOL		Trang thai ngo vao X1 St 4
+VAR_OUTPUT	ADC_CH5_Raw	WORD		Gia tri tho D504 ADC CH5
+VAR_OUTPUT	ADC_CH6_Raw	WORD		Gia tri tho D505 ADC CH6
+VAR_OUTPUT	ADC_CH7_Raw	WORD		Gia tri tho D506 ADC CH7
+VAR_OUTPUT	ADC_CH8_Raw	WORD		Gia tri tho D507 ADC CH8
+VAR_OUTPUT	DI_X0_State	BOOL		Trang thai ngo vao X0 St 5 (M1136)
+VAR_OUTPUT	DI_X1_State	BOOL		Trang thai ngo vao X1 St 5 (M1137)

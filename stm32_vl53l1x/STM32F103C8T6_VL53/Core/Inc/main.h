@@ -57,17 +57,17 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define LED_Pin GPIO_PIN_12
-#define LED_GPIO_Port GPIOB
+#define LED_Pin GPIO_PIN_13
+#define LED_GPIO_Port GPIOC
+#define CAN_ADDR_BIT1_Pin GPIO_PIN_12
+#define CAN_ADDR_BIT1_GPIO_Port GPIOB
+#define CAN_ADDR_BIT0_Pin GPIO_PIN_13
+#define CAN_ADDR_BIT0_GPIO_Port GPIOB
 #define VL53_XSHUT_Pin GPIO_PIN_4
 #define VL53_XSHUT_GPIO_Port GPIOB
 #define VL53_INT_Pin GPIO_PIN_5
 #define VL53_INT_GPIO_Port GPIOB
 #define VL53_INT_EXTI_IRQn EXTI9_5_IRQn
-#define CAN_ADDR_BIT0_Pin GPIO_PIN_8
-#define CAN_ADDR_BIT0_GPIO_Port GPIOB
-#define CAN_ADDR_BIT1_Pin GPIO_PIN_9
-#define CAN_ADDR_BIT1_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

@@ -1,29 +1,210 @@
 (* ============================================================================ *)
 (* MÃ NGUỒN POU_01: HỆ THỐNG MÁY GHÉP MÀNG METALIZE TỰ ĐỘNG - MITSUBISHI Q02U  *)
-(* ĐỒNG BỘ VẬN TỐC DÀI THEO TRỤC CHÍNH X2 + SPEED_RATIO CHO TỪNG TRỤC           *)
-(* TOÀN BỘ TÍNH TOÁN DÙNG CHUẨN SỐ THỰC FLOAT / REAL (FLOAT [Single Precision]) *)
+(* BẢO VỆ TOÀN DIỆN CHỐNG LỖI 4140 OPERATION ERROR (CHIA CHO 0 & TRÀN SỐ DINT)  *)
+(* CẤU HÌNH PHẦN CỨNG:                                                          *)
+(*   - Slot 0 (H00): Q68ADV (8CH Analog In: Loadcell T, X1, M, U & Analog S)    *)
+(*   - Slot 1 (H10): Q68DAV (8CH Analog Out: Speed/Torque T, X1, X2, Ms, S, M, U) *)
+(*   - Slot 2 (H20): QD62D  (2CH High Speed Counter: CH1=Trục T, CH2=Trục X1)  *)
+(*   - Slot 3 (H30): QD62D  (2CH High Speed Counter: CH1=Trục X2, CH2=Trục Ms) *)
+(*   - Slot 4 (H40): QX40   (16CH Digital Input: X40..X4F)                     *)
+(*   - Slot 5 (H50): QY40   (16CH Digital Output: Y50..Y5F)                    *)
+(*   - Slot 6 (H60): QJ71C24N (RS232/RS485 Serial)                             *)
 (* ============================================================================ *)
 
-(* 1. BẢO VỆ 5 TRỤC SERVO READY TRÊN MODULE 16DT (X0..X4 = M1104..M1108) *)
+(* ============================================================================ *)
+(* 0. KIỂM TRA & GÁN GIÁ TRỊ AN TOÀN TRÁNH CHIA CHO 0 (ZERO DIV PROTECTION)    *)
+(* ============================================================================ *)
+IF PPR_Encoder      <= 0     THEN PPR_Encoder      := 2000;  END_IF;
+IF Max_RPM_X2       <= 0.0   THEN Max_RPM_X2       := 1000.0; END_IF;
+IF Max_RPM_X1       <= 0.0   THEN Max_RPM_X1       := 1000.0; END_IF;
+IF Max_RPM_Ms       <= 0.0   THEN Max_RPM_Ms       := 3000.0; END_IF;
+IF Max_RPM_S        <= 0.0   THEN Max_RPM_S        := 3000.0; END_IF;
+IF Max_RPM_T        <= 0.0   THEN Max_RPM_T        := 1500.0; END_IF;
+
+IF Gear_Ratio_T     <= 0.0   THEN Gear_Ratio_T     := 10.1;  END_IF;
+IF Gear_Ratio_X1    <= 0.0   THEN Gear_Ratio_X1    := 8.0;   END_IF;
+IF Gear_Ratio_X2    <= 0.0   THEN Gear_Ratio_X2    := 8.0;   END_IF;
+IF Gear_Ratio_Ms    <= 0.0   THEN Gear_Ratio_Ms    := 10.0;  END_IF;
+IF Gear_Ratio_S     <= 0.0   THEN Gear_Ratio_S     := 10.0;  END_IF;
+IF Gear_Ratio_U     <= 0.0   THEN Gear_Ratio_U     := 1.0;   END_IF;
+
+IF Dia_X1_Roller_mm <= 0.0   THEN Dia_X1_Roller_mm := 300.5; END_IF;
+IF Dia_X2_Roller_mm <= 0.0   THEN Dia_X2_Roller_mm := 300.5; END_IF;
+IF Dia_Ms_Roller_mm <= 0.0   THEN Dia_Ms_Roller_mm := 200.0; END_IF;
+IF Dia_S_Roller_mm  <= 0.0   THEN Dia_S_Roller_mm  := 100.0; END_IF;
+
+IF Core_Dia_T_mm    <= 0.0   THEN Core_Dia_T_mm    := 76.0;   END_IF;
+IF Core_Dia_M_mm    <= 0.0   THEN Core_Dia_M_mm    := 76.0;   END_IF;
+IF Core_Dia_U_mm    <= 0.0   THEN Core_Dia_U_mm    := 76.0;   END_IF;
+
+IF Max_Dia_T_mm     <= 0.0   THEN Max_Dia_T_mm     := 1000.0; END_IF;
+IF Max_Dia_M_mm     <= 0.0   THEN Max_Dia_M_mm     := 600.0;  END_IF;
+IF Max_Dia_U_mm     <= 0.0   THEN Max_Dia_U_mm     := 800.0;  END_IF;
+
+IF Real_Dia_T_mm    < Core_Dia_T_mm THEN Real_Dia_T_mm := Core_Dia_T_mm; END_IF;
+IF Real_Dia_M_mm    < Core_Dia_M_mm THEN Real_Dia_M_mm := Max_Dia_M_mm;  END_IF;
+IF Real_Dia_U_mm    < Core_Dia_U_mm THEN Real_Dia_U_mm := Max_Dia_U_mm;  END_IF;
+
+IF Max_Speed_MPM    <= 0.0   THEN Max_Speed_MPM    := 100.0;  END_IF;
+IF Min_Speed_MPM    <= 0.0   THEN Min_Speed_MPM    := 2.0;    END_IF;
+IF Ramp_Accel_Rate  <= 0.0   THEN Ramp_Accel_Rate  := 0.5;    END_IF;
+IF Ramp_Decel_Rate  <= 0.0   THEN Ramp_Decel_Rate  := 1.0;    END_IF;
+
+(* ============================================================================ *)
+(* 1. ĐỌC 4 ENCODER (QD62D SLOT 2 & 3) VÀ TÍNH TỐC ĐỘ BẰNG SỐ THỰC REAL         *)
+(* ============================================================================ *)
+(* Kích hoạt cờ đếm xung cho 2 module QD62D *)
+Y21 := TRUE; (* QD62D #1 (Slot 2 H20) CH1: Enable Trục Thu T *)
+Y22 := TRUE; (* QD62D #1 (Slot 2 H20) CH2: Enable Trục Kéo X1 *)
+Y31 := TRUE; (* QD62D #2 (Slot 3 H30) CH1: Enable Trục Master X2 *)
+Y32 := TRUE; (* QD62D #2 (Slot 3 H30) CH2: Enable Trục Ghép Ms *)
+
+(* Đọc xung 32-bit từ Buffer Memory QD62D *)
+DMOV(TRUE, U2\G2,  Curr_Pulse_T);  (* Slot 2 CH1: Trục Thu T *)
+DMOV(TRUE, U2\G10, Curr_Pulse_X1); (* Slot 2 CH2: Trục Kéo X1 *)
+DMOV(TRUE, U3\G2,  Curr_Pulse_X2); (* Slot 3 CH1: Trục Master X2 *)
+DMOV(TRUE, U3\G10, Curr_Pulse_Ms); (* Slot 3 CH2: Trục Ghép Ms *)
+
+(* Tính Delta xung mỗi chu kỳ quét *)
+Delta_T   := ABS(Curr_Pulse_T  - Prev_Pulse_T);
+Delta_X1  := ABS(Curr_Pulse_X1 - Prev_Pulse_X1);
+Delta_X2  := ABS(Curr_Pulse_X2 - Prev_Pulse_X2);
+Delta_Ms  := ABS(Curr_Pulse_Ms - Prev_Pulse_Ms);
+
+Prev_Pulse_T  := Curr_Pulse_T;
+Prev_Pulse_X1 := Curr_Pulse_X1;
+Prev_Pulse_X2 := Curr_Pulse_X2;
+Prev_Pulse_Ms := Curr_Pulse_Ms;
+
+Total_PPR := PPR_Encoder * 4; (* 2000 x 4 = 8000 *)
+
+(* TÍNH TOÁN TỐC ĐỘ RPM HOÀN TOÀN BẰNG FLOAT REAL ĐỂ CHỐNG TRÀN SỐ DINT *)
+IF Total_PPR > 0 THEN
+    RPM_T   := REAL_TO_DINT((DINT_TO_REAL(Delta_T)  * 300000.0) / DINT_TO_REAL(Total_PPR));
+    RPM_X1  := REAL_TO_DINT((DINT_TO_REAL(Delta_X1) * 300000.0) / DINT_TO_REAL(Total_PPR));
+    RPM_X2  := REAL_TO_DINT((DINT_TO_REAL(Delta_X2) * 300000.0) / DINT_TO_REAL(Total_PPR));
+    RPM_Ms  := REAL_TO_DINT((DINT_TO_REAL(Delta_Ms) * 300000.0) / DINT_TO_REAL(Total_PPR));
+END_IF;
+
+(* Gán biến Feedback cho các vòng PID Tốc độ *)
+Feedback_Speed_X2 := (DINT_TO_REAL(RPM_X2) * 1600.0) / Max_RPM_X2;
+Feedback_Speed_Ms := (DINT_TO_REAL(RPM_Ms) * 1600.0) / Max_RPM_Ms;
+
+(* ============================================================================ *)
+(* 2. ĐỌC VÀ LỌC 8 KÊNH ANALOG INPUT TỪ MODULE Q68ADV (SLOT 0 - U0\G1..U0\G8)   *)
+(* ============================================================================ *)
+ADC_CH1_Raw := U0\G1; (* Loadcell Lực căng Thu T *)
+ADC_CH2_Raw := U0\G2; (* Loadcell Lực căng Kéo X1 *)
+ADC_CH3_Raw := U0\G3; (* Loadcell Lực căng Thắng M *)
+ADC_CH4_Raw := U0\G4; (* Loadcell Lực căng Xả U *)
+ADC_CH5_Raw := U0\G5; (* Tín hiệu Analog Out Tốc độ Servo Trục S *)
+ADC_CH6_Raw := U0\G6; (* Dự phòng CH6 *)
+ADC_CH7_Raw := U0\G7; (* Dự phòng CH7 *)
+ADC_CH8_Raw := U0\G8; (* Dự phòng CH8 *)
+
+(* Chuyển sang thanh ghi hiển thị D500..D507 *)
+D500 := INT_TO_WORD(ADC_CH1_Raw);
+D501 := INT_TO_WORD(ADC_CH2_Raw);
+D502 := INT_TO_WORD(ADC_CH3_Raw);
+D503 := INT_TO_WORD(ADC_CH4_Raw);
+D504 := INT_TO_WORD(ADC_CH5_Raw);
+D505 := INT_TO_WORD(ADC_CH6_Raw);
+D506 := INT_TO_WORD(ADC_CH7_Raw);
+D507 := INT_TO_WORD(ADC_CH8_Raw);
+
+(* TÍNH TỐC ĐỘ TRỤC S TỪ ANALOG OUT SERVO (Q68ADV CH5 - U0\G5: 0..16000 = 0..Max_RPM_S) *)
+Raw_Analog_S := INT_TO_REAL(ADC_CH5_Raw);
+IF Raw_Analog_S < 0.0 THEN Raw_Analog_S := 0.0; ELSIF Raw_Analog_S > 16000.0 THEN Raw_Analog_S := 16000.0; END_IF;
+
+RPM_S_Real := (Raw_Analog_S * Max_RPM_S) / 16000.0;
+RPM_S      := REAL_TO_DINT(RPM_S_Real * 10.0);
+Feedback_Speed_S := Raw_Analog_S;
+
+(* TÍNH VẬN TỐC DÂY MPM HOÀN TOÀN BẰNG FLOAT REAL ĐỂ CHỐNG TRÀN SỐ *)
+MPM_T  := REAL_TO_DINT((DINT_TO_REAL(RPM_T)  * 0.1 * 3.14159 * Real_Dia_T_mm)    / (1000.0 * Gear_Ratio_T));
+MPM_X1 := REAL_TO_DINT((DINT_TO_REAL(RPM_X1) * 0.1 * 3.14159 * Dia_X1_Roller_mm) / (1000.0 * Gear_Ratio_X1));
+MPM_X2 := REAL_TO_DINT((DINT_TO_REAL(RPM_X2) * 0.1 * 3.14159 * Dia_X2_Roller_mm) / (1000.0 * Gear_Ratio_X2));
+MPM_Ms := REAL_TO_DINT((DINT_TO_REAL(RPM_Ms) * 0.1 * 3.14159 * Dia_Ms_Roller_mm) / (1000.0 * Gear_Ratio_Ms));
+MPM_S  := REAL_TO_DINT((DINT_TO_REAL(RPM_S)  * 0.1 * 3.14159 * Dia_S_Roller_mm)  / (1000.0 * Gear_Ratio_S));
+
+(* Tính giá trị Lực căng thực tế (kg) sau khi trừ Zero Offset và nhân Gain Calib *)
+IF Calib_Gain_T <= 0.0 THEN Calib_Gain_T := 1.0; END_IF;
+Weight_Net_T := ((INT_TO_REAL(ADC_CH1_Raw) - Zero_Offset_T) * Calib_Gain_T * 50.0) / 16000.0;
+IF Weight_Net_T < 0.0 THEN Weight_Net_T := 0.0; END_IF;
+
+IF Calib_Gain_X1 <= 0.0 THEN Calib_Gain_X1 := 1.0; END_IF;
+Weight_Net_X1 := ((INT_TO_REAL(ADC_CH2_Raw) - Zero_Offset_X1) * Calib_Gain_X1 * 50.0) / 16000.0;
+IF Weight_Net_X1 < 0.0 THEN Weight_Net_X1 := 0.0; END_IF;
+
+IF Calib_Gain_M <= 0.0 THEN Calib_Gain_M := 1.0; END_IF;
+Weight_Net_M := ((INT_TO_REAL(ADC_CH3_Raw) - Zero_Offset_M) * Calib_Gain_M * 50.0) / 16000.0;
+IF Weight_Net_M < 0.0 THEN Weight_Net_M := 0.0; END_IF;
+
+IF Calib_Gain_U <= 0.0 THEN Calib_Gain_U := 1.0; END_IF;
+Weight_Net_U := ((INT_TO_REAL(ADC_CH4_Raw) - Zero_Offset_U) * Calib_Gain_U * 50.0) / 16000.0;
+IF Weight_Net_U < 0.0 THEN Weight_Net_U := 0.0; END_IF;
+
+(* Xử lý Nút Set Zero Lực căng *)
+IF Zero_Set_T OR (HMI_Cmd_Zero_Set AND HMI_Axis_Select = 1) THEN
+    Zero_Offset_T := INT_TO_REAL(ADC_CH1_Raw);
+    Zero_Set_T    := FALSE;
+END_IF;
+IF Zero_Set_X1 OR (HMI_Cmd_Zero_Set AND HMI_Axis_Select = 2) THEN
+    Zero_Offset_X1 := INT_TO_REAL(ADC_CH2_Raw);
+    Zero_Set_X1    := FALSE;
+END_IF;
+IF Zero_Set_M OR (HMI_Cmd_Zero_Set AND HMI_Axis_Select = 6) THEN
+    Zero_Offset_M := INT_TO_REAL(ADC_CH3_Raw);
+    Zero_Set_M    := FALSE;
+END_IF;
+IF Zero_Set_U OR (HMI_Cmd_Zero_Set AND HMI_Axis_Select = 7) THEN
+    Zero_Offset_U := INT_TO_REAL(ADC_CH4_Raw);
+    Zero_Set_U    := FALSE;
+END_IF;
+IF HMI_Cmd_Zero_Set THEN
+    HMI_Cmd_Zero_Set := FALSE;
+END_IF;
+
+(* ============================================================================ *)
+(* 3. BẢO VỆ 5 TRỤC SERVO READY TRÊN MODULE QX40 (SLOT 4 - X40..X44)            *)
+(* ============================================================================ *)
+Servo_Ready_T  := X40; (* Sẵn sàng Servo Thu T *)
+Servo_Ready_X1 := X41; (* Sẵn sàng Servo Kéo X1 *)
+Servo_Ready_X2 := X42; (* Sẵn sàng Servo Master X2 *)
+Servo_Ready_Ms := X43; (* Sẵn sàng Servo Ghép Ms *)
+Servo_Ready_S  := X44; (* Sẵn sàng Servo Dầu S *)
+
 Servo_Not_Ready_Fault := NOT(Servo_Ready_T) OR NOT(Servo_Ready_X1) OR NOT(Servo_Ready_X2) OR NOT(Servo_Ready_Ms) OR NOT(Servo_Ready_S);
 
 IF Servo_Not_Ready_Fault AND State_Machine = 1 THEN
     State_Machine := 0; (* Dừng khẩn cấp nếu đang chạy tự động *)
 END_IF;
 
-(* 2. ĐIỀU KHIỂN CÔNG TẮC GIỮ TORQUE & BÒ CHẬM RỬA MÁY TRÊN QX40 (X58..X5B) *)
-Hold_Torque_Stop_M := Switch_Hold_M;   (* X58 *)
-Hold_Torque_Stop_U := Switch_Hold_U;   (* X59 *)
-Anti_Dry_Rotate_Ms := Switch_Wash_Ms;  (* X5A *)
-Anti_Dry_Rotate_S  := Switch_Wash_S;   (* X5B *)
+(* ============================================================================ *)
+(* 4. ĐỌC NÚT NHẤN, CẢM BIẾN VÀ CÔNG TẮC GẠT TRÊN MODULE QX40 (SLOT 4 - X45..X4F) *)
+(* ============================================================================ *)
+Physical_Start_PB := X45; (* Nút Start vật lý *)
+Physical_Stop_PB  := X46; (* Nút Stop vật lý *)
+Physical_Inc_PB   := X47; (* Nút Tăng tốc vật lý *)
+Physical_Dec_PB   := X48; (* Nút Giảm tốc vật lý *)
+Physical_Jog_PB   := X49; (* Nút Bò chậm luồn màng vật lý *)
+Sensor_Rev_M      := X4A; (* Cảm biến tiệm cận đếm vòng cuộn M *)
+Sensor_Rev_U      := X4B; (* Cảm biến tiệm cận đếm vòng cuộn U *)
+Pen1_Toggle_PB    := X4C; (* Nút nhấn Pen 1 ngoài tủ *)
+Pen2_Toggle_PB    := X4D; (* Nút nhấn Pen 2 ngoài tủ *)
+Switch_Hold_M     := X4E; (* Công tắc gạt giữ Torque M khi dừng *)
+Switch_Hold_U     := X4F; (* Công tắc gạt giữ Torque U khi dừng *)
 
-(* 2.1 QUẢN LÝ CÔNG THỨC ĐƠN HÀNG (RECIPE MANAGEMENT CHO CÔNG NHÂN) *)
-(* 1: Màng Mỏng 12~15mic | 2: Màng Tiêu Chuẩn 18~20mic | 3: Giấy Dày Duplex 250~350g | 4: Màng Nhôm Foil | 5: Tùy Chỉnh *)
+Hold_Torque_Stop_M := Switch_Hold_M;
+Hold_Torque_Stop_U := Switch_Hold_U;
+
+(* ============================================================================ *)
+(* 5. QUẢN LÝ CÔNG THỨC ĐƠN HÀNG (RECIPE MANAGEMENT CHO CÔNG NHÂN)             *)
+(* ============================================================================ *)
 IF HMI_Recipe_Select <= 0 OR HMI_Recipe_Select > 5 THEN
     HMI_Recipe_Select := 2; (* Mặc định chọn Recipe 2: Hàng Tiêu Chuẩn *)
 END_IF;
 
-(* TỰ ĐỘNG NẠP THÔNG SỐ KHI CÔNG NHÂN CHỌN LOẠI HÀNG HOẶC NHẤN ÁP DỤNG *)
 IF (HMI_Recipe_Select <> Prev_Recipe_Select) OR HMI_Cmd_Apply_Recipe THEN
     CASE HMI_Recipe_Select OF
         1: (* 1. HÀNG MÀNG MỎNG (BOPP 12~15 mic - Bao bì bánh kẹo) *)
@@ -67,7 +248,7 @@ IF (HMI_Recipe_Select <> Prev_Recipe_Select) OR HMI_Cmd_Apply_Recipe THEN
             Ramp_Decel_Rate  := 0.06;
 
         5: (* 5. CHẾ ĐỘ TÙY CHỈNH (CUSTOM) *)
-            Target_Line_MPM := Target_Line_MPM; (* Giữ nguyên thông số người dùng tùy chỉnh *)
+            Target_Line_MPM := Target_Line_MPM;
     END_CASE;
     Prev_Recipe_Select   := HMI_Recipe_Select;
     HMI_Cmd_Apply_Recipe := FALSE;
@@ -79,7 +260,9 @@ IF HMI_Cmd_Save_Recipe THEN
     HMI_Cmd_Save_Recipe  := FALSE;
 END_IF;
 
-(* 3. NẠP LẠI ĐƯỜNG KÍNH CUỘN TỪ HMI & NÚT THAY CUỘN MỚI TOÀN BỘ 1-CLICK *)
+(* ============================================================================ *)
+(* 6. NẠP LẠI ĐƯỜNG KÍNH CUỘN TỪ HMI & NÚT THAY CUỘN MỚI TOÀN BỘ 1-CLICK        *)
+(* ============================================================================ *)
 IF HMI_Reset_All_Rolls THEN
     Real_Dia_T_mm       := Core_Dia_T_mm; (* Thu T về lõi *)
     Real_Dia_M_mm       := Max_Dia_M_mm;  (* Thắng M về cuộn đầy *)
@@ -92,41 +275,44 @@ IF HMI_Reset_Roll_T THEN Real_Dia_T_mm := Core_Dia_T_mm; HMI_Reset_Roll_T := FAL
 IF HMI_Reset_Roll_M THEN Real_Dia_M_mm := Max_Dia_M_mm;  HMI_Reset_Roll_M := FALSE; END_IF;
 IF HMI_Reset_Roll_U THEN Real_Dia_U_mm := Max_Dia_U_mm;  HMI_Reset_Roll_U := FALSE; END_IF;
 
-(* 4. TỔNG HỢP NÚT NHẤN HMI & NÚT NHẤN VẬT LÝ TRÊN QX40 (X52..X55, X5C) *)
+(* ============================================================================ *)
+(* 7. TỔNG HỢP NÚT NHẤN HMI & NÚT NHẤN VẬT LÝ                                  *)
+(* ============================================================================ *)
 Cmd_Start     := HMI_Start OR Physical_Start_PB;
 Cmd_Stop      := HMI_Stop OR Physical_Stop_PB OR Servo_Not_Ready_Fault;
 Cmd_Inc       := HMI_Inc_Hold OR Physical_Inc_PB;
 Cmd_Dec       := HMI_Dec_Hold OR Physical_Dec_PB;
-Cmd_Jog_Crawl := HMI_Jog_Crawl_Cmd OR Physical_Jog_PB OR Jog_Input_16DT;
+Cmd_Jog_Crawl := HMI_Jog_Crawl_Cmd OR Physical_Jog_PB;
 
-(* 5. ĐIỀU KHIỂN TOGGLE 2 PEN ÉP MÀNG (QX40 X56/X57 HOẶC 16DT X5/X6) *)
-Trig_Pen1 := (Pen1_Toggle_PB AND NOT(Prev_Pen1_PB)) OR (Pen1_Input_16DT AND NOT(Prev_Pen1_16DT)) OR HMI_Pen1_Cmd;
+(* ============================================================================ *)
+(* 8. ĐIỀU KHIỂN 2 PEN ÉP MÀNG (SINGLE-COIL LOGIC)                             *)
+(* ============================================================================ *)
+Trig_Pen1 := (Pen1_Toggle_PB AND NOT(Prev_Pen1_PB)) OR HMI_Pen1_Cmd;
 Prev_Pen1_PB := Pen1_Toggle_PB;
-Prev_Pen1_16DT := Pen1_Input_16DT;
 IF HMI_Pen1_Cmd THEN HMI_Pen1_Cmd := FALSE; END_IF;
-IF Trig_Pen1 THEN Pen1_State := NOT(Pen1_State); END_IF;
 
-Trig_Pen2 := (Pen2_Toggle_PB AND NOT(Prev_Pen2_PB)) OR (Pen2_Input_16DT AND NOT(Prev_Pen2_16DT)) OR HMI_Pen2_Cmd;
+Trig_Pen2 := (Pen2_Toggle_PB AND NOT(Prev_Pen2_PB)) OR HMI_Pen2_Cmd;
 Prev_Pen2_PB := Pen2_Toggle_PB;
-Prev_Pen2_16DT := Pen2_Input_16DT;
 IF HMI_Pen2_Cmd THEN HMI_Pen2_Cmd := FALSE; END_IF;
-IF Trig_Pen2 THEN Pen2_State := NOT(Pen2_State); END_IF;
 
-(* TỰ ĐỘNG ĐÓNG 2 PEN KHI TỐC ĐỘ VƯỢT 5.0 m/p VÀ TỰ ĐỘNG NHẢ KHI DỪNG / DƯỚI RELEASE SPEED *)
-IF State_Machine = 1 AND Current_Line_MPM >= 5.0 AND NOT(Pen_Auto_Engaged) THEN
-    Pen1_State := TRUE;
-    Pen2_State := TRUE;
-    Pen_Auto_Engaged := TRUE;
-ELSIF State_Machine = 0 OR Current_Line_MPM <= Release_Pen_Speed_MPM THEN
-    Pen1_State := FALSE;
-    Pen2_State := FALSE;
-    Pen_Auto_Engaged := FALSE;
+IF State_Machine = 1 AND Current_Line_MPM >= 5.0 AND NOT Pen_Auto_Engaged THEN
+    Pen1_Next_State := TRUE;
+    Pen2_Next_State := TRUE;
+ELSIF (State_Machine = 0 OR Current_Line_MPM <= Release_Pen_Speed_MPM) AND NOT (Trig_Pen1 OR Trig_Pen2) THEN
+    Pen1_Next_State := FALSE;
+    Pen2_Next_State := FALSE;
+ELSE
+    IF Trig_Pen1 THEN Pen1_Next_State := NOT Pen1_State; ELSE Pen1_Next_State := Pen1_State; END_IF;
+    IF Trig_Pen2 THEN Pen2_Next_State := NOT Pen2_State; ELSE Pen2_Next_State := Pen2_State; END_IF;
 END_IF;
 
-M1309 := Pen1_State; (* YD trên 16DT: Van Solenoid Pen 1 *)
-M1310 := Pen2_State; (* YE trên 16DT: Van Solenoid Pen 2 *)
+Pen1_State := Pen1_Next_State;
+Pen2_State := Pen2_Next_State;
+Pen_Auto_Engaged := (State_Machine = 1 AND Current_Line_MPM >= 5.0);
 
-(* 6. TĂNG GIẢM TỐC LŨY TIẾN THEO THỜI GIAN GIỮ PHÍM INC / DEC *)
+(* ============================================================================ *)
+(* 9. TĂNG GIẢM TỐC LŨY TIẾN THEO THỜI GIAN GIỮ PHÍM INC / DEC                 *)
+(* ============================================================================ *)
 IF Cmd_Inc THEN
     Inc_Hold_Timer := Inc_Hold_Timer + 1;
     IF Inc_Hold_Timer < 50 THEN
@@ -157,7 +343,7 @@ ELSE
     Dec_Hold_Timer := 0;
 END_IF;
 
-(* RAMPING TỐC ĐỘ HIỆN TẠI (FLOAT) *)
+(* Ramping tốc độ hiện tại *)
 IF Current_Line_MPM < Target_Line_MPM THEN
     Current_Line_MPM := Current_Line_MPM + Ramp_Accel_Rate;
     IF Current_Line_MPM > Target_Line_MPM THEN Current_Line_MPM := Target_Line_MPM; END_IF;
@@ -166,24 +352,19 @@ ELSIF Current_Line_MPM > Target_Line_MPM THEN
     IF Current_Line_MPM < Target_Line_MPM THEN Current_Line_MPM := Target_Line_MPM; END_IF;
 END_IF;
 
-(* 7. TÍNH ĐƯỜNG KÍNH 3 CUỘN T, M, U VÀ ĐO CHIỀU DÀI MÀNG CHẠY *)
-Curr_Pulse_T  := INT_TO_DINT(WORD_TO_INT(D5000));
-Curr_Pulse_X2 := INT_TO_DINT(WORD_TO_INT(D5002));
-
-(* TÍNH TOÁN CHIỀU DÀI MÀNG CHẠY TÍCH LŨY TỪ XUNG ENCODER MASTER X2 *)
+(* ============================================================================ *)
+(* 10. TÍNH ĐƯỜNG KÍNH 3 CUỘN T, M, U VÀ ĐO CHIỀU DÀI MÀNG CHẠY TỪ ENCODER X2   *)
+(* ============================================================================ *)
 IF Curr_Pulse_X2 >= Last_Pulse_X2_Len THEN
     Delta_Pulse_X2 := Curr_Pulse_X2 - Last_Pulse_X2_Len;
 ELSE
     Delta_Pulse_X2 := (Curr_Pulse_X2 + 65536) - Last_Pulse_X2_Len;
 END_IF;
 
-IF Delta_Pulse_X2 > 0 AND State_Machine = 1 AND Gear_Ratio_X2 > 0.0 THEN
-    (* Chu vi Lô X2 = PI * Dia_X2_Roller_mm *)
-    (* Delta_Length = Delta_Pulse_X2 * (PI * Dia_X2_Roller_mm) / (8000.0 * Gear_Ratio_X2) *)
-    Delta_Length_mm := (DINT_TO_REAL(Delta_Pulse_X2) * 3.1415 * Dia_X2_Roller_mm) / (8000.0 * Gear_Ratio_X2);
+IF Delta_Pulse_X2 > 0 AND State_Machine = 1 THEN
+    Delta_Length_mm := (DINT_TO_REAL(Delta_Pulse_X2) * 3.14159 * Dia_X2_Roller_mm) / (8000.0 * Gear_Ratio_X2);
     Accum_Length_mm := Accum_Length_mm + Delta_Length_mm;
     
-    (* Chuyển đổi mm sang mét *)
     IF Accum_Length_mm >= 1000.0 THEN
         Total_Length_Meters := Total_Length_Meters + (Accum_Length_mm / 1000.0);
         Accum_Length_mm     := 0.0;
@@ -191,17 +372,16 @@ IF Delta_Pulse_X2 > 0 AND State_Machine = 1 AND Gear_Ratio_X2 > 0.0 THEN
 END_IF;
 Last_Pulse_X2_Len := Curr_Pulse_X2;
 
-(* NÚT RESET TỔNG CHIỀU DÀI MÉT TỪ HMI (M104) *)
 IF HMI_Reset_Length THEN
     Total_Length_Meters := 0.0;
     Accum_Length_mm     := 0.0;
     HMI_Reset_Length    := FALSE;
 END_IF;
 
-(* TÍNH ĐƯỜNG KÍNH CUỘN THU T THEO XUNG MASTER X2 (1 VÒNG THU T = 8000 * Gear_Ratio_T) *)
-IF Gear_Ratio_T > 0.0 AND (Curr_Pulse_T - Last_Pulse_T) >= REAL_TO_DINT(8000.0 * Gear_Ratio_T) THEN
+(* Đường kính cuộn Thu T theo xung Master X2 *)
+IF (Curr_Pulse_T - Last_Pulse_T) >= REAL_TO_DINT(8000.0 * Gear_Ratio_T) THEN
     Rev_Count_T := Rev_Count_T + 1;
-    IF (Curr_Pulse_X2 - Last_Pulse_X2_T) > 0 AND Gear_Ratio_X2 > 0.0 THEN
+    IF (Curr_Pulse_X2 - Last_Pulse_X2_T) > 0 THEN
         Raw_Dia_T_mm := (DINT_TO_REAL(Curr_Pulse_X2 - Last_Pulse_X2_T) * Dia_X2_Roller_mm) / (8000.0 * Gear_Ratio_X2);
         IF Raw_Dia_T_mm < Core_Dia_T_mm THEN Raw_Dia_T_mm := Core_Dia_T_mm; END_IF;
         IF Raw_Dia_T_mm > Max_Dia_T_mm THEN Raw_Dia_T_mm := Max_Dia_T_mm; END_IF;
@@ -211,12 +391,12 @@ IF Gear_Ratio_T > 0.0 AND (Curr_Pulse_T - Last_Pulse_T) >= REAL_TO_DINT(8000.0 *
     Last_Pulse_T    := Curr_Pulse_T;
 END_IF;
 
-(* TÍNH ĐƯỜNG KÍNH CUỘN XẢ M THEO CẢM BIẾN TIỆM CẬN X50 *)
+(* Đường kính cuộn Xả M theo cảm biến tiệm cận X4A *)
 Trig_X50 := Sensor_Rev_M AND NOT(Prev_X50);
 Prev_X50 := Sensor_Rev_M;
 IF Trig_X50 THEN
     Rev_Count_M := Rev_Count_M + 1;
-    IF (Curr_Pulse_X2 - Last_Pulse_X2_M) > 0 AND Gear_Ratio_X2 > 0.0 THEN
+    IF (Curr_Pulse_X2 - Last_Pulse_X2_M) > 0 THEN
         Raw_Dia_M_mm := (DINT_TO_REAL(Curr_Pulse_X2 - Last_Pulse_X2_M) * Dia_X2_Roller_mm) / (8000.0 * Gear_Ratio_X2);
         IF Raw_Dia_M_mm < Core_Dia_M_mm THEN Raw_Dia_M_mm := Core_Dia_M_mm; END_IF;
         IF Raw_Dia_M_mm > Max_Dia_M_mm THEN Raw_Dia_M_mm := Max_Dia_M_mm; END_IF;
@@ -225,12 +405,12 @@ IF Trig_X50 THEN
     Last_Pulse_X2_M := Curr_Pulse_X2;
 END_IF;
 
-(* TÍNH ĐƯỜNG KÍNH CUỘN XẢ U THEO CẢM BIẾN TIỆM CẬN X51 *)
+(* Đường kính cuộn Xả U theo cảm biến tiệm cận X4B *)
 Trig_X51 := Sensor_Rev_U AND NOT(Prev_X51);
 Prev_X51 := Sensor_Rev_U;
 IF Trig_X51 THEN
     Rev_Count_U := Rev_Count_U + 1;
-    IF (Curr_Pulse_X2 - Last_Pulse_X2_U) > 0 AND Gear_Ratio_X2 > 0.0 THEN
+    IF (Curr_Pulse_X2 - Last_Pulse_X2_U) > 0 THEN
         Raw_Dia_U_mm := (DINT_TO_REAL(Curr_Pulse_X2 - Last_Pulse_X2_U) * Dia_X2_Roller_mm) / (8000.0 * Gear_Ratio_X2);
         IF Raw_Dia_U_mm < Core_Dia_U_mm THEN Raw_Dia_U_mm := Core_Dia_U_mm; END_IF;
         IF Raw_Dia_U_mm > Max_Dia_U_mm THEN Raw_Dia_U_mm := Max_Dia_U_mm; END_IF;
@@ -239,11 +419,12 @@ IF Trig_X51 THEN
     Last_Pulse_X2_U := Curr_Pulse_X2;
 END_IF;
 
-(* 8. STATE MACHINE VẬN HÀNH DÂY CHUYỀN & CHẾ ĐỘ BÒ CHẬM NỐI MÀNG *)
+(* ============================================================================ *)
+(* 11. STATE MACHINE VẬN HÀNH DÂY CHUYỀN & BÒ CHẬM NỐI MÀNG                     *)
+(* ============================================================================ *)
 CASE State_Machine OF
     0: (* STATE_STOPPED *)
         IF Cmd_Jog_Crawl AND NOT(Servo_Not_Ready_Fault) THEN
-            (* Chế độ bò chậm 2.0 m/phút để luồn nối màng từ nút cơ ngoài X5C hoặc HMI *)
             Target_Line_MPM := Min_Speed_MPM;
             IF Target_Line_MPM <= 0.0 THEN Target_Line_MPM := 2.0; END_IF;
         ELSE
@@ -253,7 +434,7 @@ CASE State_Machine OF
 
         IF Cmd_Start AND NOT(Servo_Not_Ready_Fault) THEN
             State_Machine   := 1;
-            HMI_PID_Enable  := TRUE; (* Tự động kích hoạt PID cho công nhân *)
+            HMI_PID_Enable  := TRUE;
             HMI_Start       := FALSE;
             IF Target_Line_MPM < Min_Speed_MPM THEN Target_Line_MPM := 20.0; END_IF;
         END_IF;
@@ -265,20 +446,39 @@ CASE State_Machine OF
         END_IF;
 END_CASE;
 
-(* ĐIỀU KHIỂN 5 TRỤC SERVO ON XUẤT RA MODULE 16DT (Y8..YC = M1304..M1308) *)
-M1304 := (State_Machine = 1) OR HMI_Test_T;
-M1305 := (State_Machine = 1) OR HMI_Test_X1;
-M1306 := (State_Machine = 1) OR HMI_Test_X2;
-M1307 := (State_Machine = 1) OR HMI_Test_Ms OR (State_Machine = 0 AND Anti_Dry_Rotate_Ms);
-M1308 := (State_Machine = 1) OR HMI_Test_S  OR (State_Machine = 0 AND Anti_Dry_Rotate_S);
+(* ============================================================================ *)
+(* 12. ĐIỀU KHIỂN 5 TRỤC SERVO ON XUẤT RA MODULE QY40 (SLOT 5 - Y50..Y54)        *)
+(* ============================================================================ *)
+Servo_ON_T  := (State_Machine = 1) OR HMI_Test_T;
+Servo_ON_X1 := (State_Machine = 1) OR HMI_Test_X1;
+Servo_ON_X2 := (State_Machine = 1) OR HMI_Test_X2;
+Servo_ON_Ms := (State_Machine = 1) OR HMI_Test_Ms;
+Servo_ON_S  := (State_Machine = 1) OR HMI_Test_S;
 
-Servo_ON_T  := M1304;
-Servo_ON_X1 := M1305;
-Servo_ON_X2 := M1306;
-Servo_ON_Ms := M1307;
-Servo_ON_S  := M1308;
+Y50 := Servo_ON_T;  (* Servo ON Trục Thu T *)
+Y51 := Servo_ON_X1; (* Servo ON Trục Kéo X1 *)
+Y52 := Servo_ON_X2; (* Servo ON Trục Master X2 *)
+Y53 := Servo_ON_Ms; (* Servo ON Trục Ghép Ms *)
+Y54 := Servo_ON_S;  (* Servo ON Trục Dầu S *)
 
-(* 9. TÍNH CÔN LỰC TAPER TENSION CUỘN THU T (FLOAT) *)
+DO_Pen1 := Pen1_State;
+DO_Pen2 := Pen2_State;
+Y55 := DO_Pen1;
+Y56 := DO_Pen2;
+
+DO_Alarm_Horn      := Servo_Not_Ready_Fault;
+Tower_Light_Green  := (State_Machine = 1);
+Tower_Light_Yellow := (State_Machine = 0) AND (Cmd_Jog_Crawl OR NOT(Servo_Not_Ready_Fault));
+Tower_Light_Red    := Servo_Not_Ready_Fault;
+
+Y57 := DO_Alarm_Horn;
+Y58 := Tower_Light_Green;
+Y59 := Tower_Light_Yellow;
+Y5A := Tower_Light_Red;
+
+(* ============================================================================ *)
+(* 13. TÍNH CÔN LỰC TAPER TENSION CUỘN THU T (FLOAT)                            *)
+(* ============================================================================ *)
 IF (Max_Dia_T_mm - Core_Dia_T_mm) > 0.0 AND Taper_Percent_T > 0.0 THEN
     Effective_SP_T := SP_Tension_T - (((Real_Dia_T_mm - Core_Dia_T_mm) * SP_Tension_T * (Taper_Percent_T / 100.0)) / (Max_Dia_T_mm - Core_Dia_T_mm));
 ELSE
@@ -286,103 +486,67 @@ ELSE
 END_IF;
 IF Effective_SP_T < 0.0 THEN Effective_SP_T := 0.0; END_IF;
 
-(* TÍNH TOÁN TỐC ĐỘ ĐẶT SETPOINT CHO CÁC TRỤC ĐỒNG BỘ THEO MASTER X2 (HIGH RESOLUTION 0..16000) *)
-IF Max_Speed_MPM > 0.0 THEN
-    Base_Speed_X2 := (Current_Line_MPM * 16000.0) / Max_Speed_MPM;
-ELSE
-    Base_Speed_X2 := 0.0;
-END_IF;
+(* Tốc độ đặt Setpoint đồng bộ Master X2 (0..16000) *)
+Base_Speed_X2 := (Current_Line_MPM * 16000.0) / Max_Speed_MPM;
 
 SP_Speed_X2 := Base_Speed_X2;
 SP_Speed_X1 := (Base_Speed_X2 * Speed_Ratio_X1) + Speed_Offset_X1;
-
-IF Dia_X2_Roller_mm > 0.0 THEN
-    SP_Speed_Ms := (((Base_Speed_X2 * Dia_Ms_Roller_mm) / Dia_X2_Roller_mm) * Speed_Ratio_Ms) + Speed_Offset_Ms;
-ELSE
-    SP_Speed_Ms := Base_Speed_X2 + Speed_Offset_Ms;
-END_IF;
-
-SP_Speed_S := (Base_Speed_X2 * Speed_Ratio_S) + Speed_Offset_S;
-
-IF Core_Dia_T_mm > 0.0 THEN
-    SP_Speed_T := ((Base_Speed_X2 * Real_Dia_T_mm) / Core_Dia_T_mm) * Speed_Ratio_T;
-ELSE
-    SP_Speed_T := Base_Speed_X2 * Speed_Ratio_T;
-END_IF;
+SP_Speed_Ms := (((Base_Speed_X2 * Dia_Ms_Roller_mm) / Dia_X2_Roller_mm) * Speed_Ratio_Ms) + Speed_Offset_Ms;
+SP_Speed_S  := (Base_Speed_X2 * Speed_Ratio_S) + Speed_Offset_S;
+SP_Speed_T  := ((Base_Speed_X2 * Real_Dia_T_mm) / Core_Dia_T_mm) * Speed_Ratio_T;
 
 (* ============================================================================ *)
-(* 9.1 BỘ CHUYỂN MẠCH INDEX-REGISTER CHO HMI CHỈNH PID, CALIB VÀ ZERO ĐA TRỤC  *)
-(* HMI_Axis_Select (D610): 1=Thu T, 2=Xả X1, 3=Master X2, 4=Ghép Ms, 5=Dầu S, 6=Thắng M, 7=Xả U *)
+(* 14. BỘ CHUYỂN MẠCH INDEX-REGISTER CHO HMI CHỈNH PID, CALIB VÀ ZERO ĐA TRỤC   *)
 (* ============================================================================ *)
 IF HMI_Axis_Select <= 0 OR HMI_Axis_Select > 7 THEN
-    HMI_Axis_Select := 1; (* Mặc định chọn Trục 1: Thu T *)
+    HMI_Axis_Select := 1;
 END_IF;
 
-(* GHI CÀI ĐẶT TỪ HMI VÀO TRỤC ĐANG CHỌN KHI CÓ LỆNH HOẶC THAY ĐỔI *)
 IF HMI_Cmd_Save_PID THEN
     CASE HMI_Axis_Select OF
-        1: (* Trục Thu T *)
-            Kp_T := HMI_Disp_Kp; Ki_T := HMI_Disp_Ki; Kd_T := HMI_Disp_Kd; Calib_Gain_T := HMI_Disp_Calib_Gain; Zero_Offset_T := HMI_Disp_Zero_Offset;
-        2: (* Trục Xả X1 *)
-            Kp_X1 := HMI_Disp_Kp; Ki_X1 := HMI_Disp_Ki; Kd_X1 := HMI_Disp_Kd; Calib_Gain_X1 := HMI_Disp_Calib_Gain; Zero_Offset_X1 := HMI_Disp_Zero_Offset;
-        3: (* Trục Master X2 *)
-            Kp_X2 := HMI_Disp_Kp; Ki_X2 := HMI_Disp_Ki; Kd_X2 := HMI_Disp_Kd;
-        4: (* Trục Ghép Ms *)
-            Kp_Ms := HMI_Disp_Kp; Ki_Ms := HMI_Disp_Ki; Kd_Ms := HMI_Disp_Kd;
-        5: (* Trục Dầu S *)
-            Kp_S := HMI_Disp_Kp; Ki_S := HMI_Disp_Ki; Kd_S := HMI_Disp_Kd;
-        6: (* Trục Thắng M *)
-            Kp_M := HMI_Disp_Kp; Ki_M := HMI_Disp_Ki; Kd_M := HMI_Disp_Kd; Calib_Gain_M := HMI_Disp_Calib_Gain; Zero_Offset_M := HMI_Disp_Zero_Offset;
-        7: (* Trục Xả U *)
-            Kp_U := HMI_Disp_Kp; Ki_U := HMI_Disp_Ki; Kd_U := HMI_Disp_Kd; Calib_Gain_U := HMI_Disp_Calib_Gain; Zero_Offset_U := HMI_Disp_Zero_Offset;
+        1: Kp_T := HMI_Disp_Kp; Ki_T := HMI_Disp_Ki; Kd_T := HMI_Disp_Kd; Calib_Gain_T := HMI_Disp_Calib_Gain; Zero_Offset_T := HMI_Disp_Zero_Offset;
+        2: Kp_X1 := HMI_Disp_Kp; Ki_X1 := HMI_Disp_Ki; Kd_X1 := HMI_Disp_Kd; Calib_Gain_X1 := HMI_Disp_Calib_Gain; Zero_Offset_X1 := HMI_Disp_Zero_Offset;
+        3: Kp_X2 := HMI_Disp_Kp; Ki_X2 := HMI_Disp_Ki; Kd_X2 := HMI_Disp_Kd;
+        4: Kp_Ms := HMI_Disp_Kp; Ki_Ms := HMI_Disp_Ki; Kd_Ms := HMI_Disp_Kd;
+        5: Kp_S := HMI_Disp_Kp; Ki_S := HMI_Disp_Ki; Kd_S := HMI_Disp_Kd;
+        6: Kp_M := HMI_Disp_Kp; Ki_M := HMI_Disp_Ki; Kd_M := HMI_Disp_Kd; Calib_Gain_M := HMI_Disp_Calib_Gain; Zero_Offset_M := HMI_Disp_Zero_Offset;
+        7: Kp_U := HMI_Disp_Kp; Ki_U := HMI_Disp_Ki; Kd_U := HMI_Disp_Kd; Calib_Gain_U := HMI_Disp_Calib_Gain; Zero_Offset_U := HMI_Disp_Zero_Offset;
     END_CASE;
     HMI_Cmd_Save_PID := FALSE;
 ELSE
-    (* ĐỌC THAM SỐ CỦA TRỤC ĐANG CHỌN XUẤT RA Ô HIỂN THỊ TRÊN HMI *)
     CASE HMI_Axis_Select OF
-        1: (* Trục Thu T *)
-            HMI_Disp_Kp := Kp_T; HMI_Disp_Ki := Ki_T; HMI_Disp_Kd := Kd_T; HMI_Disp_Calib_Gain := Calib_Gain_T; HMI_Disp_Zero_Offset := Zero_Offset_T;
-        2: (* Trục Xả X1 *)
-            HMI_Disp_Kp := Kp_X1; HMI_Disp_Ki := Ki_X1; HMI_Disp_Kd := Kd_X1; HMI_Disp_Calib_Gain := Calib_Gain_X1; HMI_Disp_Zero_Offset := Zero_Offset_X1;
-        3: (* Trục Master X2 *)
-            HMI_Disp_Kp := Kp_X2; HMI_Disp_Ki := Ki_X2; HMI_Disp_Kd := Kd_X2; HMI_Disp_Calib_Gain := 1.0; HMI_Disp_Zero_Offset := 0.0;
-        4: (* Trục Ghép Ms *)
-            HMI_Disp_Kp := Kp_Ms; HMI_Disp_Ki := Ki_Ms; HMI_Disp_Kd := Kd_Ms; HMI_Disp_Calib_Gain := 1.0; HMI_Disp_Zero_Offset := 0.0;
-        5: (* Trục Dầu S *)
-            HMI_Disp_Kp := Kp_S; HMI_Disp_Ki := Ki_S; HMI_Disp_Kd := Kd_S; HMI_Disp_Calib_Gain := 1.0; HMI_Disp_Zero_Offset := 0.0;
-        6: (* Trục Thắng M *)
-            HMI_Disp_Kp := Kp_M; HMI_Disp_Ki := Ki_M; HMI_Disp_Kd := Kd_M; HMI_Disp_Calib_Gain := Calib_Gain_M; HMI_Disp_Zero_Offset := Zero_Offset_M;
-        7: (* Trục Xả U *)
-            HMI_Disp_Kp := Kp_U; HMI_Disp_Ki := Ki_U; HMI_Disp_Kd := Kd_U; HMI_Disp_Calib_Gain := Calib_Gain_U; HMI_Disp_Zero_Offset := Zero_Offset_U;
+        1: HMI_Disp_Kp := Kp_T; HMI_Disp_Ki := Ki_T; HMI_Disp_Kd := Kd_T; HMI_Disp_Calib_Gain := Calib_Gain_T; HMI_Disp_Zero_Offset := Zero_Offset_T;
+        2: HMI_Disp_Kp := Kp_X1; HMI_Disp_Ki := Ki_X1; HMI_Disp_Kd := Kd_X1; HMI_Disp_Calib_Gain := Calib_Gain_X1; HMI_Disp_Zero_Offset := Zero_Offset_X1;
+        3: HMI_Disp_Kp := Kp_X2; HMI_Disp_Ki := Ki_X2; HMI_Disp_Kd := Kd_X2; HMI_Disp_Calib_Gain := 1.0; HMI_Disp_Zero_Offset := 0.0;
+        4: HMI_Disp_Kp := Kp_Ms; HMI_Disp_Ki := Ki_Ms; HMI_Disp_Kd := Kd_Ms; HMI_Disp_Calib_Gain := 1.0; HMI_Disp_Zero_Offset := 0.0;
+        5: HMI_Disp_Kp := Kp_S; HMI_Disp_Ki := Ki_S; HMI_Disp_Kd := Kd_S; HMI_Disp_Calib_Gain := 1.0; HMI_Disp_Zero_Offset := 0.0;
+        6: HMI_Disp_Kp := Kp_M; HMI_Disp_Ki := Ki_M; HMI_Disp_Kd := Kd_M; HMI_Disp_Calib_Gain := Calib_Gain_M; HMI_Disp_Zero_Offset := Zero_Offset_M;
+        7: HMI_Disp_Kp := Kp_U; HMI_Disp_Ki := Ki_U; HMI_Disp_Kd := Kd_U; HMI_Disp_Calib_Gain := Calib_Gain_U; HMI_Disp_Zero_Offset := Zero_Offset_U;
     END_CASE;
 END_IF;
 
-(* XỬ LÝ NÚT BẤM ZERO VÀ CALIB THEO TRỤC ĐANG CHỌN TRÊN HMI *)
-IF HMI_Cmd_Zero_Set THEN
-    CASE HMI_Axis_Select OF
-        1: Zero_Set_T  := TRUE;
-        2: Zero_Set_X1 := TRUE;
-        6: Zero_Set_M  := TRUE;
-        7: Zero_Set_U  := TRUE;
-    END_CASE;
-    HMI_Cmd_Zero_Set := FALSE;
+IF Calib_Set_T OR (HMI_Cmd_Calib_Set AND HMI_Axis_Select = 1) THEN
+    Calib_Gain_T := HMI_Disp_Calib_Gain; Calib_Set_T := FALSE;
 END_IF;
-
+IF Calib_Set_X1 OR (HMI_Cmd_Calib_Set AND HMI_Axis_Select = 2) THEN
+    Calib_Gain_X1 := HMI_Disp_Calib_Gain; Calib_Set_X1 := FALSE;
+END_IF;
+IF Calib_Set_M OR (HMI_Cmd_Calib_Set AND HMI_Axis_Select = 6) THEN
+    Calib_Gain_M := HMI_Disp_Calib_Gain; Calib_Set_M := FALSE;
+END_IF;
+IF Calib_Set_U OR (HMI_Cmd_Calib_Set AND HMI_Axis_Select = 7) THEN
+    Calib_Gain_U := HMI_Disp_Calib_Gain; Calib_Set_U := FALSE;
+END_IF;
 IF HMI_Cmd_Calib_Set THEN
-    CASE HMI_Axis_Select OF
-        1: Calib_Set_T  := TRUE;
-        2: Calib_Set_X1 := TRUE;
-        6: Calib_Set_M  := TRUE;
-        7: Calib_Set_U  := TRUE;
-    END_CASE;
     HMI_Cmd_Calib_Set := FALSE;
 END_IF;
 
-(* TẠO XUNG KÍCH HOẠT PID CHUẨN 10MS TỪ SM409 *)
+(* ============================================================================ *)
+(* 15. GỌI RUN CÁC KHỐI PID THEO NHỊP 10MS TỪ SM409                            *)
+(* ============================================================================ *)
 Trig_PID_10ms := SM409 AND NOT(Prev_SM409);
 Prev_SM409 := SM409;
 
-(* 10. GỌI RUN CÁC KHỐI PID THEO NHỊP 10MS (TÍCH HỢP AUTO-TUNING TỰ ĐỘNG) *)
 IF Trig_PID_10ms THEN
     (* PID Tốc độ Trục chính Master X2 *)
     pid_X2(
@@ -404,7 +568,7 @@ IF Trig_PID_10ms THEN
     );
     PID_Out_Ms := pid_Ms.PID_Output;
 
-    (* PID Tốc độ Trục Tráng Dầu S *)
+    (* PID Tốc độ Trục Tráng Dầu S (Feedback từ Analog Out Servo đấu vào Q68ADV CH5) *)
     pid_S(
         Enable      := (HMI_PID_Enable AND State_Machine = 1) OR (HMI_Cmd_AutoTune AND HMI_Axis_Select = 5),
         Setpoint    := SP_Speed_S,
@@ -478,37 +642,22 @@ IF Trig_PID_10ms THEN
         HMI_Disp_Kp := Kp_U; HMI_Disp_Ki := Ki_U; HMI_Disp_Kd := Kd_U;
     END_IF;
 
-    (* TẮT CỜ AUTO-TUNE DUY NHẤT TẠI 1 ĐIỂM CHỐNG CẢNH BÁO DOUBLE-COIL C9300 *)
     IF pid_X2.AT_Done OR pid_Ms.AT_Done OR pid_S.AT_Done OR pid_X1.AT_Done OR pid_T.AT_Done OR pid_M.AT_Done OR pid_U.AT_Done THEN
         HMI_Cmd_AutoTune   := FALSE;
         HMI_Status_AT_Done := TRUE;
     END_IF;
     
-    (* Cập nhật cờ báo bận Auto-Tune *)
     HMI_Status_AT_Busy := pid_T.AT_Busy OR pid_X1.AT_Busy OR pid_X2.AT_Busy OR pid_Ms.AT_Busy OR pid_S.AT_Busy OR pid_M.AT_Busy OR pid_U.AT_Busy;
 END_IF;
 
-(* 11. TÍNH TOÁN XUẤT ÁP TỐC ĐỘ VÀ TORQUE CHO TỪNG TRỤC (FLOAT) *)
+(* ============================================================================ *)
+(* 16. TÍNH TOÁN XUẤT ÁP TỐC ĐỘ VÀ TORQUE CHO TỪNG TRỤC (FLOAT)                  *)
+(* ============================================================================ *)
 IF State_Machine = 0 THEN
-    (* KHI MÁY DỪNG: KIỂM TRA CHẾ ĐỘ TEST RIÊNG BIỆT TỪNG TRỤC HOẶC BÒ CHẬM RỬA MÁY *)
     IF HMI_Test_X2 THEN Calc_Speed_X2 := Test_Speed_X2; ELSE Calc_Speed_X2 := 0.0; END_IF;
     IF HMI_Test_X1 THEN Calc_Speed_X1 := Test_Speed_X1; ELSE Calc_Speed_X1 := 0.0; END_IF;
-
-    IF HMI_Test_Ms THEN
-        Calc_Speed_Ms := Test_Speed_Ms;
-    ELSIF Anti_Dry_Rotate_Ms AND Max_Speed_MPM > 0.0 THEN
-        Calc_Speed_Ms := (Anti_Dry_Crawl_Speed * 16000.0) / Max_Speed_MPM;
-    ELSE
-        Calc_Speed_Ms := 0.0;
-    END_IF;
-
-    IF HMI_Test_S THEN
-        Calc_Speed_S := Test_Speed_S;
-    ELSIF Anti_Dry_Rotate_S AND Max_Speed_MPM > 0.0 THEN
-        Calc_Speed_S := (Anti_Dry_Crawl_Speed * 16000.0) / Max_Speed_MPM;
-    ELSE
-        Calc_Speed_S := 0.0;
-    END_IF;
+    IF HMI_Test_Ms THEN Calc_Speed_Ms := Test_Speed_Ms; ELSE Calc_Speed_Ms := 0.0; END_IF;
+    IF HMI_Test_S  THEN Calc_Speed_S  := Test_Speed_S;  ELSE Calc_Speed_S  := 0.0; END_IF;
 
     IF HMI_Test_T THEN
         Calc_Speed_T  := Test_Speed_T;
@@ -535,7 +684,6 @@ IF State_Machine = 0 THEN
     END_IF;
 
 ELSE
-    (* KHI MÁY CHẠY TỰ ĐỘNG *)
     Calc_Speed_X2 := SP_Speed_X2 + PID_Out_X2;
     Calc_Speed_X1 := SP_Speed_X1 + PID_Out_X1;
     Calc_Speed_Ms := SP_Speed_Ms + PID_Out_Ms;
@@ -549,7 +697,6 @@ ELSE
         Calc_Speed_U := Calc_Speed_X2 + PID_Out_U;
     END_IF;
 
-    (* 3 Pha Torque Thắng M (0..100% quy đổi ra 0..16000) *)
     IF Rev_Count_M <= 5 THEN
         Base_Torque_M := Init_Holding_Torque_M;
     ELSIF (Max_Dia_M_mm - Core_Dia_M_mm) > 0.0 THEN
@@ -560,7 +707,7 @@ ELSE
     Calc_Torque_M := (Base_Torque_M * 160.0) + PID_Out_M;
 END_IF;
 
-(* KHỐNG CHẾ BIÊN AN TOÀN 0..16000 CHO TOÀN BỘ 8 KÊNH DAC (HIGH RESOLUTION) *)
+(* Khống chế biên an toàn 0..16000 *)
 IF Calc_Speed_T  < 0.0 THEN Calc_Speed_T  := 0.0; ELSIF Calc_Speed_T  > 16000.0 THEN Calc_Speed_T  := 16000.0; END_IF;
 IF Calc_Torque_T < 0.0 THEN Calc_Torque_T := 0.0; ELSIF Calc_Torque_T > 16000.0 THEN Calc_Torque_T := 16000.0; END_IF;
 IF Calc_Speed_X1 < 0.0 THEN Calc_Speed_X1 := 0.0; ELSIF Calc_Speed_X1 > 16000.0 THEN Calc_Speed_X1 := 16000.0; END_IF;
@@ -570,42 +717,45 @@ IF Calc_Torque_M < 0.0 THEN Calc_Torque_M := 0.0; ELSIF Calc_Torque_M > 16000.0 
 IF Calc_Speed_S  < 0.0 THEN Calc_Speed_S  := 0.0; ELSIF Calc_Speed_S  > 16000.0 THEN Calc_Speed_S  := 16000.0; END_IF;
 IF Calc_Speed_U  < 0.0 THEN Calc_Speed_U  := 0.0; ELSIF Calc_Speed_U  > 16000.0 THEN Calc_Speed_U  := 16000.0; END_IF;
 
-(* 12. THỰC THI FB CC-LINK XUẤT ÁP 8 KÊNH DAC (TRUYỀN TRỰC TIẾP BIẾN FLOAT) *)
-fbCCLink(
-    Enable          := TRUE,
-    ResetErr        := HMI_Reset_Error,
-    Auto_Mode       := HMI_Auto_Mode,
-    Set_Speed_T     := Calc_Speed_T,
-    Set_Torque_T    := Calc_Torque_T,
-    Set_Speed_X1    := Calc_Speed_X1,
-    Set_Speed_X2    := Calc_Speed_X2,
-    Set_Speed_Ms    := Calc_Speed_Ms,
-    Set_Torque_M    := Calc_Torque_M,
-    Set_Speed_S     := Calc_Speed_S,
-    Set_Speed_U     := Calc_Speed_U
-);
+(* ============================================================================ *)
+(* 17. XUẤT TRỰC TIẾP RA BUFFER MEMORY MODULE Q68DAV (SLOT 1 - U1\G1..U1\G8)     *)
+(* ============================================================================ *)
+U1\G1 := REAL_TO_INT(Calc_Speed_T);  (* CH1: Speed Thu T (0..16000) *)
+U1\G2 := REAL_TO_INT(Calc_Torque_T); (* CH2: Torque Thu T (0..16000) *)
+U1\G3 := REAL_TO_INT(Calc_Speed_X1); (* CH3: Speed Kéo X1 (0..16000) *)
+U1\G4 := REAL_TO_INT(Calc_Speed_X2); (* CH4: Speed Master X2 (0..16000) *)
+U1\G5 := REAL_TO_INT(Calc_Speed_Ms); (* CH5: Speed Ghép Ms (0..16000) *)
+U1\G6 := REAL_TO_INT(Calc_Torque_M); (* CH6: Torque Thắng M (0..16000) *)
+U1\G7 := REAL_TO_INT(Calc_Speed_S);  (* CH7: Speed Tráng Dầu S (0..16000) *)
+U1\G8 := REAL_TO_INT(Calc_Speed_U);  (* CH8: Speed Xả U (0..16000) *)
 
-(* 13. TỰ ĐỘNG BÁO GIẢM TỐC VÀ DỪNG MÁY KHI ĐẠT CHIỀU DÀI MÉT CÀI ĐẶT *)
+D610 := INT_TO_WORD(U1\G1);
+D611 := INT_TO_WORD(U1\G2);
+D612 := INT_TO_WORD(U1\G3);
+D613 := INT_TO_WORD(U1\G4);
+D614 := INT_TO_WORD(U1\G5);
+D615 := INT_TO_WORD(U1\G6);
+D616 := INT_TO_WORD(U1\G7);
+D617 := INT_TO_WORD(U1\G8);
+
+(* ============================================================================ *)
+(* 18. TỰ ĐỘNG BÁO GIẢM TỐC VÀ DỪNG MÁY KHI ĐẠT CHIỀU DÀI MÉT CÀI ĐẶT           *)
+(* ============================================================================ *)
 IF Set_Target_Length > 0.0 AND State_Machine = 1 THEN
-    (* Pha 1: Giảm tốc về Min_Speed khi còn cách đích khoảng cách Decel_Distance_Meters *)
-    IF Decel_Distance_Meters > 0.0 AND Total_Length_Meters >= (Set_Target_Length - Decel_Distance_Meters) THEN
-        Auto_Decel_Flag := TRUE;
-        IF Target_Line_MPM > Min_Speed_MPM THEN Target_Line_MPM := Min_Speed_MPM; END_IF;
-    ELSE
-        Auto_Decel_Flag := FALSE;
-    END_IF;
-
-    (* Pha 2: Dừng máy hoàn toàn khi đã đủ tổng mét màng cài đặt *)
     IF Total_Length_Meters >= Set_Target_Length THEN
         State_Machine    := 0;
         Target_Line_MPM  := 0.0;
         Current_Line_MPM := 0.0;
-        Auto_Decel_Flag  := FALSE;
+    ELSIF Decel_Distance_Meters > 0.0 AND Total_Length_Meters >= (Set_Target_Length - Decel_Distance_Meters) THEN
+        IF Target_Line_MPM > Min_Speed_MPM THEN Target_Line_MPM := Min_Speed_MPM; END_IF;
     END_IF;
 END_IF;
 
-(* 14. CẬP NHẬT MÃ TRẠNG THÁI HIỂN THỊ TIẾNG VIỆT TRÊN HMI CHO CÔNG NHÂN *)
-(* 0: Sẵn sàng | 1: Báo lỗi Servo | 2: Đang chạy Auto | 3: Đang bò nối màng | 4: Hoàn thành đơn hàng *)
+Auto_Decel_Flag := (Set_Target_Length > 0.0) AND (State_Machine = 1) AND (Decel_Distance_Meters > 0.0) AND (Total_Length_Meters >= (Set_Target_Length - Decel_Distance_Meters)) AND (Total_Length_Meters < Set_Target_Length);
+
+(* ============================================================================ *)
+(* 19. CẬP NHẬT MÃ TRẠNG THÁI HIỂN THỊ TIẾNG VIỆT TRÊN HMI CHO CÔNG NHÂN        *)
+(* ============================================================================ *)
 IF Servo_Not_Ready_Fault THEN
     HMI_Status_Text_Code := 1; (* Báo lỗi 5 Servo *)
 ELSIF State_Machine = 1 THEN

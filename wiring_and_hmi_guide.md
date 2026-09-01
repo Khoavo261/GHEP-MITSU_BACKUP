@@ -16,30 +16,39 @@ Sử dụng cáp xoắn đôi 3 lõi chuyên dụng CC-Link (3-Core Shielded Cab
 ### B. Trở Kháng Đầu Cuối (Terminal Resistor) — *CỰC KỲ QUAN TRỌNG*
 Mạng CC-Link bắt buộc phải gắn **02 Điện trở đầu cuối 110 $\Omega$ (1/2W)** ở 2 điểm đầu và cuối của đường trục CC-Link:
 1. **Điểm đầu (Master QJ61BT11N - Slot 0):** Đấu điện trở $110\Omega$ giữa 2 chân **DA** và **DB**.
-2. **Điểm cuối (Module xa nhất - St 4 AJ65SBT-16DT):** Đấu điện trở $110\Omega$ giữa 2 chân **DA** và **DB**.
-3. Các trạm ở giữa (St 1, St 2&3) đấu song song cáp DA-DA, DB-DB, DG-DG, SLD-SLD *(Không gắn điện trở)*.
+2. **Điểm cuối (Module xa nhất - St 5 AJ65SBTB1-16DT):** Đấu điện trở $110\Omega$ giữa 2 chân **DA** và **DB**.
+3. Các trạm ở giữa (St 1&2 `AJ65VBT-68ADV`, St 3&4 `AJ65VBTCU-68DAVN`) đấu song song cáp DA-DA, DB-DB, DG-DG, SLD-SLD *(Không gắn điện trở)*.
 
 ---
 
 ## ⚡ 2. SƠ ĐỒ ĐẤU NỐI MODULE ANALOG ADC / DAC & DIGITAL I/O
 
-### A. Trạm 1: Module Analog Input 4 Kênh (`AJ65SBT-64AD`)
+### A. Trạm 1 & 2: Module Analog Input 8 Kênh Điện Áp (`AJ65VBT-68ADV`)
 - **Nguồn cấp:** `24VDC` (Chân `+24V` và `24G`).
+- **Công tắc gạt địa chỉ:** Gạt xoay = **`1`** (Chiếm 2 Trạm: Station 1 & Station 2).
 - **Tín hiệu Analog Input (Đọc Cảm biến/Loadcell/Áp suất):**
-  - **Dạng Điện Áp (0~10V):** Nối chân dương tín hiệu vào **V+**, chân âm nối chung **COM**. (Nối tắt **V+** với **I+** nếu chọn dòng).
-  - **Dạng Dòng Điện (4~20mA):** Nối chân dương tín hiệu vào **V+** và **I+** (Nối cầu ngắn V+ và I+ lại với nhau), chân âm nối **COM**.
+  - Kênh 1 ~ 8: Đấu dây vào từng cặp chân **`V+`** (Dương tín hiệu) và **`COM`** (Âm tín hiệu chung của từng kênh).
+  - Thang đo hỗ trợ: $0 \sim 10\text{V}$, $0 \sim 5\text{V}$, $1 \sim 5\text{V}$, $-10\text{V} \sim +10\text{V}$.
+  - Kênh 1 (`D500`): Tín hiệu Loadcell Thu T.
+  - Kênh 2 (`D501`): Tín hiệu Loadcell Kéo X1.
+  - Kênh 3 (`D502`): Tín hiệu Loadcell Thắng Metalize M.
+  - Kênh 4 (`D503`): Tín hiệu Loadcell Xả U.
+  - Kênh 5 ~ 8 (`D504` ~ `D507`): Cảm biến phụ trợ / Dự phòng mở rộng.
   - **Vỏ giáp chống nhiễu:** Nối vào chân **FG** (Frame Ground).
 
-### B. Trạm 2 & 3: Module Analog Output 8 Kênh (`AJ65VBTCU-68DAVN`)
+### B. Trạm 3 & 4: Module Analog Output 8 Kênh (`AJ65VBTCU-68DAVN`)
 - **Nguồn cấp:** `24VDC` (Chân `+24V` và `24G`).
+- **Công tắc gạt địa chỉ:** Gạt xoay = **`3`** *(Chiếm 2 Trạm: Station 3 & Station 4)*.
 - **Tín hiệu Analog Output (Xuất lệnh Tốc độ/Torque cho Servo/Biến tần):**
   - Kênh 1 ~ 8: Tín hiệu xuất ra từ chân **V+** và **COM** của từng kênh (Điện áp $-10\text{V} \sim +10\text{V}$ hoặc $0 \sim 10\text{V}$).
   - Nối chân **V+** vào cổng nhận ngõ vào Analog của Servo/Biến tần (chân `V-REF` / `T-REF` / `AI1`).
   - Nối chân **COM** vào chân Mass Analog của Servo/Biến tần (chân `GND` / `ACM`).
+  - Dải thanh ghi ghi từ PLC: **`D528` ~ `D535`**.
 
-### C. Trạm 4: Module Digital Remote 16 Points (`AJ65SBT-16DT`)
-- **8 Ngõ vào NPN/PNP (X0~X7):** Cấp nguồn 24VDC vào chân `COM`, các chân ngõ vào `X0`~`X7` nối tới nút nhấn, cảm biến.
-- **8 Ngõ ra Transistor (Y0~Y7):** Nối tới cuộn hút Rơ le trung gian 24VDC, đèn báo, Solenoid valve.
+### C. Trạm 5: Module Digital Remote 16 Points (`AJ65SBTB1-16DT`)
+- **Công tắc gạt địa chỉ:** Gạt xoay = **`5`** *(Chiếm 1 Trạm: Station 5)*.
+- **8 Ngõ vào NPN/PNP (X0~X7):** Cấp nguồn 24VDC vào chân `COM`, các chân ngõ vào `X0`~`X7` nối tới Ready Servo T, X1, X2, Ms, S và nút Jog (`M1136` ~ `M1143`).
+- **8 Ngõ ra Transistor (Y8~YF):** Nối tới cuộn hút Rơ le trung gian 24VDC, Servo ON 5 trục, Van Solenoid Pen 1, Pen 2 (`M1336` ~ `M1343`).
 
 ---
 
@@ -82,7 +91,7 @@ Nếu PLC lắp thêm module Ethernet `QJ71E71-100` tại Slot 1 (Head I/O `H20`
 
 ## 📊 4. BẢNG MAPPING BIẾN GIAO DIỆN HMI KẾT NỐI PLC
 
-Bạn có thể import file [`hmi_weintek_tags.csv`](file:///d:/data-2026/GHEP-MITSU/hmi_weintek_tags.csv) trực tiếp vào EasyBuilder Pro:
+Bạn có thể import file [`hmi_weintek_metalize_tags.csv`](file:///d:/data-2026/lap_top/GHEP-MITSU_BACKUP/hmi_weintek_metalize_tags.csv) trực tiếp vào EasyBuilder Pro:
 
 | Tên Biến HMI (Tag Name) | Địa Chỉ PLC | Kiểu Dữ Liệu | Chức Năng Trên Giao Diện HMI |
 | :--- | :--- | :--- | :--- |
@@ -92,17 +101,22 @@ Bạn có thể import file [`hmi_weintek_tags.csv`](file:///d:/data-2026/GHEP-M
 | `ADC_CH2_Display` | `D601` | Unsigned Word | Hiển thị giá trị % Analog Input Kênh 2 |
 | `ADC_CH3_Display` | `D602` | Unsigned Word | Hiển thị giá trị % Analog Input Kênh 3 |
 | `ADC_CH4_Display` | `D603` | Unsigned Word | Hiển thị giá trị % Analog Input Kênh 4 |
+| `ADC_CH5_Display` | `D604` | Unsigned Word | Hiển thị giá trị % Analog Input Kênh 5 |
+| `ADC_CH6_Display` | `D605` | Unsigned Word | Hiển thị giá trị % Analog Input Kênh 6 |
+| `ADC_CH7_Display` | `D606` | Unsigned Word | Hiển thị giá trị % Analog Input Kênh 7 |
+| `ADC_CH8_Display` | `D607` | Unsigned Word | Hiển thị giá trị % Analog Input Kênh 8 |
 | `DAC_CH1_SetVal` | `D610` | Unsigned Word | Ô nhập giá trị cài đặt Analog Output CH1 (0 ~ 1000) |
 | `DAC_CH2_SetVal` | `D611` | Unsigned Word | Ô nhập giá trị cài đặt Analog Output CH2 (0 ~ 1000) |
 | `DAC_CH3_SetVal` | `D612` | Unsigned Word | Ô nhập giá trị cài đặt Analog Output CH3 |
 | `DAC_CH4_SetVal` | `D613` | Unsigned Word | Ô nhập giá trị cài đặt Analog Output CH4 |
-| `Remote_DI0` | `M1104` | Bit (BOOL) | Đèn báo trạng thái ngõ vào X0 Trạm 4 |
-| `Remote_DI1` | `M1105` | Bit (BOOL) | Đèn báo trạng thái ngõ vào X1 Trạm 4 |
-| `Remote_DO_Y8_Servo_T` | `M1304` | Bit (BOOL) | Servo ON Trục Thu T (Cọc 1 Y8) |
-| `Remote_DO_Y9_Servo_X1` | `M1305` | Bit (BOOL) | Servo ON Trục Xả X1 (Cọc 2 Y9) |
-| `Remote_DO_YA_Servo_X2` | `M1306` | Bit (BOOL) | Servo ON Trục Master X2 (Cọc 3 YA) |
-| `Remote_DO_YB_Servo_Ms` | `M1307` | Bit (BOOL) | Servo ON Trục Ghép Ms (Cọc 4 YB) |
-| `Remote_DO_YC_Servo_S` | `M1308` | Bit (BOOL) | Servo ON Trục Tráng Dầu S (Cọc 5 YC) |
-| `Remote_DO_YD_Pen1` | `M1309` | Bit (BOOL) | Ngõ ra Van Solenoid Pen 1 (Cọc 6 YD) |
-| `Remote_DO_YE_Pen2` | `M1310` | Bit (BOOL) | Ngõ ra Van Solenoid Pen 2 (Cọc 7 YE) |
+| `Remote_DI0` | `M1136` | Bit (BOOL) | Đèn báo trạng thái ngõ vào X0 Trạm 5 (Ready Servo T) |
+| `Remote_DI1` | `M1137` | Bit (BOOL) | Đèn báo trạng thái ngõ vào X1 Trạm 5 (Ready Servo X1) |
+| `Remote_DO_Y8_Servo_T` | `M1336` | Bit (BOOL) | Servo ON Trục Thu T (Cọc 1 Y8 Trạm 5) |
+| `Remote_DO_Y9_Servo_X1` | `M1337` | Bit (BOOL) | Servo ON Trục Xả X1 (Cọc 2 Y9 Trạm 5) |
+| `Remote_DO_YA_Servo_X2` | `M1338` | Bit (BOOL) | Servo ON Trục Master X2 (Cọc 3 YA Trạm 5) |
+| `Remote_DO_YB_Servo_Ms` | `M1339` | Bit (BOOL) | Servo ON Trục Ghép Ms (Cọc 4 YB Trạm 5) |
+| `Remote_DO_YC_Servo_S` | `M1340` | Bit (BOOL) | Servo ON Trục Tráng Dầu S (Cọc 5 YC Trạm 5) |
+| `Remote_DO_YD_Pen1` | `M1341` | Bit (BOOL) | Ngõ ra Van Solenoid Pen 1 (Cọc 6 YD Trạm 5) |
+| `Remote_DO_YE_Pen2` | `M1342` | Bit (BOOL) | Ngõ ra Van Solenoid Pen 2 (Cọc 7 YE Trạm 5) |
 | `Reset_Fault_Btn` | `M1111` | Bit (BOOL) | Nút bấm Reset lỗi hệ thống |
+

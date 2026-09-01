@@ -2,11 +2,14 @@
 (* TÊN CHƯƠNG TRÌNH : INIT_PROGRAM (INITIAL EXECUTION POU - KHỞI TẠO HỆ THỐNG)    *)
 (* HỆ THỐNG        : MÁY GHÉP MÀNG METALIZE TỰ ĐỘNG - MITSUBISHI Q02U PLC       *)
 (* KIỂU DỮ LIỆU    : SỐ THỰC FLOAT / REAL (CHUẨN IEC)                          *)
-(* MỤC ĐÍCH        : KHỞI TẠO TỶ SỐ TRUYỀN, ĐƯỜNG KÍNH LÔ, THÔNG SỐ TỐC ĐỘ,     *)
-(*                   LỰC CĂNG, PID VÀ BẢO VỆ CHỐNG LỖI CHIA CHO 0 (ZERO DIV)    *)
-(* GHI CHÚ QUAN TRỌNG: POU này đã được cài đặt là "Initial" trong PLC Parameter  *)
-(*                   nên CPU chỉ quét đúng 1 lần khi chuyển sang RUN (Không     *)
-(*                   cần dùng tiếp cờ SM402).                                   *)
+(* CẤU TRÚC PHẦN CỨNG MỚI (DIRECT BASE RACK - KHÔNG DÙNG CC-LINK):             *)
+(*   - SLOT 0 (H00): Q68ADV (8 CH Analog Input: Loadcell T, X1, M, U & Analog S)*)
+(*   - SLOT 1 (H10): Q68DAV (8 CH Analog Output: Speed/Torque T, X1, X2, Ms, S, M, U) *)
+(*   - SLOT 2 (H20): QD62D  (2 CH High Speed Counter: Trục T & Trục X1)        *)
+(*   - SLOT 3 (H30): QD62D  (2 CH High Speed Counter: Trục X2 & Trục Ms)       *)
+(*   - SLOT 4 (H40): QX40   (16 CH Digital Input: X40..X4F)                    *)
+(*   - SLOT 5 (H50): QY40   (16 CH Digital Output: Y50..Y5F)                   *)
+(*   - SLOT 6 (H60): QJ71C24N (RS232/RS485 Communication)                      *)
 (* ============================================================================ *)
 
 (* ---------------------------------------------------------------------------- *)
@@ -50,12 +53,10 @@ IF Max_Dia_U_mm  <= 0.0 THEN Max_Dia_U_mm  := 800.0;  END_IF; (* Cuộn Xả U m
 (* ---------------------------------------------------------------------------- *)
 (* 5. KHỞI TẠO ĐƯỜNG KÍNH BAN ĐẦU KHI MỚI BẬT NGUỒN (REAL)                     *)
 (* ---------------------------------------------------------------------------- *)
-(* Cuộn Thu T bắt đầu từ Lõi *)
 IF Real_Dia_T_mm < Core_Dia_T_mm OR Real_Dia_T_mm > Max_Dia_T_mm THEN
     Real_Dia_T_mm := Core_Dia_T_mm; (* 76.0 mm - D724 *)
 END_IF;
 
-(* Cuộn Xả M & U bắt đầu từ cuộn đầy *)
 IF Real_Dia_M_mm < Core_Dia_M_mm OR Real_Dia_M_mm > Max_Dia_M_mm THEN
     Real_Dia_M_mm := Max_Dia_M_mm;  (* 600.0 mm - D722 *)
 END_IF;
@@ -100,7 +101,22 @@ IF Kp_X1 <= 0.0 THEN Kp_X1 := 1.2; END_IF;
 IF Ki_X1 <= 0.0 THEN Ki_X1 := 0.15; END_IF;
 IF Kd_X1 <= 0.0 THEN Kd_X1 := 0.08; END_IF;
 
-(* Hệ số PID cuộn Xả M *)
+(* Hệ số PID trục Master X2 *)
+IF Kp_X2 <= 0.0 THEN Kp_X2 := 1.0; END_IF;
+IF Ki_X2 <= 0.0 THEN Ki_X2 := 0.1; END_IF;
+IF Kd_X2 <= 0.0 THEN Kd_X2 := 0.05; END_IF;
+
+(* Hệ số PID trục Ghép Ms *)
+IF Kp_Ms <= 0.0 THEN Kp_Ms := 1.0; END_IF;
+IF Ki_Ms <= 0.0 THEN Ki_Ms := 0.1; END_IF;
+IF Kd_Ms <= 0.0 THEN Kd_Ms := 0.05; END_IF;
+
+(* Hệ số PID trục Dầu S *)
+IF Kp_S <= 0.0 THEN Kp_S := 1.0; END_IF;
+IF Ki_S <= 0.0 THEN Ki_S := 0.1; END_IF;
+IF Kd_S <= 0.0 THEN Kd_S := 0.05; END_IF;
+
+(* Hệ số PID cuộn Thắng M *)
 IF Kp_M <= 0.0 THEN Kp_M := 1.0; END_IF;
 IF Ki_M <= 0.0 THEN Ki_M := 0.1; END_IF;
 IF Kd_M <= 0.0 THEN Kd_M := 0.05; END_IF;
@@ -130,39 +146,33 @@ IF Calib_Gain_M  <= 0.0 THEN Calib_Gain_M  := 1.0; END_IF;
 IF Calib_Gain_U  <= 0.0 THEN Calib_Gain_U  := 1.0; END_IF;
 
 (* ---------------------------------------------------------------------------- *)
-(* 11. CẤU HÌNH LẤY TRUNG BÌNH NỘI TẠI MODULE CC-LINK 64AD (AJ65SBT-64AD - TRẠM 1) *)
+(* 11. KHỞI TẠO CẤU HÌNH MODULE Q68ADV (SLOT 0 - HEAD ADDRESS H00)             *)
 (* ---------------------------------------------------------------------------- *)
-(* [GIẢI THÍCH CHẾ ĐỘ LẤY TRUNG BÌNH NỘI TẠI TRONG BUFFER MEMORY CỦA MODULE]:   *)
-(*                                                                              *)
-(* 1. BFM #0 (00H) - CHỌN CHẾ ĐỘ (Mỗi kênh 1 Nibble Hex H[CH4][CH3][CH2][CH1]):  *)
-(*    - 16#0 (0): Lấy mẫu tức thời (Sampling Processing - Mặc định)             *)
-(*    - 16#1 (1): Trung bình theo Thời Gian (Time Average - Đơn vị: ms)         *)
-(*    - 16#2 (2): Trung bình theo Số Lần   (Count Average - Đơn vị: Lần/Mẫu)    *)
-(*    - 16#3 (3): Trung bình Trượt (Moving Average - Khuyên dùng cho Loadcell)  *)
-(*                                                                              *)
-(*    * VÍ DỤ CÀI ĐẶT BFM #0:                                                   *)
-(*      + 16#3333 -> Cả 4 kênh CH1..CH4 chạy Trung Bình Trượt (Moving Average)  *)
-(*      + 16#2222 -> Cả 4 kênh CH1..CH4 chạy Trung Bình Số Lần (Count Average)  *)
-(*      + 16#0033 -> CH1, CH2 chạy Moving Average; CH3, CH4 lấy tức thời       *)
-(*                                                                              *)
-(* 2. BFM #1..#4 - GIÁ TRỊ CÀI ĐẶT CHO TỪNG KÊNH:                               *)
-(*    - Time Average   (Kiểu 1): 20 ~ 5000 (ms)                                 *)
-(*    - Count Average  (Kiểu 2): 4 ~ 500 (lần)                                  *)
-(*    - Moving Average (Kiểu 3): 4 ~ 60 (mẫu trượt liên tục - Khuyên đặt: 16)   *)
-(*                                                                              *)
-(* 3. BFM #10 (0AH) - CHO PHÉP CHUYỂN ĐỔI:                                      *)
-(*    - 16#0000 (0): Cho phép chuyển đổi A/D cả 4 kênh                          *)
+(* BFM #0: Cho phép chuyển đổi A/D cả 8 kênh (0 = Enable, 1 = Disable)          *)
+U0\G0 := 16#0000; (* Enable toàn bộ CH1..CH8 *)
+
+(* BFM #9 & #10: Cài đặt chế độ lọc trung bình trượt (Moving Average = 16#3333) *)
+U0\G9  := 16#3333; (* CH1..CH4: Moving Average *)
+U0\G10 := 16#3333; (* CH5..CH8: Moving Average *)
+
+(* BFM #11..#18: Số lượng mẫu trung bình trượt (16 mẫu liên tục)                *)
+U0\G11 := 16; (* CH1: Loadcell Thu T *)
+U0\G12 := 16; (* CH2: Loadcell Kéo X1 *)
+U0\G13 := 16; (* CH3: Loadcell Thắng M *)
+U0\G14 := 16; (* CH4: Loadcell Xả U *)
+U0\G15 := 16; (* CH5: Analog Tốc độ Servo Trục S *)
+U0\G16 := 16; (* CH6: Dự phòng *)
+U0\G17 := 16; (* CH7: Dự phòng *)
+U0\G18 := 16; (* CH8: Dự phòng *)
+
 (* ---------------------------------------------------------------------------- *)
+(* 12. KHỞI TẠO CẤU HÌNH MODULE Q68DAV (SLOT 1 - HEAD ADDRESS H10)             *)
+(* ---------------------------------------------------------------------------- *)
+(* BFM #0: Cho phép chuyển đổi D/A cả 8 kênh (0 = Enable, 1 = Disable)          *)
+U1\G0 := 16#0000; (* Enable D/A cho CH1..CH8 *)
 
-(* A. Gán hằng số chế độ lấy trung bình (BFM #0: 16#3333 = Moving Average cả 4 kênh) *)
-CCLink_AD_Avg_Mode := 16#3333; (* D860: Hằng số kiểu lấy trung bình trượt *)
+(* BFM #9: Cho phép ngõ ra Analog Output (Bit 0..7: 1 = Output Enable)          *)
+U1\G9 := 16#00FF; (* Cho phép xuất áp ra cả 8 kênh *)
 
-(* B. Gán hằng số số mẫu trung bình cho từng kênh Loadcell (BFM #1..#4: 16 mẫu trượt) *)
-CCLink_AD_Avg_CH1 := 16; (* D861: CH1 (Loadcell Thu T - D500)  - 16 mẫu *)
-CCLink_AD_Avg_CH2 := 16; (* D862: CH2 (Loadcell Kéo X1 - D501) - 16 mẫu *)
-CCLink_AD_Avg_CH3 := 16; (* D863: CH3 (Loadcell Thắng M - D502) - 16 mẫu *)
-CCLink_AD_Avg_CH4 := 16; (* D864: CH4 (Loadcell Xả U - D503)   - 16 mẫu *)
-
-(* C. Gán hằng số cho phép chuyển đổi A/D cả 4 kênh (BFM #10: 0 = Enable All) *)
-CCLink_AD_Conv_En := 0;  (* D865: Cho phép chuyển đổi toàn bộ 4 kênh *)
-
+(* Bật cờ Y11 hoặc Y10 cho phép chuyển đổi D/A *)
+Y11 := TRUE;
