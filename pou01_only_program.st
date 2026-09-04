@@ -26,7 +26,8 @@ IF Gear_Ratio_X1    <= 0.0   THEN Gear_Ratio_X1    := 8.0;   END_IF;
 IF Gear_Ratio_X2    <= 0.0   THEN Gear_Ratio_X2    := 8.0;   END_IF;
 IF Gear_Ratio_Ms    <= 0.0   THEN Gear_Ratio_Ms    := 10.0;  END_IF;
 IF Gear_Ratio_S     <= 0.0   THEN Gear_Ratio_S     := 10.0;  END_IF;
-IF Gear_Ratio_U     <= 0.0   THEN Gear_Ratio_U     := 1.0;   END_IF;
+IF Gear_Ratio_U     <= 0.0   THEN Gear_Ratio_U     := 1.0;     END_IF; (* Xả U: 1.0 : 1 *)
+IF Gear_Ratio_M     <= 0.0   THEN Gear_Ratio_M     := 1.03125; END_IF; (* Trục Xả Metalize M: Gear = 33/32 = 1.03125 *)
 
 IF Dia_X1_Roller_mm <= 0.0   THEN Dia_X1_Roller_mm := 300.5; END_IF;
 IF Dia_X2_Roller_mm <= 0.0   THEN Dia_X2_Roller_mm := 300.5; END_IF;
@@ -347,13 +348,13 @@ IF Total_PPR > 0 AND (Curr_Pulse_T - Last_Pulse_T) >= REAL_TO_DINT(DINT_TO_REAL(
     Last_Pulse_T    := Curr_Pulse_T;
 END_IF;
 
-(* Đường kính cuộn Xả M theo cảm biến tiệm cận X4A *)
+(* Đường kính cuộn Xả Metalize M theo cảm biến tiệm cận X4A & Tỷ số truyền Gear_Ratio_M (33/32) *)
 Trig_X50 := Sensor_Rev_M AND NOT(Prev_X50);
 Prev_X50 := Sensor_Rev_M;
 IF Trig_X50 THEN
     Rev_Count_M := Rev_Count_M + 1;
     IF Total_PPR > 0 AND (Curr_Pulse_X2 - Last_Pulse_X2_M) > 0 THEN
-        Raw_Dia_M_mm := (DINT_TO_REAL(Curr_Pulse_X2 - Last_Pulse_X2_M) * Dia_X2_Roller_mm) / (DINT_TO_REAL(Total_PPR) * Gear_Ratio_X2);
+        Raw_Dia_M_mm := (DINT_TO_REAL(Curr_Pulse_X2 - Last_Pulse_X2_M) * Dia_X2_Roller_mm * Gear_Ratio_M) / (DINT_TO_REAL(Total_PPR) * Gear_Ratio_X2);
         IF Raw_Dia_M_mm < Core_Dia_M_mm THEN Raw_Dia_M_mm := Core_Dia_M_mm; END_IF;
         IF Raw_Dia_M_mm > Max_Dia_M_mm THEN Raw_Dia_M_mm := Max_Dia_M_mm; END_IF;
         Real_Dia_M_mm := Real_Dia_M_mm + ((Raw_Dia_M_mm - Real_Dia_M_mm) * 0.2);
@@ -698,7 +699,7 @@ IF State_Machine = 0 THEN
     IF HMI_Test_M THEN
         Calc_Torque_M := Test_Torque_M;
     ELSIF Hold_Torque_Stop_M THEN
-        Calc_Torque_M := (Base_Torque_M * 160.0);
+        Calc_Torque_M := (Base_Torque_M * 80.0);
     ELSE
         Calc_Torque_M := 0.0;
     END_IF;
@@ -706,7 +707,7 @@ IF State_Machine = 0 THEN
     IF HMI_Test_U THEN
         Calc_Speed_U := Test_Speed_U;
     ELSIF Hold_Torque_Stop_U THEN
-        Calc_Speed_U := (Init_Holding_Torque_U * 160.0);
+        Calc_Speed_U := (Init_Holding_Torque_U * 80.0);
     ELSE
         Calc_Speed_U := 0.0;
     END_IF;
@@ -719,10 +720,11 @@ ELSE
     Calc_Speed_T  := SP_Speed_T;
     Calc_Torque_T := (Effective_SP_T * 160.0) + PID_Out_T;
 
+    (* Xả U: Giới hạn ngõ ra max 5V (tương đương 0..8000 trên dải 0..10V) *)
     IF Real_Dia_U_mm > 0.0 THEN
-        Calc_Speed_U := ((Calc_Speed_X2 * Max_Dia_U_mm) / Real_Dia_U_mm) + PID_Out_U;
+        Calc_Speed_U := (((Calc_Speed_X2 * Max_Dia_U_mm) / Real_Dia_U_mm) * 0.5) + PID_Out_U;
     ELSE
-        Calc_Speed_U := Calc_Speed_X2 + PID_Out_U;
+        Calc_Speed_U := (Calc_Speed_X2 * 0.5) + PID_Out_U;
     END_IF;
 
     IF Rev_Count_M <= 5 THEN
@@ -732,18 +734,19 @@ ELSE
     ELSE
         Base_Torque_M := Min_Torque_M;
     END_IF;
-    Calc_Torque_M := (Base_Torque_M * 160.0) + PID_Out_M;
+    (* Thắng Từ M: Giới hạn ngõ ra max 5V (0..100% ứng với 0..8000) *)
+    Calc_Torque_M := (Base_Torque_M * 80.0) + PID_Out_M;
 END_IF;
 
-(* Khống chế biên an toàn 0..16000 *)
+(* Khống chế biên an toàn ngõ ra Analog: Các trục Servo xuất 0..16000 (0..10V), riêng Thắng M và Xả U xuất 0..8000 (0..5V) *)
 IF Calc_Speed_T  < 0.0 THEN Calc_Speed_T  := 0.0; ELSIF Calc_Speed_T  > 16000.0 THEN Calc_Speed_T  := 16000.0; END_IF;
 IF Calc_Torque_T < 0.0 THEN Calc_Torque_T := 0.0; ELSIF Calc_Torque_T > 16000.0 THEN Calc_Torque_T := 16000.0; END_IF;
 IF Calc_Speed_X1 < 0.0 THEN Calc_Speed_X1 := 0.0; ELSIF Calc_Speed_X1 > 16000.0 THEN Calc_Speed_X1 := 16000.0; END_IF;
 IF Calc_Speed_X2 < 0.0 THEN Calc_Speed_X2 := 0.0; ELSIF Calc_Speed_X2 > 16000.0 THEN Calc_Speed_X2 := 16000.0; END_IF;
 IF Calc_Speed_Ms < 0.0 THEN Calc_Speed_Ms := 0.0; ELSIF Calc_Speed_Ms > 16000.0 THEN Calc_Speed_Ms := 16000.0; END_IF;
-IF Calc_Torque_M < 0.0 THEN Calc_Torque_M := 0.0; ELSIF Calc_Torque_M > 16000.0 THEN Calc_Torque_M := 16000.0; END_IF;
+IF Calc_Torque_M < 0.0 THEN Calc_Torque_M := 0.0; ELSIF Calc_Torque_M > 8000.0  THEN Calc_Torque_M := 8000.0;  END_IF;
 IF Calc_Speed_S  < 0.0 THEN Calc_Speed_S  := 0.0; ELSIF Calc_Speed_S  > 16000.0 THEN Calc_Speed_S  := 16000.0; END_IF;
-IF Calc_Speed_U  < 0.0 THEN Calc_Speed_U  := 0.0; ELSIF Calc_Speed_U  > 16000.0 THEN Calc_Speed_U  := 16000.0; END_IF;
+IF Calc_Speed_U  < 0.0 THEN Calc_Speed_U  := 0.0; ELSIF Calc_Speed_U  > 8000.0  THEN Calc_Speed_U  := 8000.0;  END_IF;
 
 (* ============================================================================ *)
 (* 17. XUẤT TRỰC TIẾP RA BUFFER MEMORY MODULE Q68DAV (SLOT 1 - U1\G1..U1\G8)     *)

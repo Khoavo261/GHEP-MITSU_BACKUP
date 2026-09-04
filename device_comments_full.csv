@@ -135,6 +135,7 @@
 "D","276","Torque ham min Xa U (%)"
 "D","278","Torque ham max Xa U (%)"
 "D","280","Torque giu ban dau Xa U (%)"
+"D","282","Ty so truyen hop so Xa Metalize M (33/32 = 1.03125)"
 "D","290","Do phan giai Encoder (PPR)"
 "D","300","Zero Offset Loadcell T"
 "D","302","Zero Offset Loadcell X1"

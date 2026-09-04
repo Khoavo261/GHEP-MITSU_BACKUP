@@ -13,8 +13,8 @@ Tài liệu thiết kế chi tiết toàn bộ quy trình công nghệ, phân b�
 | **Trục X2** | Master tốc độ chuẩn dòng máy | **`8.0 / 1`** *(Chỉnh được)* | **`300.5 mm`** *(Chỉnh được)* | Synchronized Speed | QD62 #2 Kênh CH1 |
 | **Trục S** | Trục Servo phủ hóa chất mỏng (Giữa X1 & X2) | **`10.0 / 1`** | **`100.0 mm`** | Sync Ratio theo Master | QD62 #3 Kênh CH1 |
 | **Trục Ms** | Trục Servo ghép màng Metalize (Sau X2) | **`10.0 / 1`** | **`200.0 mm`** *(Chỉnh được)* | Vận tốc dài = Tốc độ X2 | QD62 #2 Kênh CH2 |
-| **Thắng Từ M** | Giữ cuộn màng Metalize (Sau Ms) | Thắng Từ Torque | Giảm dần theo xả màng | **CH3 ADC** (`Weight_M` - `D502`) | **Cảm biến tiệm cận `X50`** |
-| **Cuộn Xả U** | Cuộn xả màng phía sau cùng | Phanh hãm lực xả | Giảm dần theo xả màng | **CH4 ADC** (`Weight_U` - `D503`) | **Cảm biến tiệm cận `X51`** |
+| **Cuộn Xả Metalize M** | Cuộn xả màng Metalize (Sau Ms) | **`33 / 32`** (`1.03125` - `D282`) | Giảm dần theo xả màng | **CH3 ADC** (`Weight_M` - `D502`) | **Cảm biến tiệm cận `X4A` / `X50`** |
+| **Cuộn Xả U** | Cuộn xả màng / xả giấy chính | **`1.0 / 1`** (`D210`) | Giảm dần theo xả màng | **CH4 ADC** (`Weight_U` - `D503`) | **Cảm biến tiệm cận `X4B` / `X51`** |
 
 ---
 
@@ -38,12 +38,13 @@ Tài liệu thiết kế chi tiết toàn bộ quy trình công nghệ, phân b�
 
 ## 🌀 3. QUY TRÌNH NẠP THÔNG SỐ ĐƯỜNG KÍNH VÀ LỰC CĂNG
 
-1. **Cuộn Xả Màng Metalize M (`X50` trên QX40):**
-   - Cảm biến tiệm cận `X50` ngắt sườn lên báo 1 vòng quay của cuộn Metalize M.
-   - PLC tính toán đường kính cuộn màng giảm dần và tự động quy đổi sinh ra lực Torque hãm phù hợp cho **Thắng Từ M** qua kênh DAC `D529`.
-2. **Cuộn Xả Giấy Chính U (`X51` trên QX40):**
-   - Cảm biến tiệm cận `X51` ngắt sườn lên báo 1 vòng quay của cuộn xả giấy U.
-   - PLC tính toán đường kính giảm dần sinh ra lực hãm qua kênh DAC `D531` giữ vững lực căng `Weight_U`.
+1. **Cuộn Xả Màng Metalize M (`X4A` / `X50` trên QX40):**
+   - Cảm biến tiệm cận `X4A` ngắt sườn lên báo 1 vòng quay của cuộn Metalize M.
+   - Cơ cấu truyền động trang bị tỷ số truyền nhông xích/bánh răng **Gear `33 / 32 = 1.03125`** (cài đặt tại `D282`).
+   - PLC tính toán đường kính cuộn màng giảm dần (nhân bù tỷ số truyền `Gear_Ratio_M`), tự động quy đổi sinh ra lực Torque hãm phù hợp cho **Thắng Từ M** qua kênh DAC `D515` (hoặc module xuất áp).
+2. **Cuộn Xả Giấy Chính U (`X4B` / `X51` trên QX40):**
+   - Cảm biến tiệm cận `X4B` ngắt sườn lên báo 1 vòng quay của cuộn xả U (tỷ số truyền trực tiếp `1.0` tại `D210`).
+   - PLC tính toán đường kính giảm dần sinh ra lực giữ căng qua kênh DAC `D517` giữ vững lực căng `Weight_U`.
 3. **Cuộn Thu T:**
    - Đọc xung đếm từ QD62 #1 CH1 qua tỷ số truyền **Gear `10.1/1`**. Đường kính cuộn thu `Real_Dia_T_mm` tăng dần để bù tốc độ và Torque xiết cuộn qua DAC `D524` & `D525`.
 

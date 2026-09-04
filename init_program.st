@@ -29,7 +29,8 @@ IF Gear_Ratio_X1 <= 0.0 THEN Gear_Ratio_X1 := 8.0;  END_IF; (* Xả X1:     8.0 
 IF Gear_Ratio_X2 <= 0.0 THEN Gear_Ratio_X2 := 8.0;  END_IF; (* Master X2: 8.0  : 1 (D624) *)
 IF Gear_Ratio_Ms <= 0.0 THEN Gear_Ratio_Ms := 10.0; END_IF; (* Ghép Ms:   10.0 : 1 (D626) *)
 IF Gear_Ratio_S  <= 0.0 THEN Gear_Ratio_S  := 10.0; END_IF; (* Dầu S:     10.0 : 1 (D628) *)
-IF Gear_Ratio_U  <= 0.0 THEN Gear_Ratio_U  := 1.0;  END_IF; (* Xả U:      1.0  : 1 (D630) *)
+IF Gear_Ratio_U  <= 0.0 THEN Gear_Ratio_U  := 1.0;     END_IF; (* Xả U: 1.0 : 1 (D210) *)
+IF Gear_Ratio_M  <= 0.0 THEN Gear_Ratio_M  := 1.03125; END_IF; (* Trục Xả Metalize M: Gear = 33/32 = 1.03125 (D282) *)
 
 (* ---------------------------------------------------------------------------- *)
 (* 3. KHỞI TẠO ĐƯỜNG KÍNH LÔ CƠ CẤU (ROLLER DIAMETER - mm - REAL)              *)
