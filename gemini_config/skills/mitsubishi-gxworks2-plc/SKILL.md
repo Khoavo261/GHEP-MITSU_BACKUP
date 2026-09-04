@@ -42,6 +42,25 @@ When pasting variables into GX Works2 `Global_Variables` or `Local_Variables` gr
 - Always cast intermediate products to `Double Word[Signed]` (`DINT`) before multiplying large integers:
   $$\text{Scaled} = \frac{\text{DINT\_Val} \times 4000}{\text{Max\_Limit}}$$
 - Performing $4000 \times 4000 = 16,000,000$ in 16-bit INT silently overflows ($> 32,767$) and produces negative/erratic DAC voltages.
+- In RPM / MPM velocity scaling formulas, perform intermediate multiplications using `REAL` (Float) math to prevent 32-bit DINT arithmetic overflow ($> 2,147,483,647$) which triggers CPU Fault `4140 OPERATION ERROR`.
+
+### F. 32-bit REAL / DINT 2-Word Memory Alignment (Preventing Error `4140 OPERATION ERROR`)
+- In Mitsubishi Q-Series, `REAL` (32-bit Float) and `DINT` (32-bit Int) occupy two consecutive 16-bit registers (e.g. `D632` uses `D632` and `D633`).
+- NEVER assign adjacent addresses (e.g. `D632` and `D633`) to separate 32-bit labels. Overlapping creates corrupted floating-point bit patterns (NaN), which immediately triggers CPU Hardware Fault `4140 OPERATION ERROR` when executing float instructions like `LDE>` or `EMOV`.
+- Always enforce a strict 2-word step for 32-bit labels: `D632, D634, D636, D638, D640...`.
+
+### G. Prohibiting System Device Names in Label Identifiers (Error `C5048`)
+- In GX Works2, never use hardware device identifiers (e.g. `D500`, `D610`, `X40`, `Y50`, `M100`) as the Label Name. It triggers compiler error `C5048: Label/data name contains invalid character string. Unable to use devices.`.
+- System devices used directly in Structured Text code do not need to be declared in Global/Local Label tables.
+
+### H. Structured Text Single-Coil Paradigm (Eliminating CheckWarning `C9300`)
+- GX Works2 evaluates each assignment (`:=`) to a boolean device as a coil output. Assigning the same boolean variable in multiple independent `IF` blocks triggers CheckWarning `C9300: Duplicated coil`.
+- Ensure each boolean coil is assigned at exactly ONE location using unified boolean expressions or intermediate state registers.
+
+### I. Flexible Non-Contiguous Parameter Allocation for New Features
+- When adding new parameters or mechanical ratios requested by the user, do NOT force-shift or disrupt established continuous memory blocks.
+- Allocating to adjacent free addresses (e.g., `D282` for `Gear_Ratio_M` after `D280`) is completely valid.
+- **Mandatory Constraint:** Always maintain strict 2-word even alignment for `REAL` (Float) and `DINT` variables (e.g., `D282` consumes `D282` & `D283`) to prevent CPU Hardware Fault `4140 OPERATION ERROR`.
 
 ---
 
@@ -64,9 +83,13 @@ When pasting variables into GX Works2 `Global_Variables` or `Local_Variables` gr
   - **Speed Reference:** Leads ahead ($105\% \sim 115\%$ via `Speed_Ratio_T = 1050`) based on expanding core diameter:
     $$v_{\text{T\_ref}} = \left( v_{\text{X2}} \cdot \frac{D_{\text{real\_T}}}{D_{\text{core\_T}}} \right) \cdot \frac{\text{Speed\_Ratio\_T}}{1000}$$
   - **Torque Limit Reference:** Controlled dynamically via Tension PID `pid_T` + Taper tension curve ($0 \sim 100\%$) to maintain constant tension across expanding roll diameters without web tearing.
-- **Metalize Film Unwinder (Brake M)**:
+- **Metalize Film Unwinder (Cuộn Xả Metalize M / Thắng M - Sensor X4A/X50)**:
+  - Uses gear ratio `Gear_Ratio_M` = 33/32 (1.03125) mapped at `D282`.
+  - Factors `Gear_Ratio_M` into proximity sensor pulse calculations to accurately measure decreasing roll diameter `Real_Dia_M_mm`:
+    $$D_{\text{M\_raw}} = \frac{\Delta \text{Pulse\_X2} \cdot D_{\text{X2}} \cdot \text{Gear\_Ratio\_M}}{\text{Total\_PPR} \cdot \text{Gear\_Ratio\_X2}}$$
   - Magnetic Brake Torque command with 3-Phase Dynamic Torque Scaling + Loadcell Tension PID `pid_M`.
-- **Paper Unwinder Axis (U)**:
+- **Paper / Secondary Unwinder Axis (Cuộn Xả U - Sensor X4B/X51)**:
+  - Standard direct ratio `Gear_Ratio_U = 1.0` mapped at `D210`.
   - Diameter uncoiling speed scaling ($v_{\text{U}} = v_{\text{X2}} \cdot \frac{D_{\text{max\_U}}}{D_{\text{real\_U}}} + \Delta v_{\text{PID\_U}}$).
 
 ---
