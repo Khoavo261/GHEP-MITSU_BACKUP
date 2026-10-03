@@ -124,3 +124,58 @@ Provide dedicated test flags and independent speed/torque registers so engineers
 
 1. **Device Driver:** Select `Mitsubishi Q00/Q00UJ/Q01/QJ71` (RS-232 / COM1: 19200, O, 8, 1 or Ethernet).
 2. **Address Tag Library Import:** Pre-generate `weintek_easybuilder_tags_import.csv` with columns `"Name","Device","Address","Data Type","Description"` for 1-click tag import into EasyBuilder Pro.
+
+---
+
+## 6. Intelligent Function Modules & High-Speed Counter (QD62 / QD62D / QD62E)
+
+### A. Buffer Memory Hex-to-Decimal Translation Invariant (`Un\G...`)
+- **The Manual Trap:** Mitsubishi hardware manuals (e.g. SH-080036 for QD62/QD62D) list all Buffer Memory addresses in **HEXADECIMAL** (suffix `H`).
+- **The GX Works2 Rule:** Structured Text direct addressing (`Un\G<address>`) and the GX Works2 Device/Buffer Memory Batch Monitor interpret addresses in **DECIMAL**.
+- **Conversion Formula:** Always convert manual addresses from Hex to Dec before accessing via `Un\G`:
+  $$\text{Dec Address} = \text{Hex Address}_{16} \rightarrow 10$$
+
+#### QD62 / QD62D Buffer Memory Address Reference:
+| Parameter | Manual (Hex) | GX Works2 ST Device (Dec) | Size / Type |
+| :--- | :---: | :---: | :---: |
+| **CH1 Preset Value** | `0H .. 1H` | `U\G0` (G0..G1) | 32-bit DINT |
+| **CH1 Present Value (PV)** | `2H .. 3H` | `U\G2` (G2..G3) | 32-bit DINT |
+| **CH2 Preset Value** | `20H .. 21H` | `U\G32` (G32..G33) | 32-bit DINT ($20\text{H} = 32$) |
+| **CH2 Present Value (PV)** | `22H .. 23H` | `U\G34` (G34..G35) | 32-bit DINT ($22\text{H} = 34$) |
+
+> [!CAUTION]
+> Reading `U\G22` for CH2 PV will read internal configuration flags, NOT the pulse count! Always use `U\G34` ($22\text{H} = 34\text{D}$) for CH2 Present Value.
+
+### B. QD62D I/O Handshake Signals (Head Address $n$, e.g., Slot 2 = $n = 20\text{H}$)
+1. **Count Enable Commands (`Yn4` for CH1, `YnC` for CH2):**
+   - MUST be held `TRUE` continuously throughout counting operation.
+   - If `FALSE`, the module ignores incoming encoder pulses even if LED A/B are physically blinking.
+2. **Preset Commands (`Yn1` for CH1, `Yn9` for CH2):**
+   - MUST be pulsed for exactly **ONE scan cycle** (rising edge trigger).
+   - NEVER keep Preset ON continuously; holding it ON forces the PV to the Preset Value on every scan cycle, preventing counting and causing value oscillation.
+3. **Counting Status Flags (`XnA` for CH1, `XnB` for CH2):**
+   - Turns `TRUE` when counting is actively enabled and module is healthy.
+
+### C. Standard Structured Text High-Speed Counter Block Pattern:
+```iecst
+(* --- CH1 & CH2 Count Enable (Hold continuously) --- *)
+Y24 := TRUE; (* CH1 Count Enable *)
+Y2C := TRUE; (* CH2 Count Enable *)
+
+(* --- CH1 & CH2 Preset Reset (1-Scan Pulse Only) --- *)
+IF Reset_Pulse_CH1 THEN
+    U2\G0 := DINT#0; (* Preset Value = 0 *)
+    Y21 := TRUE;     (* Trigger CH1 Preset *)
+ELSE
+    Y21 := FALSE;
+END_IF;
+
+(* --- Direct Read Present Value (32-bit DINT) --- *)
+CH1_Encoder_PV := U2\G2;  (* Read 32-bit from G2..G3 *)
+CH2_Encoder_PV := U2\G34; (* Read 32-bit from G34..G35 (22H = 34D) *)
+```
+
+### D. QD62D Differential Line Driver Wiring Invariant
+- **Line Driver Only:** QD62D strictly requires RS-422-A differential signals (`A+`, `A-`, `B+`, `B-`). Single-ended NPN open-collector encoders cannot be connected directly (use QD62 for 5/12/24V DC open-collector or an external line-driver converter).
+- **Shield & Grounding:** Always connect the encoder shield to the machine single-point PE and module FG terminal. Grounding both ends creates ground loops that introduce count drift at high motor frequencies.
+

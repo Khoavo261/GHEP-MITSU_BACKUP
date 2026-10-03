@@ -1,0 +1,36 @@
+Test_Volt_CH1	REAL	VAR_GLOBAL		D2008	Q68ADV CH1 Dien ap Volt (0..10V)
+Test_Volt_CH2	REAL	VAR_GLOBAL		D2010	Q68ADV CH2 Dien ap Volt (0..10V)
+Test_Volt_CH3	REAL	VAR_GLOBAL		D2012	Q68ADV CH3 Dien ap Volt (0..10V)
+Test_Volt_CH4	REAL	VAR_GLOBAL		D2014	Q68ADV CH4 Dien ap Volt (0..10V)
+Test_Volt_CH5	REAL	VAR_GLOBAL		D2016	Q68ADV CH5 Dien ap Volt (0..10V)
+Test_Volt_CH6	REAL	VAR_GLOBAL		D2018	Q68ADV CH6 Dien ap Volt (0..10V)
+Test_Volt_CH7	REAL	VAR_GLOBAL		D2020	Q68ADV CH7 Dien ap Volt (0..10V)
+Test_Volt_CH8	REAL	VAR_GLOBAL		D2022	Q68ADV CH8 Dien ap Volt (0..10V)
+Test_Pulse_T	DINT	VAR_GLOBAL		D2050	QD62D1 CH1 Xung hien tai 32-bit (Truc T)
+Test_Pulse_X1	DINT	VAR_GLOBAL		D2052	QD62D1 CH2 Xung hien tai 32-bit (Truc X1)
+Test_Delta_T	DINT	VAR_GLOBAL		D2054	QD62D1 CH1 Delta xung / 100ms
+Test_Delta_X1	DINT	VAR_GLOBAL		D2056	QD62D1 CH2 Delta xung / 100ms
+Test_Last_Pulse_T	DINT	VAR_GLOBAL		D2058	QD62D1 CH1 Xung chu ky truoc
+Test_Last_Pulse_X1	DINT	VAR_GLOBAL		D2060	QD62D1 CH2 Xung chu ky truoc
+Test_Pulse_X2	DINT	VAR_GLOBAL		D2070	QD62D2 CH1 Xung hien tai 32-bit (Truc X2)
+Test_Pulse_Ms	DINT	VAR_GLOBAL		D2072	QD62D2 CH2 Xung hien tai 32-bit (Truc Ms)
+Test_Delta_X2	DINT	VAR_GLOBAL		D2074	QD62D2 CH1 Delta xung / 100ms
+Test_Delta_Ms	DINT	VAR_GLOBAL		D2076	QD62D2 CH2 Delta xung / 100ms
+Test_Last_Pulse_X2	DINT	VAR_GLOBAL		D2078	QD62D2 CH1 Xung chu ky truoc
+Test_Last_Pulse_Ms	DINT	VAR_GLOBAL		D2080	QD62D2 CH2 Xung chu ky truoc
+M1080_Old	Bit	VAR_GLOBAL		M1180	QX40 X40 Bit chot chu ky truoc
+M1081_Old	Bit	VAR_GLOBAL		M1181	QX40 X41 Bit chot chu ky truoc
+M1082_Old	Bit	VAR_GLOBAL		M1182	QX40 X42 Bit chot chu ky truoc
+M1083_Old	Bit	VAR_GLOBAL		M1183	QX40 X43 Bit chot chu ky truoc
+M1084_Old	Bit	VAR_GLOBAL		M1184	QX40 X44 Bit chot chu ky truoc
+M1085_Old	Bit	VAR_GLOBAL		M1185	QX40 X45 Bit chot chu ky truoc
+M1086_Old	Bit	VAR_GLOBAL		M1186	QX40 X46 Bit chot chu ky truoc
+M1087_Old	Bit	VAR_GLOBAL		M1187	QX40 X47 Bit chot chu ky truoc
+M1088_Old	Bit	VAR_GLOBAL		M1188	QX40 X48 Bit chot chu ky truoc
+M1089_Old	Bit	VAR_GLOBAL		M1189	QX40 X49 Bit chot chu ky truoc
+M1090_Old	Bit	VAR_GLOBAL		M1190	QX40 X4A Bit chot chu ky truoc
+M1091_Old	Bit	VAR_GLOBAL		M1191	QX40 X4B Bit chot chu ky truoc
+M1092_Old	Bit	VAR_GLOBAL		M1192	QX40 X4C Bit chot chu ky truoc
+M1093_Old	Bit	VAR_GLOBAL		M1193	QX40 X4D Bit chot chu ky truoc
+M1094_Old	Bit	VAR_GLOBAL		M1194	QX40 X4E Bit chot chu ky truoc
+M1095_Old	Bit	VAR_GLOBAL		M1195	QX40 X4F Bit chot chu ky truoc
