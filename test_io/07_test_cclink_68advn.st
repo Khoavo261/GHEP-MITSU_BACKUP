@@ -13,9 +13,15 @@ M600 := NOT SB0049;                   (* Đèn báo: Mạng CC-Link Master OK *)
 M601 := X101B OR X103B;               (* Đèn báo: Trạm 1 (68ADVN) Ready sẵn sàng *)
 M602 := X101A OR X103A;               (* Đèn báo: Cờ cảnh báo lỗi Trạm 1 *)
 
-(* 2. TỰ ĐỘNG CHỐT CẤU HÌNH BẬT CHUYỂN ĐỔI A/D CẢ 8 KÊNH (BẮT BUỘC VỚI 68ADVN) *)
-(* Mặc định xuất xưởng module 68ADVN khóa A/D cả 8 kênh. Phải ghi 16#00FF vào W200 và kích Y1019 *)
+(* 2. TỰ ĐỘNG CHỐT CẤU HÌNH BẬT CHUYỂN ĐỔI A/D CẢ 8 KÊNH & LỌC TRUNG BÌNH *)
 W200 := 16#00FF; (* Bit 0..7 = 1: Bật chuyển đổi A/D cả 8 kênh CH1..CH8 *)
+W201 := 16#0000; (* Range CH1..CH4: 0..10V *)
+W202 := 16#0000; (* Range CH5..CH8: 0..10V *)
+W203 := 16#2222; (* CH1..CH4: Chế độ 2H = Count Averaging (Lấy trung bình 16 mẫu) *)
+W204 := 16;      (* CH1: 16 mẫu *)
+W205 := 16;      (* CH2: 16 mẫu *)
+W206 := 16;      (* CH3: 16 mẫu *)
+W207 := 16;      (* CH4: 16 mẫu *)
 
 IF M600 AND NOT M609 THEN
     Y1019 := TRUE; (* Kích cờ Initial Data Setting Request *)

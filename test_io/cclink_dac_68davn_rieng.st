@@ -7,8 +7,8 @@
 (* 1. THIẾT LẬP THAM SỐ CẤU HÌNH BAN ĐẦU VÀO THANH GHI BỘ ĐỆM GỬI ĐI RWw *)
 (* CHÚ Ý: Chuẩn Mitsubishi AJ65VBTCU-68DAVN thì bit=0 là ENABLE, bit=1 là PROHIBIT *)
 W208 := 16#0000; (* RWw8: BẬT chuyển đổi D/A cả 8 kênh CH1..CH8 (0 = ENABLE) *)
-W209 := 16#0000; (* RWw9: Dải Range CH1..CH4: 0H (-10V..+10V) *)
-W20A := 16#0000; (* RWwA: Dải Range CH5..CH8: 0H (-10V..+10V) *)
+W209 := 16#1111; (* RWw9: Dải Range CH1..CH4: 1H (0..5V, Nạp 4000 = 5.0V, 2000 = 2.5V) *)
+W20A := 16#1111; (* RWwA: Dải Range CH5..CH8: 1H (0..5V, Nạp 4000 = 5.0V, 2000 = 2.5V) *)
 W20B := 16#0000; (* RWwB: HOLD/CLEAR = 0 (CLEAR về 0V khi PLC STOP) *)
 
 (* 2. BẮT TAY GIẢI PHÓNG YÊU CẦU BAN ĐẦU X1018 *)

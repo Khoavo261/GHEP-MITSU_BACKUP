@@ -70,6 +70,20 @@ DMOV(TRUE, U3\G10, Curr_Pulse_Ms); (* Slot 3 CH2: Trục Ghép Ms *)
 (* 2. ĐỌC VÀ LỌC 8 KÊNH ANALOG INPUT TỪ TRẠM 2 CC-LINK ADC (AJ65VBTCU-68ADVN)   *)
 (* (ĐÃ THAY THẾ MODULE Q68ADV Ở SLOT 0 ĐỂ GIẢI PHÓNG SLOT 0 CHO MỤC ĐÍCH KHÁC)   *)
 (* ============================================================================ *)
+(* 2.1. Cấu hình Lọc Trung Bình Phần Cứng (Hardware Count Averaging 16 mẫu)     *)
+W210 := 16#00FF; (* Bật chuyển đổi A/D cả 8 kênh CH1..CH8 *)
+W211 := 16#0000; (* Range CH1..CH4: 0..10V *)
+W212 := 16#0000; (* Range CH5..CH8: 0..10V *)
+W213 := 16#2222; (* CH1..CH4: Chế độ 2H = Count Averaging (Lấy trung bình số lần) *)
+W214 := 16;      (* CH1 (Thu T): Lấy trung bình 16 mẫu liên tục *)
+W215 := 16;      (* CH2 (Kéo X1): Lấy trung bình 16 mẫu *)
+W216 := 16;      (* CH3 (Thắng M): Lấy trung bình 16 mẫu *)
+W217 := 16;      (* CH4 (Xả U): Lấy trung bình 16 mẫu *)
+
+(* Bắt tay yêu cầu chốt tham số Trạm 2 ADC *)
+Y1038 := X1038;
+IF NOT X1039 THEN Y1039 := FALSE; END_IF;
+
 (* Bật cờ cho phép chuyển đổi A/D cả 8 kênh Trạm 2 *)
 Y1020 := TRUE; Y1021 := TRUE; Y1022 := TRUE; Y1023 := TRUE;
 Y1024 := TRUE; Y1025 := TRUE; Y1026 := TRUE; Y1027 := TRUE;
@@ -94,21 +108,22 @@ D505 := INT_TO_WORD(ADC_CH6_Raw);
 D506 := INT_TO_WORD(ADC_CH7_Raw);
 D507 := INT_TO_WORD(ADC_CH8_Raw);
 
-(* Tính giá trị Lực căng thực tế (kg) sau khi trừ Zero Offset và nhân Gain Calib *)
+(* 2.2. Tính Lực căng thực tế (kg) kết hợp BỘ LỌC SỐ EMA (Exponential Moving Average) *)
+(* Tầng 1: Lọc phần cứng 16 mẫu trong chip 68ADV -> Tầng 2: Lọc số EMA Alpha=0.15 trong PLC *)
 IF Calib_Gain_T <= 0.0 THEN Calib_Gain_T := 1.0; END_IF;
-Weight_Net_T := ((INT_TO_REAL(ADC_CH1_Raw) - Zero_Offset_T) * Calib_Gain_T * 50.0) / 16000.0;
+Weight_Net_T := Weight_Net_T + (0.15 * ((((INT_TO_REAL(ADC_CH1_Raw) - Zero_Offset_T) * Calib_Gain_T * 50.0) / 16000.0) - Weight_Net_T));
 IF Weight_Net_T < 0.0 THEN Weight_Net_T := 0.0; END_IF;
 
 IF Calib_Gain_X1 <= 0.0 THEN Calib_Gain_X1 := 1.0; END_IF;
-Weight_Net_X1 := ((INT_TO_REAL(ADC_CH2_Raw) - Zero_Offset_X1) * Calib_Gain_X1 * 50.0) / 16000.0;
+Weight_Net_X1 := Weight_Net_X1 + (0.15 * ((((INT_TO_REAL(ADC_CH2_Raw) - Zero_Offset_X1) * Calib_Gain_X1 * 50.0) / 16000.0) - Weight_Net_X1));
 IF Weight_Net_X1 < 0.0 THEN Weight_Net_X1 := 0.0; END_IF;
 
 IF Calib_Gain_M <= 0.0 THEN Calib_Gain_M := 1.0; END_IF;
-Weight_Net_M := ((INT_TO_REAL(ADC_CH3_Raw) - Zero_Offset_M) * Calib_Gain_M * 50.0) / 16000.0;
+Weight_Net_M := Weight_Net_M + (0.15 * ((((INT_TO_REAL(ADC_CH3_Raw) - Zero_Offset_M) * Calib_Gain_M * 50.0) / 16000.0) - Weight_Net_M));
 IF Weight_Net_M < 0.0 THEN Weight_Net_M := 0.0; END_IF;
 
 IF Calib_Gain_U <= 0.0 THEN Calib_Gain_U := 1.0; END_IF;
-Weight_Net_U := ((INT_TO_REAL(ADC_CH4_Raw) - Zero_Offset_U) * Calib_Gain_U * 50.0) / 16000.0;
+Weight_Net_U := Weight_Net_U + (0.15 * ((((INT_TO_REAL(ADC_CH4_Raw) - Zero_Offset_U) * Calib_Gain_U * 50.0) / 16000.0) - Weight_Net_U));
 IF Weight_Net_U < 0.0 THEN Weight_Net_U := 0.0; END_IF;
 
 (* Xử lý Nút Set Zero Lực căng *)
@@ -760,8 +775,8 @@ IF Calc_Speed_U  < 0.0 THEN Calc_Speed_U  := 0.0; ELSIF Calc_Speed_U  > 8000.0  
 (* ============================================================================ *)
 (* 17.1. Cấu hình duy trì & Mở khóa cổng xuất áp cả 8 kênh *)
 W208 := 16#0000; (* Enable D/A cả 8 kênh (0 = ENABLE) *)
-W209 := 16#0000; (* Range -10V..+10V (0..4000 = 0.0V..10.0V) *)
-W20A := 16#0000;
+W209 := 16#1111; (* Range 0..5V (0..4000 = 0.0V..5.0V) *)
+W20A := 16#1111; (* Range 0..5V (0..4000 = 0.0V..5.0V) *)
 W20B := 16#0000; (* HOLD/CLEAR: 0 = CLEAR khi PLC STOP *)
 Y1018 := X1018;  (* Bắt tay yêu cầu ban đầu *)
 IF NOT X1019 THEN Y1019 := FALSE; END_IF;

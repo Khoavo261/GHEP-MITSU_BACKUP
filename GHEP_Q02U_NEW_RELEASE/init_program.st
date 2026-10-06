@@ -151,6 +151,13 @@ IF Calib_Gain_U  <= 0.0 THEN Calib_Gain_U  := 1.0; END_IF;
 (* (ĐÃ THAY THẾ MODULE Q68ADV Ở SLOT 0 ĐỂ GIẢI PHÓNG SLOT 0 CHO MỤC ĐÍCH KHÁC)  *)
 (* ---------------------------------------------------------------------------- *)
 W210 := 16#00FF; (* Cho phép chuyển đổi A/D cả 8 kênh CH1..CH8 *)
+W211 := 16#0000; (* Range CH1..CH4: 0..10V *)
+W212 := 16#0000; (* Range CH5..CH8: 0..10V *)
+W213 := 16#2222; (* CH1..CH4: Chế độ 2H = Count Averaging (Lấy trung bình số lần) *)
+W214 := 16;      (* CH1 (Thu T): Lấy trung bình 16 mẫu liên tục *)
+W215 := 16;      (* CH2 (Kéo X1): Lấy trung bình 16 mẫu *)
+W216 := 16;      (* CH3 (Thắng M): Lấy trung bình 16 mẫu *)
+W217 := 16;      (* CH4 (Xả U): Lấy trung bình 16 mẫu *)
 Y1020 := TRUE; Y1021 := TRUE; Y1022 := TRUE; Y1023 := TRUE;
 Y1024 := TRUE; Y1025 := TRUE; Y1026 := TRUE; Y1027 := TRUE;
 
@@ -159,8 +166,8 @@ Y1024 := TRUE; Y1025 := TRUE; Y1026 := TRUE; Y1027 := TRUE;
 (* (ĐÃ THAY THẾ MODULE Q68DAV Ở SLOT 1 ĐỂ GIẢI PHÓNG SLOT 1 CHO MỤC ĐÍCH KHÁC)  *)
 (* ---------------------------------------------------------------------------- *)
 W208 := 16#0000; (* Bật chuyển đổi D/A cả 8 kênh (0 = ENABLE) *)
-W209 := 16#0000; (* Range CH1..CH4: -10V..+10V (0..4000 = 0.0V..10.0V) *)
-W20A := 16#0000; (* Range CH5..CH8: -10V..+10V *)
+W209 := 16#1111; (* Range CH1..CH4: 0..5V (0..4000 = 0.0V..5.0V) *)
+W20A := 16#1111; (* Range CH5..CH8: 0..5V *)
 W20B := 16#0000; (* HOLD/CLEAR: 0 = CLEAR khi PLC STOP *)
 Y1000 := TRUE; Y1001 := TRUE; Y1002 := TRUE; Y1003 := TRUE;
 Y1004 := TRUE; Y1005 := TRUE; Y1006 := TRUE; Y1007 := TRUE;
