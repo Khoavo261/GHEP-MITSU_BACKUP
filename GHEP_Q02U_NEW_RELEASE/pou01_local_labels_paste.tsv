@@ -1,0 +1,104 @@
+VAR	Delta_T	DINT				Chenh lech xung Truc Thu T
+VAR	Delta_X1	DINT				Chenh lech xung Truc Keo X1
+VAR	Delta_X2	DINT				Chenh lech xung Master X2
+VAR	Delta_Ms	DINT				Chenh lech xung Truc Ghep Ms
+VAR	Delta_Pulse_X2	DINT				Chenh lech xung Master X2 tinh chieu dai mang
+VAR	Prev_Pulse_T	DINT				Xung Truc T chu ky truoc
+VAR	Prev_Pulse_X1	DINT				Xung Truc X1 chu ky truoc
+VAR	Prev_Pulse_X2	DINT				Xung Truc X2 chu ky truoc
+VAR	Prev_Pulse_Ms	DINT				Xung Truc Ms chu ky truoc
+VAR	Total_PPR	DINT				Tong xung sau khi nhan 4
+VAR	Raw_Analog_S	REAL				Gia tri tho Analog Speed Servo S
+VAR	Raw_RPM_T	REAL				Toc do RPM tho Truc Thu T
+VAR	Raw_RPM_X1	REAL				Toc do RPM tho Truc Keo X1
+VAR	Raw_RPM_X2	REAL				Toc do RPM tho Truc Master X2
+VAR	Raw_RPM_Ms	REAL				Toc do RPM tho Truc Ghep Ms
+VAR	Raw_RPM_S	REAL				Toc do RPM tho Truc Dau S
+VAR	Buf_RPM_T_1	REAL				Buffer mau 1 loc trung binh trượt T
+VAR	Buf_RPM_T_2	REAL				Buffer mau 2 loc trung binh trượt T
+VAR	Buf_RPM_T_3	REAL				Buffer mau 3 loc trung binh trượt T
+VAR	Buf_RPM_X1_1	REAL				Buffer mau 1 loc trung binh trượt X1
+VAR	Buf_RPM_X1_2	REAL				Buffer mau 2 loc trung binh trượt X1
+VAR	Buf_RPM_X1_3	REAL				Buffer mau 3 loc trung binh trượt X1
+VAR	Buf_RPM_X2_1	REAL				Buffer mau 1 loc trung binh trượt X2
+VAR	Buf_RPM_X2_2	REAL				Buffer mau 2 loc trung binh trượt X2
+VAR	Buf_RPM_X2_3	REAL				Buffer mau 3 loc trung binh trượt X2
+VAR	Buf_RPM_Ms_1	REAL				Buffer mau 1 loc trung binh trượt Ms
+VAR	Buf_RPM_Ms_2	REAL				Buffer mau 2 loc trung binh trượt Ms
+VAR	Buf_RPM_Ms_3	REAL				Buffer mau 3 loc trung binh trượt Ms
+VAR	Buf_RPM_S_1	REAL				Buffer mau 1 loc trung binh trượt S
+VAR	Buf_RPM_S_2	REAL				Buffer mau 2 loc trung binh trượt S
+VAR	Buf_RPM_S_3	REAL				Buffer mau 3 loc trung binh trượt S
+VAR	ADC_CH1_Raw	INT				Gia tri tho ADC CH1 Loadcell T
+VAR	ADC_CH2_Raw	INT				Gia tri tho ADC CH2 Loadcell X1
+VAR	ADC_CH3_Raw	INT				Gia tri tho ADC CH3 Loadcell M
+VAR	ADC_CH4_Raw	INT				Gia tri tho ADC CH4 Loadcell U
+VAR	ADC_CH5_Raw	INT				Gia tri tho ADC CH5 Analog Servo S
+VAR	ADC_CH6_Raw	INT				Gia tri tho ADC CH6 Du phong
+VAR	ADC_CH7_Raw	INT				Gia tri tho ADC CH7 Du phong
+VAR	ADC_CH8_Raw	INT				Gia tri tho ADC CH8 Du phong
+VAR	Cmd_Start	BOOL				Lenh tong hop Start chay may
+VAR	Cmd_Stop	BOOL				Lenh tong hop Stop dung may
+VAR	Cmd_Inc	BOOL				Lenh tong hop Tang toc
+VAR	Cmd_Dec	BOOL				Lenh tong hop Giam toc
+VAR	Cmd_Jog_Crawl	BOOL				Lenh tong hop Bo cham luon mang
+VAR	Trig_Pen1	BOOL				Xung kich toggle Pen 1
+VAR	Prev_Pen1_PB	BOOL				Trang thai Pen 1 chu ky truoc
+VAR	Trig_Pen2	BOOL				Xung kich toggle Pen 2
+VAR	Prev_Pen2_PB	BOOL				Trang thai Pen 2 chu ky truoc
+VAR	Pen1_Next_State	BOOL				Trang thai tiep theo Pen 1
+VAR	Pen2_Next_State	BOOL				Trang thai tiep theo Pen 2
+VAR	Trig_X50	BOOL				Xung kich sensor cuon M
+VAR	Prev_X50	BOOL				Trang thai sensor cuon M chu ky truoc
+VAR	Trig_X51	BOOL				Xung kich sensor cuon U
+VAR	Prev_X51	BOOL				Trang thai sensor cuon U chu ky truoc
+VAR	Trig_PID_10ms	BOOL				Xung kich nhap PID 10ms
+VAR	Prev_SM409	BOOL				Trang thai SM409 chu ky truoc
+VAR	Inc_Hold_Timer	INT				Timer giu nut tang toc
+VAR	Dec_Hold_Timer	INT				Timer giu nut giam toc
+VAR	Dynamic_Accel_Step	REAL				Buoc tang giam toc luy tien
+VAR	Last_Pulse_X2_Len	DINT				Xung X2 chu ky truoc tinh chieu dai
+VAR	Last_Pulse_X2_T	DINT				Xung X2 chu ky truoc tinh duong kinh T
+VAR	Last_Pulse_X2_M	DINT				Xung X2 chu ky truoc tinh duong kinh M
+VAR	Last_Pulse_X2_U	DINT				Xung X2 chu ky truoc tinh duong kinh U
+VAR	Last_Pulse_T	DINT				Xung T chu ky truoc
+VAR	Rev_Count_T	DINT				So vong quay cuon Thu T
+VAR	Rev_Count_M	DINT				So vong quay cuon Thang M
+VAR	Rev_Count_U	DINT				So vong quay cuon Xa U
+VAR	Accum_Length_mm	REAL				Chieu dai tich luy mm
+VAR	Delta_Length_mm	REAL				Chieu dai di duoc trong 1 scan mm
+VAR	Raw_Dia_T_mm	REAL				Duong kinh tho tinh toan T mm
+VAR	Raw_Dia_M_mm	REAL				Duong kinh tho tinh toan M mm
+VAR	Raw_Dia_U_mm	REAL				Duong kinh tho tinh toan U mm
+VAR	Base_Speed_X2	REAL				Toc do co ban theo Master X2 (0..16000)
+VAR	SP_Speed_X2	REAL				Setpoint toc do Master X2
+VAR	SP_Speed_X1	REAL				Setpoint toc do Keo X1
+VAR	SP_Speed_Ms	REAL				Setpoint toc do Ghep Ms
+VAR	SP_Speed_S	REAL				Setpoint toc do Dau S
+VAR	SP_Speed_T	REAL				Setpoint toc do Thu T
+VAR	Feedback_Speed_X2	REAL				Feedback toc do Master X2
+VAR	Feedback_Speed_Ms	REAL				Feedback toc do Ghep Ms
+VAR	Feedback_Speed_S	REAL				Feedback toc do Dau S (tu Analog Out Servo)
+VAR	PID_Out_X2	REAL				Ngo ra PID Master X2
+VAR	PID_Out_Ms	REAL				Ngo ra PID Ghep Ms
+VAR	PID_Out_S	REAL				Ngo ra PID Dau S
+VAR	PID_Out_X1	REAL				Ngo ra PID Keo X1
+VAR	PID_Out_T	REAL				Ngo ra PID Thu T
+VAR	PID_Out_M	REAL				Ngo ra PID Thang M
+VAR	PID_Out_U	REAL				Ngo ra PID Xa U
+VAR	Calc_Speed_X2	REAL				Toc do tong hop xuat DAC Master X2
+VAR	Calc_Speed_X1	REAL				Toc do tong hop xuat DAC Keo X1
+VAR	Calc_Speed_Ms	REAL				Toc do tong hop xuat DAC Ghep Ms
+VAR	Calc_Speed_S	REAL				Toc do tong hop xuat DAC Dau S
+VAR	Calc_Speed_T	REAL				Toc do tong hop xuat DAC Thu T
+VAR	Calc_Speed_U	REAL				Toc do tong hop xuat DAC Xa U
+VAR	Calc_Torque_T	REAL				Torque tong hop xuat DAC Thu T
+VAR	Calc_Torque_M	REAL				Torque tong hop xuat DAC Thang M
+VAR	Base_Torque_M	REAL				Torque co ban 3 pha Thang M (%)
+VAR	pid_X2	FB_TENSION_PID				Instance PID Master X2
+VAR	pid_Ms	FB_TENSION_PID				Instance PID Ghep Ms
+VAR	pid_S	FB_TENSION_PID				Instance PID Dau S
+VAR	pid_X1	FB_TENSION_PID				Instance PID Keo X1
+VAR	pid_T	FB_TENSION_PID				Instance PID Thu T
+VAR	pid_M	FB_TENSION_PID				Instance PID Thang M
+VAR	pid_U	FB_TENSION_PID				Instance PID Xa U

@@ -418,3 +418,236 @@ Y5E := (NOT M296 AND M294) OR (M296 AND (D590 = 14));
 Y5F := (NOT M296 AND M295) OR (M296 AND (D590 = 15));
 
 MOV(TRUE, K4Y50, D592); (* Ghi giá trị 16 ngõ ra Y50..Y5F vào D592 *)
+
+(* ============================================================================ *)
+(* 7. MODULE CC-LINK DAC AJ65VBTCU-68DAVN (TRẠM 1: 32 POINTS X1000..X101F)       *)
+(* ============================================================================ *)
+(* 1. Kiểm tra trạng thái Trạm 1 (DAC) *)
+M640 := TRUE;                         (* Luôn kích hoạt xuất áp *)
+M641 := X101B;                        (* Đèn báo Trạm 1 Remote READY (RX1B) *)
+M642 := X101A;                        (* Đèn báo Lỗi Trạm 1 (RX1A) *)
+
+(* 2. THIẾT LẬP THÔNG SỐ KHỞI TẠO BẮT BUỘC CHO TRẠM 1 DAC (AJ65VBTCU-68DAVN) *)
+W208 := 16#0000; (* RWw8: D/A Conversion Enable cho toàn bộ CH1..CH8 (0 = ENABLE) *)
+W209 := 16#0000; (* RWw9: Output Range CH1..CH4: 0H = -10V..+10V (Nạp 0..4000 = 0.0V..10.0V) *)
+W20A := 16#0000; (* RWwA: Output Range CH5..CH8: 0H = -10V..+10V (Nạp 0..4000 = 0.0V..10.0V) *)
+W20B := 16#0000; (* RWwB: HOLD/CLEAR Setting CH1..CH8: 0 = CLEAR về 0V khi PLC STOP *)
+
+(* 3. NÚT RESET KHỞI TẠO LẠI (M645) HOẶC XÓA LỖI (M648) *)
+IF M645 OR M648 THEN
+    D670  := 0;
+    M647  := FALSE; (* Cho phép chạy lại Handshake *)
+    Y1018 := FALSE;
+    Y1019 := FALSE;
+    Y101A := TRUE;  (* Bật RY1A: Yêu cầu xóa cờ lỗi Trạm 1 *)
+    IF NOT M642 THEN
+        Y101A := FALSE;
+        M645  := FALSE;
+        M648  := FALSE;
+    END_IF;
+ELSE
+    Y101A := FALSE;
+END_IF;
+
+(* 4. CHU TRÌNH HANDSHAKE CHUẨN XÁC THEO MANUAL MITSUBISHI SH-080397 *)
+(* TỰ ĐỘNG PHỤC HỒI: Nếu module đang đòi xử lý ban đầu (X1018 ON) hoặc mất Ready (X101B OFF) *)
+IF X1018 AND (D670 = 100 OR D670 = 0) THEN
+    M647 := FALSE;
+    D670 := 10; (* Chuyển ngay sang xử lý ban đầu theo yêu cầu của module *)
+END_IF;
+
+IF (NOT X101B) AND (D670 = 100) THEN
+    M647 := FALSE;
+    D670 := 0;  (* Chưa có Remote READY thì không được dừng ở bước 100 *)
+END_IF;
+
+CASE D670 OF
+    0: (* Chuẩn bị bắt đầu Handshake *)
+        Y1018 := FALSE;
+        Y1019 := FALSE;
+        D672  := 0;
+        IF X1018 THEN
+            D670 := 10; (* Module đòi xử lý ban đầu -> sang bước 10 *)
+        ELSIF NOT X101B THEN
+            D670 := 20; (* Chưa Ready -> sang bước nạp thông số *)
+        ELSE
+            M647 := TRUE;
+            D670 := 100;
+        END_IF;
+
+    10: (* PHA 1: Initial Data Processing (Bắt tay với X1018) *)
+        (* Khi module phát cờ X1018, CPU ghi RWw8..RWwB và phản hồi Y1018 = TRUE *)
+        Y1018 := TRUE;
+        Y1019 := FALSE;
+        (* Chờ module xác nhận và tắt cờ X1018 *)
+        IF NOT X1018 THEN
+            Y1018 := FALSE; (* Hạ RY18 *)
+            D670  := 20;    (* Sang pha nạp thông số RY19 *)
+        END_IF;
+
+    20: (* PHA 2: Initial Data Setting Request (Bật Y1019 yêu cầu module nạp Range) *)
+        Y1018 := FALSE;
+        Y1019 := TRUE;  (* Bật RY19: Yêu cầu module nạp dữ liệu từ RWw8..RWwB *)
+        (* Chờ module nạp xong và bật cờ X1019 = TRUE *)
+        IF X1019 THEN
+            Y1019 := FALSE; (* Hạ RY19 *)
+            D670  := 30;    (* Chờ cờ Remote READY *)
+        END_IF;
+
+    30: (* PHA 3: Chờ module hoàn tất và bật cờ X101B Remote READY *)
+        Y1018 := FALSE;
+        Y1019 := FALSE;
+        (* Module sẽ tự tắt X1019 và bật X101B = TRUE *)
+        IF (NOT X1019) AND X101B THEN
+            M647  := TRUE;  (* Khởi tạo thành công 100%! *)
+            D670  := 100;   (* Hoàn thành Handshake *)
+        END_IF;
+
+    100: (* TRẠNG THÁI HOẠT ĐỘNG BÌNH THƯỜNG *)
+        Y1018 := FALSE;
+        Y1019 := FALSE;
+        M647  := X101B;     (* Duy trì cờ hoàn tất theo X101B *)
+END_CASE;
+
+(* 5. BẬT TOÀN BỘ CÁC BIT CHO PHÉP XUẤT ÁP CH1..CH8 (Y1000..Y1007) *)
+Y1000 := TRUE; (* CH1 Analog Output Enable *)
+Y1001 := TRUE; (* CH2 Analog Output Enable *)
+Y1002 := TRUE; (* CH3 Analog Output Enable *)
+Y1003 := TRUE; (* CH4 Analog Output Enable *)
+Y1004 := TRUE; (* CH5 Analog Output Enable *)
+Y1005 := TRUE; (* CH6 Analog Output Enable *)
+Y1006 := TRUE; (* CH7 Analog Output Enable *)
+Y1007 := TRUE; (* CH8 Analog Output Enable *)
+
+(* 6. TỰ ĐỘNG NẠP MẶC ĐỊNH LÀ 10.0V (4000) ĐỂ ĐO CỰC ĐẠI THẤY NGAY *)
+IF (D650 = 0) AND NOT M650 AND NOT M654 THEN
+    D650 := 4000; D651 := 4000; D652 := 4000; D653 := 4000;
+    D654 := 4000; D655 := 4000; D656 := 4000; D657 := 4000;
+END_IF;
+
+IF SM402 THEN
+    D660 := 0; D661 := 100; M649 := FALSE;
+END_IF;
+
+(* 7. CÁC NÚT BẤM TEST XUẤT ÁP NHANH TOÀN BỘ 8 KÊNH *)
+IF M650 THEN (* Set 0.0V *)
+    D650 := 0; D651 := 0; D652 := 0; D653 := 0;
+    D654 := 0; D655 := 0; D656 := 0; D657 := 0;
+    M654 := FALSE; M650 := FALSE;
+END_IF;
+IF M651 THEN (* Set 2.5V *)
+    D650 := 1000; D651 := 1000; D652 := 1000; D653 := 1000;
+    D654 := 1000; D655 := 1000; D656 := 1000; D657 := 1000;
+    M654 := FALSE; M651 := FALSE;
+END_IF;
+IF M652 THEN (* Set 5.0V *)
+    D650 := 2000; D651 := 2000; D652 := 2000; D653 := 2000;
+    D654 := 2000; D655 := 2000; D656 := 2000; D657 := 2000;
+    M654 := FALSE; M652 := FALSE;
+END_IF;
+IF M653 THEN (* Set 10.0V *)
+    D650 := 4000; D651 := 4000; D652 := 4000; D653 := 4000;
+    D654 := 4000; D655 := 4000; D656 := 4000; D657 := 4000;
+    M654 := FALSE; M653 := FALSE;
+END_IF;
+
+(* 8. CHẾ ĐỘ AUTO SWEEP QUÉT ĐIỆN ÁP 0V -> 10V -> 0V *)
+IF M654 AND SM412 THEN
+    IF NOT M649 THEN
+        D660 := D660 + D661;
+        IF D660 >= 4000 THEN D660 := 4000; M649 := TRUE; END_IF;
+    ELSE
+        D660 := D660 - D661;
+        IF D660 <= 0 THEN D660 := 0; M649 := FALSE; END_IF;
+    END_IF;
+    D650 := D660; D651 := D660; D652 := D660; D653 := D660;
+    D654 := D660; D655 := D660; D656 := D660; D657 := D660;
+END_IF;
+
+(* 9. XUẤT ÁP VÀO THANH GHI CỦA TRẠM 1 DAC (W200..W207) LIÊN TỤC *)
+W200 := D650; (* CH1 Analog Value (0..4000) *)
+W201 := D651; (* CH2 Analog Value *)
+W202 := D652; (* CH3 Analog Value *)
+W203 := D653; (* CH4 Analog Value *)
+W204 := D654; (* CH5 Analog Value *)
+W205 := D655; (* CH6 Analog Value *)
+W206 := D656; (* CH7 Analog Value *)
+W207 := D657; (* CH8 Analog Value *)
+
+(* 10. GIÁM SÁT MÃ PHẢN HỒI VÀ TOÀN BỘ CÁC BYTE ĐẦU VÀO TỪ TRẠM 1 DAC *)
+D680 := W100;      (* RWr0: Monitor CH1 Check Code *)
+D681 := W108;      (* RWr8: Error Code *)
+D682 := K4X1000;   (* Cờ X1000..X100F *)
+D683 := K4X1010;   (* Cờ X1010..X101F (X101B = Remote READY) *)
+D684 := K4X1020;   (* Cờ X1020..X102F *)
+D685 := K4X1030;   (* Cờ X1030..X103F *)
+D686 := W108;      (* RWr8: Error Code chuẩn theo Manual Table 3.9 *)
+
+
+(* ============================================================================ *)
+(* 8. MODULE CC-LINK ADC AJ65VBTCU-68ADVN (TRẠM 2: 64 POINTS X1040..X107F)       *)
+(* ============================================================================ *)
+(* Kiểm tra trạng thái Trạm 2 (ADC) *)
+M600 := TRUE;                         (* Luôn kích hoạt đọc dữ liệu *)
+M601 := X105B OR X107B;               (* Đèn báo Trạm 2 Ready *)
+M602 := X105A OR X107A;               (* Đèn báo Cờ lỗi Trạm 2 *)
+
+(* BẬT A/D CẢ 8 KÊNH TRÊN TRẠM 2 ADC (W210) *)
+W210 := 16#00FF; (* Bit 0..7 = 1: Bật chuyển đổi A/D cả 8 kênh CH1..CH8 *)
+
+IF NOT M609 THEN
+    Y1059 := TRUE; Y1079 := TRUE; (* Kích cờ Initial Data Setting Request *)
+    IF X1059 OR X1079 THEN        (* Trạm 2 báo đã chốt cấu hình *)
+        Y1059 := FALSE; Y1079 := FALSE;
+        M609  := TRUE;
+    END_IF;
+ELSE
+    Y1059 := FALSE; Y1079 := FALSE;
+END_IF;
+
+(* Xóa lỗi & cho phép chốt lại khi nhấn nút M605 *)
+IF M605 THEN
+    Y105A := TRUE; Y107A := TRUE;
+    M609  := FALSE;
+    IF NOT M602 THEN
+        Y105A := FALSE; Y107A := FALSE;
+        M605  := FALSE;
+    END_IF;
+ELSE
+    Y105A := FALSE; Y107A := FALSE;
+END_IF;
+
+(* Đọc 8 kênh Analog Input từ W110..W117 vào D600..D607 liên tục *)
+D600 := W110; (* CH1 ADC Raw (0..4000) *)
+D601 := W111; (* CH2 ADC Raw *)
+D602 := W112; (* CH3 ADC Raw *)
+D603 := W113; (* CH4 ADC Raw *)
+D604 := W114; (* CH5 ADC Raw *)
+D605 := W115; (* CH6 ADC Raw *)
+D606 := W116; (* CH7 ADC Raw *)
+D607 := W117; (* CH8 ADC Raw *)
+
+(* Quy đổi sang mV (0..10000 mV tương ứng 0.00..10.00V) hiển thị HMI *)
+D610 := (D600 * 10) / 4;
+D611 := (D601 * 10) / 4;
+D612 := (D602 * 10) / 4;
+D613 := (D603 * 10) / 4;
+D614 := (D604 * 10) / 4;
+D615 := (D605 * 10) / 4;
+D616 := (D606 * 10) / 4;
+D617 := (D607 * 10) / 4;
+
+IF D610 < 0 THEN D610 := 0; END_IF;
+IF D611 < 0 THEN D611 := 0; END_IF;
+IF D612 < 0 THEN D612 := 0; END_IF;
+IF D613 < 0 THEN D613 := 0; END_IF;
+IF D614 < 0 THEN D614 := 0; END_IF;
+IF D615 < 0 THEN D615 := 0; END_IF;
+IF D616 < 0 THEN D616 := 0; END_IF;
+IF D617 < 0 THEN D617 := 0; END_IF;
+
+
+
+
+
+

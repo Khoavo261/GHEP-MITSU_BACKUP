@@ -1,0 +1,6 @@
+# STM32 Eclipse metadata
+stm32_vl53l1x/stm32_vll53l1/.metadata/
+stm32_vl53l1x/stm32_vll53l1/.metadata/*
+.metadata/
+*.tmp
+*.bak

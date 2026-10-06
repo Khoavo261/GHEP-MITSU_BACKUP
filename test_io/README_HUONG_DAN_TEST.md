@@ -85,3 +85,30 @@ Thư mục này chứa bộ chương trình kiểm tra chuyên biệt từng mod
   - **Test tay:** Bấm bật từng nút `Y50` đến `Y5F` trên HMI -> nghe tiếng rơ le trong module đóng "tách", đèn LED đỏ trên module tương ứng sáng lên, kiểm tra tiếp điểm thường mở thông mạch.
   - **Test tự động (Auto Chaser):** Bật công tắc `QY10_AutoChaser_En` (`M1116` = ON).
   - Module QY10 sẽ tự động đóng ngắt tuần tự: `Y50 -> Y51 -> Y52 -> ... -> Y5F -> Y50` theo nhịp 0.5 giây. Kỹ thuật viên quan sát hàng đèn LED đỏ chạy đuổi nhau như đèn sao băng để xác nhận 100% các rơ le ngõ ra đều hoạt động trơn tru.
+
+---
+
+### 🔹 Module 7: CC-Link ADC AJ65VBTCU-68ADVN (Trạm 1 - Ver.2 Quadruple)
+* **File test:** [`07_test_cclink_68advn.st`](file:///d:/data-2026/lap_top/GHEP-MITSU_BACKUP/test_io/07_test_cclink_68advn.st)
+* **Dải làm việc:** 0 ~ 10V (tương ứng số 0 ~ 4000).
+* **Vùng nhớ CC-Link:**
+  * Dữ liệu Analog đọc về: `W100..W107` (CH1..CH8).
+  * Cờ Ready trạm 1: `X101B`, Cờ Lỗi: `X101A`, Nút Reset Lỗi: `M605` (`Y101A`).
+* **Cách test:**
+  - Cấp điện áp 0..10V vào chân `V+` và `V-` của từng kênh trên module 68ADVN.
+  - Quan sát thanh ghi thô `D600..D607` và điện áp quy đổi mV trên `D610..D617` (ví dụ đưa vào 5.0V thì `D600` hiển thị 2000, `D610` hiển thị 5000 mV).
+
+---
+
+### 🔹 Module 8: CC-Link DAC AJ65VBTCU-68DAVN (Trạm 2 - Ver.2 Quadruple)
+* **File test:** [`08_test_cclink_68davn.st`](file:///d:/data-2026/lap_top/GHEP-MITSU_BACKUP/test_io/08_test_cclink_68davn.st)
+* **Dải xuất áp:** 0 ~ 10V (tương ứng số 0 ~ 4000).
+* **Vùng nhớ CC-Link:**
+  * Cho phép xuất áp 8 kênh: `Y1040..Y1047` (chương trình tự động duy trì ON khi mạng OK).
+  * Dữ liệu xuất áp: `W210..W217` (nhập từ `D650..D657`).
+  * Cờ Ready trạm 2: `X105B`, Cờ Lỗi: `X105A`, Nút Reset Lỗi: `M645` (`Y105A`).
+* **Cách test:**
+  - Lấy đồng hồ vạn năng VOM cắm vào `V+` và `COM` của kênh cần thử trên module 68DAVN.
+  - **Thử nhanh 4 mức áp:** Kích bit `M650` (0V), `M651` (2.5V), `M652` (5.0V), `M653` (10.0V) -> đồng hồ VOM hiển thị đúng mức áp tương ứng.
+  - **Quét áp tự động Sweep:** Bật bit `M654` = TRUE. Cả 8 kênh ngõ ra sẽ tự động tăng dần đều từ 0V lên 10V rồi giảm dần về 0V liên tục theo chu kỳ mỗi 100ms.
+
