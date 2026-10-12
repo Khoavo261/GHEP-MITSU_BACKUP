@@ -18,6 +18,7 @@ Thư mục phát hành chính thức: **`d:\data-2026\lap_top\GHEP-MITSU_BACKUP\
 | **`device_comments_full.csv`**| CSV Comment | Danh bạ chú thích địa chỉ Bit/Word đầy đủ tiếng Việt cho GX Works2 |
 | **`EBProject1.emtp`** / **`.exob`**| EasyBuilder Pro | Dự án thiết kế giao diện màn hình HMI Weintek MT6103iP / cMT |
 | **`weintek_easybuilder_tags_import.csv`**| CSV Tags | Bảng địa chỉ Tag để Import vào EasyBuilder Pro |
+| **`HUONG_DAN_TEST_ENCODER_TUNG_TRUC.md`**| Markdown | Hướng dẫn chuyên sâu Test Encoder & Pha Z Latch từng trục độc lập |
 
 ---
 

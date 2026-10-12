@@ -1,0 +1,15 @@
+Device	Comment
+T0	Tre cap nguon on dinh 2s
+T1	Tre bao loi chan luu Ballast 5s
+T11	Tre bao loi ap suat gio 5s
+T21	Tre bao loi hanh trinh Shutter 5s
+T31	Tre bao loi Chiller 5s
+T41	Tre bao loi dong chay nuoc 15s
+T90	Xung nhip quet loi 1
+T91	Xung nhip quet loi 2
+T92	Timer hien thi ma loi chan 2s
+T93	Timer hien thi ma loi le 2s
+T101	Tre bat dau kiem tra Chiller 10s
+T120	Tre duy tri quat sau khi bat den 90s
+T130	Tre lam mat sau khi tat den 180s
+T140	Thoi gian on dinh den UV 30s

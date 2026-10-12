@@ -78,6 +78,7 @@ VAR_GLOBAL	Current_Line_MPM	REAL		D10	Toc do thuc te Current (m/p)
 VAR_GLOBAL	Total_Length_Meters	REAL		D12	Tong so met mang da chay (m)
 VAR_GLOBAL	Set_Target_Length	REAL		D14	Cai dat so met dich can dung (m)
 VAR_GLOBAL	Effective_SP_T	REAL		D16	SP Luc cang Thu T sau khi tru con luc (kg)
+VAR_GLOBAL	Command_Speed_MPM	REAL		D18	Lenh toc do sau ramp tang giam (m/p)
 VAR_GLOBAL	RPM_T	REAL		D50	Toc do vong phut Thu T (RPM Float)
 VAR_GLOBAL	RPM_X1	REAL		D52	Toc do vong phut Xa X1 (RPM Float)
 VAR_GLOBAL	RPM_X2	REAL		D54	Toc do vong phut Master X2 (RPM Float)
@@ -136,6 +137,7 @@ VAR_GLOBAL	Max_Torque_U	REAL		D278	Torque ham max Xa U (%)
 VAR_GLOBAL	Init_Holding_Torque_U	REAL		D280	Torque giu ban dau Xa U (%)
 VAR_GLOBAL	Gear_Ratio_M	REAL		D282	Ty so truyen hop so Xa Metalize M (33/32 = 1.03125)
 VAR_GLOBAL	PPR_Encoder	DINT		D290	Do phan giai Encoder (PPR)
+VAR_GLOBAL	Total_PPR	DINT		D292	Tong xung tren vong sau khi nhan 4 (8000)
 VAR_GLOBAL	Zero_Offset_T	REAL		D300	Zero Offset Loadcell T
 VAR_GLOBAL	Zero_Offset_X1	REAL		D302	Zero Offset Loadcell X1
 VAR_GLOBAL	Zero_Offset_M	REAL		D304	Zero Offset Loadcell M
@@ -190,3 +192,45 @@ VAR_GLOBAL	Test_Speed_Ms	REAL		D628	Toc do test manual Ghep Ms (0..16000)
 VAR_GLOBAL	Test_Speed_S	REAL		D630	Toc do test manual Dau S (0..16000)
 VAR_GLOBAL	Test_Torque_M	REAL		D632	Torque test manual Thang M (0..16000)
 VAR_GLOBAL	Test_Speed_U	REAL		D634	Toc do test manual Xa U (0..16000)
+VAR_GLOBAL	Real_PPR_T	DINT		D830	So xung tren vong thuc te Pha Z Truc Thu T
+VAR_GLOBAL	Real_PPR_X1	DINT		D832	So xung tren vong thuc te Pha Z Truc Keo X1
+VAR_GLOBAL	Real_PPR_X2	DINT		D834	So xung tren vong thuc te Pha Z Truc Master X2
+VAR_GLOBAL	Real_PPR_Ms	DINT		D836	So xung tren vong thuc te Pha Z Truc Ghep Ms
+VAR_GLOBAL	Rev_Count_T	DINT		D840	So vong quay da ghi nhan Pha Z Truc Thu T
+VAR_GLOBAL	Rev_Count_X1	DINT		D842	So vong quay da ghi nhan Pha Z Truc Keo X1
+VAR_GLOBAL	Rev_Count_X2	DINT		D844	So vong quay da ghi nhan Pha Z Truc Master X2
+VAR_GLOBAL	Rev_Count_Ms	DINT		D846	So vong quay da ghi nhan Pha Z Truc Ghep Ms
+VAR_GLOBAL	ADC_CH5_Raw	INT		D504	Gia tri tho ADC CH5 Analog Servo S
+VAR_GLOBAL	Rev_Count_M	DINT		D848	So vong quay da ghi nhan cuon Thang M
+VAR_GLOBAL	Rev_Count_U	DINT		D850	So vong quay da ghi nhan cuon Xa U
+VAR_GLOBAL	Curr_Pulse_S	DINT		D528	Gia tri xung dem hien tai Truc Dau S
+VAR_GLOBAL	Real_PPR_S	DINT		D838	So xung tren vong thuc te Truc Dau S
+VAR_GLOBAL	Rev_Count_S	DINT		D852	So vong quay da ghi nhan Truc Dau S
+VAR_GLOBAL	Curr_Pulse_X2_Now	DINT		D530	Xung chot tuc thoi Master X2 khi co ngat
+VAR_GLOBAL	Delta_Pulse_M	DINT		D532	Delta xung quay 1 vong cuon M
+VAR_GLOBAL	Delta_Pulse_U	DINT		D534	Delta xung quay 1 vong cuon U
+VAR_GLOBAL	Last_Pulse_X2_M	DINT		D536	Moc xung X2 lan truoc cua cuon M
+VAR_GLOBAL	Last_Pulse_X2_U	DINT		D538	Moc xung X2 lan truoc cua cuon U
+VAR_GLOBAL	Raw_Dia_M_mm	REAL		D540	Duong kinh tho cuon M (mm)
+VAR_GLOBAL	Raw_Dia_U_mm	REAL		D542	Duong kinh tho cuon U (mm)
+VAR_GLOBAL	Delta_S	DINT		D544	Chenh lech xung Truc Dau S
+VAR_GLOBAL	Prev_Pulse_S	DINT		D546	Xung Truc S chu ky truoc
+VAR_GLOBAL	M_Sensor_Rev_M_Last	BOOL		M70	Co luu trang thai truoc Sensor 1 vong cuon M
+VAR_GLOBAL	M_Sensor_Rev_U_Last	BOOL		M71	Co luu trang thai truoc Sensor 1 vong cuon U
+VAR_GLOBAL	Latched_Pulse_T	DINT		D560	Xung chot Pha Z Truc Thu T
+VAR_GLOBAL	Latched_Pulse_X1	DINT		D562	Xung chot Pha Z Truc Keo X1
+VAR_GLOBAL	Latched_Pulse_X2	DINT		D564	Xung chot Pha Z Truc Master X2
+VAR_GLOBAL	Latched_Pulse_Ms	DINT		D566	Xung chot Pha Z Truc Ghep Ms
+VAR_GLOBAL	Latched_Pulse_S	DINT		D568	Xung chot Pha Z Truc Dau S
+VAR_GLOBAL	Prev_Latch_T	DINT		D570	Moc xung chot Pha Z truoc Truc Thu T
+VAR_GLOBAL	Prev_Latch_X1	DINT		D572	Moc xung chot Pha Z truoc Truc Keo X1
+VAR_GLOBAL	Prev_Latch_X2	DINT		D574	Moc xung chot Pha Z truoc Truc Master X2
+VAR_GLOBAL	Prev_Latch_Ms	DINT		D576	Moc xung chot Pha Z truoc Truc Ghep Ms
+VAR_GLOBAL	Prev_Latch_S	DINT		D578	Moc xung chot Pha Z truoc Truc Dau S
+VAR_GLOBAL	M_Latch_T_Last	BOOL		M72	Co luu trang thai chot Pha Z Truc Thu T
+VAR_GLOBAL	M_Latch_X1_Last	BOOL		M73	Co luu trang thai chot Pha Z Truc Keo X1
+VAR_GLOBAL	M_Latch_X2_Last	BOOL		M74	Co luu trang thai chot Pha Z Truc Master X2
+VAR_GLOBAL	M_Latch_Ms_Last	BOOL		M75	Co luu trang thai chot Pha Z Truc Ghep Ms
+VAR_GLOBAL	M_Latch_S_Last	BOOL		M76	Co luu trang thai chot Pha Z Truc Dau S
+
+

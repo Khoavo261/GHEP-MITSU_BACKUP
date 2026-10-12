@@ -1,0 +1,26 @@
+Loi quat hut thong gio
+Loi sut ap den UV duoi nguong
+Loi qua ap den UV tren nguong
+Nut dung khan cap E-Stop
+Loi mo cua tu dien nguon
+Cam bien cua nap lieu dong
+Tin hieu may chinh dang chay
+
+Cong tac ap suat gio phong
+Limit switch vung chieu UV
+Cam bien Shutter mo
+Cam bien Shutter dong
+Cam bien vi tri buong chieu 1
+Cam bien vi tri buong chieu 2
+Cam bien dong chay nuoc
+
+Nut nhan bat den UV
+Nut nhan tat den UV
+Nut tat coi canh bao Buzzer
+Nut Reset loi he thong
+Cong tac chon cong suat 160W
+Tin hieu Shutter dong tre
+Tin hieu khoa Shutter dong tre
+Cong tac chon cong suat 80W
+Tin hieu Chiller dang chay
+Tin hieu bao loi Chiller

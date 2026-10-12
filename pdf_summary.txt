@@ -1,0 +1,541 @@
+=== PAGE 11 ===
+ 
+ 
+ 
+A - 9                                                                                                                                                  A - 9 
+ 
+ABOUT THE GENERIC TERMS AND ABBREVIATIONS 
+Unless otherwise specified, the following generic terms and abbreviations are used in this manual to 
+describe Type AJ65VBTCU-68DAVN analog-digital converter module. 
+ 
+Generic Term/Abbreviation Description 
+GX Developer Product name of the software package for the MELSEC programmable Controllers. GX Works2 
+ACPU 
+A generic term for A0J2HCPU, A1SCPU, A1SCPUC24-R2, A1SHCPU, A1SJCPU, 
+A1SJCPU-S3, A1SJHCPU, A1NCPU, A2NCPU, A2NCPU-S1, A3NCPU, A2SCPU, 
+A2SHCPU, A2ACPU, A2ACPU-S1, A3ACPU, A2UCPU, A2UCPU-S1, A2USCPU, 
+A2USCHPU-S1, A2USHCPU-S1, A3UCPU and A4UCPU 
+QnACPU A generic term for Q2ACPU, Q2ACPU-S1, Q2ASCPU, Q2ASCPU-S1, Q2ASHCPU, 
+Q2ASHCPU-S1, Q3ACPU, Q4ACPU and Q4ARCPU 
+QCPU (A mode) A generic term for Q02CPU-A, Q02HCPU-A and Q06HCPU-A 
+QCPU (Q mode) 
+A generic term for Q00JCPU, Q00CPU, Q01CPU, Q02CPU, Q02HCPU, Q06HCPU, 
+Q12HCPU, Q25HCPU, Q02PHCPU, Q06PHCPU, Q12PHCPU, Q25PHCPU, 
+Q12PRHCPU, Q25PRHCPU, Q00UJCPU, Q00UCPU, Q01UCPU, Q02UCPU, 
+Q03UDCPU, Q04UDHCPU, Q06UDHCPU, Q10UDHCPU, Q13UDHCPU, 
+Q20UDHCPU, Q26UDHCPU, Q03UDECPU, Q04UDEHCPU, Q06UDEHCPU, 
+Q10UDEHCPU, Q13UDEHCPU, Q20UDEHCPU, Q26UDEHCPU, Q50UDEHCPU and 
+Q100UDEHCPU. 
+LCPU A generic term for L02CPU, L26CPU-BT 
+Master station Station that controls the data link system. 
+One master station is required for each system. 
+Local station Station having a programmable controller CPU and the ability to communicate with the 
+master and other local stations. 
+Remote I/O station Remote station that handles bit unit data only. (Performs input and output with external 
+devices.) (AJ65BTB1-16D, AJ65SBTB1-16D) 
+Remote device station Remote station that handles bit unit and word unit data only. (Performs input and output 
+with external devices, and analog data exchange.) 
+Remote station A generic term for remote I/O station and remote device station. 
+(Controlled by the master station) 
+Intelligent device station Station that can perform transient transmission, such as the AJ65BT-R2N (including 
+local stations). 
+Master module A generic term for modules that can be used as the master station. 
+SB 
+Link special relay (for CC-Link) 
+Bit unit information that indicates the module operating status and data link status of the 
+master station/local station. (Expressed as SB for convenience) 
+SW 
+Link special register (for CC-Link) 
+16 bit unit information that indicates the module operating status and data link status of 
+the master station/local station. (Expressed as SW for convenience) 
+RX 
+Remote input (for CC-Link) 
+Information entered in bit units from the remote station to the master station. 
+(Expressed as RX for convenience) 
+RY 
+Remote output (for CC-Link) 
+Information output in bit units from the master station to the remote station. (Expressed 
+as RY for convenience) 
+RWw 
+Remote register (Write area for CC-Link) 
+Information output in 16-bit units from the master station to the remote device station. 
+(Expressed as RWw for convenience) 
+RWr 
+Remote register (Read area for CC-Link) 
+Information entered in 16-bit units from the remote device station to the master station. 
+(Expressed as RWr for convenience) 
+
+=== PAGE 12 ===
+ 
+ 
+ 
+A - 10                                                                                                                                                  A - 10 
+ 
+PRODUCT COMPONENTS 
+This product consists of the following. 
+ 
+Product Name Quantity 
+Type AJ65VBTCU-68DAVN digital-analog converter module 1 
+Type AJ65VBTCU-68DAVN digital-analog converter module user's manual (hardware) 1 
+ 
+
+=== PAGE 13 ===
+ 
+ 
+ 
+A - 11                                                                                                                                                  A - 11 
+ 
+MEMO 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+=== PAGE 36 ===
+ 
+ 
+ 
+3 - 14                                                                                                                                                       3 - 14 
+MELSEC-A 
+3   SPECIFICATION 
+ 
+3.6 Remote Register 
+The AJ65VBTCU-68DAVN has a remote register for data communication with the 
+master module. The remote register allocation and data structures are described below. 
+ 
+3.6.1 Allocation of the remote register 
+The number of data of the AJ65VBTCU-68DAVN differs between ver. 1 remote device 
+station (ver. 1 compatible device station) setting and ver. 2 remote device station (ver. 
+2 compatible device station) setting. 
+ 
+(1)   Remote register assignment for ver. 1 remote device station (ver. 1 
+compatible device station) setting 
+Table 3.8 indicates the remote register assignment for ver. 1 remote device 
+station (ver. 1 compatible device station) setting. 
+ 
+Table 3.8 Remote Register Assignment for Ver. 1 Remote Device Station  
+(Ver. 1 Compatible Device Station) Setting 
+Transfer Direction Address Description Default Value Refer to 
+Master  Remote 
+RWwm+0H CH. 1 digital value setting 0 
+Section 3.6.2 
+RWwm+1H CH. 2 digital value setting 0 
+RWwm+2H CH. 3 digital value setting 0 
+RWwm+3H CH. 4 digital value setting 0 
+RWwm+4H CH. 5 digital value setting 0 
+RWwm+5H CH. 6 digital value setting 0 
+RWwm+6H CH. 7 digital value setting 0 
+RWwm+7H CH. 8 digital value setting 0 
+RWwm+8H Analo g output enable/disable setting 0 Section 3.6.3 
+RWwm+9H CH. 1 to 4 output ran ge setting 0 Section 3.6.4 RWwm+AH CH. 5 to 8 output ran ge setting 0 
+RWwm+BH HOLD/CLEAR setting 0 Section 3.6.5 
+Remote  Master 
+RWrn+0H CH. 1 check code 0 
+Section 3.6.5 
+RWrn+1H CH. 2 check code 0 
+RWrn+2H CH. 3 check code 0 
+RWrn+3H CH. 4 check code 0 
+RWrn+4H CH. 5 check code 0 
+RWrn+5H CH. 6 check code 0 
+RWrn+6H CH. 7 check code 0 
+RWrn+7H CH. 8 check code 0 
+RWrn+8H Error code 0 Section 3.6.7 
+RWrn+9H 
+to 
+RWrn+BH 
+Reserved 0  
+ 
+m, n: The address set for the master station in the station number setting. 
+ 
+POINT  
+Do not execute read or write to the remote register that is not allowed to use. When 
+a read or write is executed, the functions of the AJ65VBTCU-68DAVN is not 
+guaranteed.  
+
+=== PAGE 37 ===
+ 
+ 
+ 
+3 - 15                                                                                                                                                       3 - 15 
+MELSEC-A 
+3   SPECIFICATION 
+ 
+(2)   Remote register assignment for ver. 2 remote device station (ver. 2 
+compatible device station) setting 
+Table 3.9 indicates the remote register assignment for ver. 2 remote device 
+station (ver. 2 compatible device station) setting. 
+ 
+Table 3.9 Remote Register Assignment for Ver. 2 Remote Device Station  
+(Ver. 2 Compatible Device Station) Setting 
+Transfer Direction Address Description Default Value Refer to 
+Master  Remote 
+RWwm+0H CH. 1 digital value setting 0 
+Section 3.6.2 
+RWwm+1H CH. 2 digital value setting 0 
+RWwm+2H CH. 3 digital value setting 0 
+RWwm+3H CH. 4 digital value setting 0 
+RWwm+4H CH. 5 digital value setting 0 
+RWwm+5H CH. 6 digital value setting 0 
+RWwm+6H CH. 7 digital value setting 0 
+RWwm+7H CH. 8 digital value setting 0 
+RWwm+8H Analo g output enable/disable setting 0 Section 3.6.3 
+RWwm+9H CH. 1 to 4 output ran ge setting 0 Section 3.6.4 RWwm+AH CH. 5 to 8 output ran ge setting 0 
+RWwm+BH HOLD/CLEAR setting 0 Section 3.6.5 
+RWwm+CH 
+to 
+RWwm+FH 
+Reserved 0  
+Remote  Master 
+RWrn+0H CH. 1 check code 0 
+Section 3.6.5 
+RWrn+1H CH. 2 check code 0 
+RWrn+2H CH. 3 check code 0 
+RWrn+3H CH. 4 check code 0 
+RWrn+4H CH. 5 check code 0 
+RWrn+5H CH. 6 check code 0 
+RWrn+6H CH. 7 check code 0 
+RWrn+7H CH. 8 check code 0 
+RWrn+8H Error code 0 Section 3.6.7 
+RWrn+9H 
+to 
+RWrn+FH 
+Reserved 0  
+ 
+m, n: The address set for the master station in the station number setting. 
+ 
+POINT  
+Do not execute read or write to the remote register that is not allowed to use. When 
+a read or write is executed, the functions of the AJ65VBTCU-68DAVN is not 
+guaranteed.  
+
+=== PAGE 38 ===
+ 
+ 
+ 
+3 - 16                                                                                                                                                       3 - 16 
+MELSEC-A 
+3   SPECIFICATION 
+ 
+3.6.2 CH.  digital value setting (Addresses RWwm+0H to RWwm+7H) 
+(1)   This area is used to write the digital value for the D/A conversion from the 
+programmable controller CPU. 
+ 
+(2)   The digital value at all channels become “0” in the following conditions: 
+(a)   After the power is turned on, when the remote READY (RX(n+1)B) is turned 
+on. 
+ 
+(3)   The digital value that may be set is a 16-bit signed binary within the setting range 
+which matches the output range setting. 
+If a value beyond the range of the digital value resolution is set, the data in Table 
+3.8 is applied for the D/A conversion. 
+In addition, the checking code is stored in the check code storage area 
+(addresses RWrn+0H to RWrn+7H).  
+Table 3.8 Available setting range of the digital value 
+Output Range Available setting range 
+Digital value for the D/A 
+conversion when the value 
+beyond the range is set 
+-10 to 10V 
+User range setting 1 
+-4096 to 4095 
+(Practical scope: -4000 to 4000) 
+4096 or more: 4095 
+-4097 or less: -4096 
+0 to 5V 
+1 to 5V 
+User range setting 2 
+-96 to 4095 
+(Practical scope: 0 to 4000) 
+4096 or more: 4095 
+-97 or less: -96 
+ 
+3.6.3 Analog output enable/disable setting (Address RWwm+8H) 
+(1)   Set whether D/A conversion is enabled or disabled per channel. 
+ 
+(2)   Operation is performed according to the setting made for the leading edges of 
+initial data setting request flag (RY(n+9)). 
+ 
+(3)   The default setting is conversion enable for all channels. 
+ 
+ 
+ 
+
+=== PAGE 39 ===
+ 
+ 
+ 
+3 - 17                                                                                                                                                       3 - 17 
+MELSEC-A 
+3   SPECIFICATION 
+ 
+3.6.4 CH.  output range setting (Address RWwm+9H, RWwm+AH) 
+(1)   Set the analog output range per channel. 
+ 
+(2)   Operation is performed according to the setting made for the leading edges of 
+initial data setting request flag (RY(n+9)). 
+ 
+(3)   The default settings are -10 to 10V for all channels. 
+ 
+b15 b12 b11 b8 b7 b4 b3 b0to
+CH.4
+to
+CH.3
+to
+CH.2
+to
+CH.1RWwm+9
+b15 b12 b11 b8 b7 b4 b3 b0to
+CH.8
+to
+CH.7
+to
+CH.6
+to
+CH.5RWwm+A  
+ 
+Output range Seting value 
+-10 to 10V 0H 
+0 to 5V 1H 
+1 to 5V 2H 
+User range setting 1 (-10 to 10V) 3H 
+User range setting 2 (0 to 5V) 4H 
+ 
+ 
+POINT  
+If the set value is outside the setting range, error "20 " occurs, the "RUN" LED 
+flickers at intervals of 0.1s, and all channels do not make D/A conversion. 
+  indicates the channel No. where the error occurred. 
+ 
+ 
+3.6.5 HOLD/CLEAR setting (Address RWwm+BH) 
+(1)   Set HOLD/CLEAR to each channel. 
+ 
+(2)   Operation is performed according to the setting made for the leading edges of 
+initial data setting request flag (RY(n+9)). 
+ 
+(3)   The default settings are CLERA for all channels. 
+ 
+b15 b14 b13 b12 b11 b10 b9 b8 b7 b6 b5 b4 b3 b2 b1
+CH.2 CH.1
+b0
+Ignored 0: CLEAR
+1: HOLD
+CH.4 CH.3CH.6 CH.5CH.8 CH.7
+ 
+ 
+
+=== PAGE 69 ===
+ 
+ 
+ 
+5 - 3                                                                                                                                                       5 - 3 
+MELSEC-A
+5 PROGRAMMING 
+ 
+POINT  
+Some CPU modules may not accept the devices used in the program example in 
+this chapter. For the setting ranges of the devices, refer to the user's manual of the 
+CPU module used. For the A1SCPU, for example, devices X100, Y100 and later 
+are unusable. Use such devices as B and M. 
+ 
+(3) Initial settings  
+Setting Item Settings 
+Analog output enable/disable 
+setting (RWw2) Channels 1, 2: enable 
+CH. 1 to CH. 4 output range 
+setting (RWw9) 
+Channel 1: 0 to 5V 
+Channel 2: user range setting 1 
+HOLD/CLEAR setting (RWwB) Channels 1, 2: CLEAR 
+ 
+(4) Other settings  
+Setting Item Settings 
+CH.1 digital value (RWw0) 500 
+CH.2 digital value (RWw1) 1000 
+CH.1 analog output 
+enable/disable frag (RY00) Enable 
+CH.2 analog output 
+enable/disable frag (RY01) Enable 
+ 
+ 
+
+=== PAGE 70 ===
+ 
+ 
+ 
+5 - 4                                                                                                                                                       5 - 4 
+MELSEC-A
+5 PROGRAMMING 
+ 
+5.2.2 Program Example for Use of the QCPU (Q mode) 
+The program examples in this section are created under the following conditions. 
+GX Developer is used to set the network and automatic refresh parameters. 
+Using the remote device station initialization procedure registration function facilitates 
+initial settings. 
+ 
+(1) Parameter setting 
+(a) Network parameter setting 
+ 
+ 
+ 
+ 
+ 
+(b) Automatic refresh parameter setting 
+ 
+ 
+
+=== PAGE 71 ===
+ 
+ 
+ 
+5 - 5                                                                                                                                                       5 - 5 
+MELSEC-A
+5 PROGRAMMING 
+ 
+(2) Initial setting by remote device station initialization procedure 
+registration 
+(a)   Setting the target station number 
+Set the station number to which initial setting will be made. 
+Set the target station number to "1".  
+  
+(b)   Setting the procedure registration 
+When the initial data processing request flag (RX18) turns on and the 
+remote device station initialization procedure registration (SB0D) is set, the 
+following data are registered to the AJ65VBTCU-68DAVN.  
+Procedure Execution Condition Execution 
+Analog output enable/disable setting: channenls 1, 2: enable (RWw8 :00FCH) 
+CH.1 to CH.4 output range setting : channel 1: 0 to 5V 
+ : channel 2: user range setting 1 
+(RWw9: 0031H) 
+HOLD/CLEAR setting: channenls 1, 2: CLEAR (RWwB: 0 H) 
+Initial data processing completion flag (RY18) is turned on. 
+Initial data processing request flag (RX18) turns on 
+Initial data setting request flag (RY19) is turned on. 
+Initial data processing request flag (RX18) turns off Initial data processing completion flag (RY18) is turned off. 
+Initial data setting completion flag (RX19) turns on In itial data setting request flag (RY19) is turned off. 
+ 
+(c)   Setting results 
+The setting results are shown below.  
+ 
+ 
+POINT  
+(1)  If the remote device station initialization procedure registration directive 
+(SB000D) is turned off after the initial processing, all RY signals that were 
+turned on within the initial procedure registration turn off. Hence, turn on the 
+"CH.  analog output enable/disable flag (RYn0 to RYn7)" in the sequence 
+program. 
+(2)  When the initial setting (analog output enable/disable setting (RWwm+8), CH. 
+ output range setting (RWwm+9, RWwm+A) or HOLD/CLEAR setting 
+(RWwm+B) has been changed, the remote device station initialization 
+procedure registration function cannot be used. 
+Change the initial setting in the sequence program. 
+(3)  For the case where the remote device station initialization procedure 
+registration function is not used but a sequence program is used to make 
+setting, refer to the user's manual of the used master module.   
+
+=== PAGE 72 ===
+ 
+ 
+ 
+5 - 6                                                                                                                                                       5 - 6 
+MELSEC-A
+5 PROGRAMMING 
+ 
+(3) Program example  
+Error reset
+AJ65VBTCU-68DAVN data 
+link normal
+AJ65VBTCU-68DAVN data 
+link abnormal
+Turns off initialization 
+procedure registration 
+directive.
+Turns on initialization 
+procedure registration 
+directive.
+Analog output enable/
+disable setting (RWw8)
+CH.1 to CH.4 output 
+range setting (RWw9)
+Turns on initial data setting
+request flag (RY19).
+Turns off initial data setting
+request flag (RY19).
+CH.1 digital value 
+setting (RWw0) : 500
+CH.2 digital value 
+setting (RWw1) : 1000
+Turns on CH.1 analog 
+output enable/disable 
+flag (RY00).
+Turns on CH.2 analog 
+output enable/disable 
+flag (RY01).
+Turns on error reset
+request flag (RY1A).
+Turns off error reset
+request flag (RY1A).
+Analog output
+enable
+Digital value
+setting 
+Reads data link status.
+Read CH.    check code
+(RWr0, RWr1).
+Reads error code 
+(RWr8).
+*1, *2
+1)
+*3
+2)
+Initialization procedure registration
+Initial setting change
+Changing of initial settings
+Checking of AJ65VBTCU-68DAVN status
+Processing at error occurrence
+Analog output enable/disable specification
+Setting of digital values
+ 
+
+=== PAGE 73 ===
+ 
+ 
+ 
+5 - 7                                                                                                                                                       5 - 7 
+MELSEC-A
+5 PROGRAMMING 
+*1 When making remote device station initialization procedure registration to multiple 
+stations, correct the program within the dotted line 1) as shown below. 
+ 
+[System configuration]  
+ 
+ 
+[Corrected program]  
+ 
+ 
+• RX(m+1)B and RX(n+1)B are remote READY. 
+• RX(m+1)8 and RX(n+1)8 are initial data processing request flags. 
+ 
+Insert the remote READY and initial data processing request flags for all the 
+stations, to which the remote device station initialization procedure registration 
+has been made, into the program. 
+

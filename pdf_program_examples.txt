@@ -1,0 +1,297 @@
+=== PAGE 74 ===
+ 
+ 
+ 
+5 - 8                                                                                                                                                       5 - 8 
+MELSEC-A
+5 PROGRAMMING 
+[Usage in combination with other remote device stations] 
+(1) Depending on the remote device stations to be used, the program enclosed 
+by the dotted line 1) has two programming patterns as shown in the above 
+and the below figures. (To check which pattern can be used, refer to the 
+manual for the remote device to be used.) 
+ 
+[System configuration]  
+ 
+ 
+[Corrected program]  
+ 
+• RX(p+1)9 and RX(q+1)9 are initial data setting completion flags. 
+• RX(p+1)8 and RX(q+1)8 are initial data processing request flags. 
+
+=== PAGE 75 ===
+ 
+ 
+ 
+5 - 9                                                                                                                                                       5 - 9 
+MELSEC-A
+5 PROGRAMMING 
+(2) When using the program enclosed by the dotted line 1) in combination with 
+other remote device stations, correct the program as shown below. 
+ 
+[System configuration]  
+  
+[Corrected program]  
+  
+Note that the master module can register the initialization procedure of only 
+the specified station out of the multiple remote device stations. 
+The master module supporting this function is the QJ61BT11N which serial 
+No’s first 5 digits is 08032 or later. 
+For details, refer to the CC-Link System Master/Local Module User's 
+Manual.  
+*2 Before the communication program is executed with remote device stations, the 
+program enclosed by the dotted line 1) enables the initial setting by using the 
+SB0D (remote device station initialization procedure registration instruction) and 
+SB5F (completion status of remote device station initialization procedure). 
+Initialization processing can’t be made only by the parameter setting of GX 
+Developer.  
+*3 The program enclosed by the dotted line 2) is necessary only when the initial 
+settings are changed. 
+
+=== PAGE 76 ===
+ 
+ 
+ 
+5 - 10                                                                                                                                                       5 - 10 
+MELSEC-A
+5 PROGRAMMING 
+ 
+5.2.3 Program Example for Use of the QnACPU 
+GX Developer is used to set the network and automatic refresh parameters. 
+ 
+(1) Parameter setting 
+(a) Network parameter setting 
+ 
+ 
+ 
+ 
+ 
+(b) Automatic refresh parameter setting 
+ 
+ 
+ 
+ 
+POINT  
+When the QnACPU is used, using "Y" as the remote output (RY) refresh device of 
+the automatic refresh parameter may not hold the analog value even for the HOLD 
+setting. 
+For the HOLD setting, use "M" or "B" as the remote output (RY) refresh device. 
+ 
+
+=== PAGE 77 ===
+ 
+ 
+ 
+5 - 11                                                                                                                                                       5 - 11 
+MELSEC-A
+5 PROGRAMMING 
+ 
+(2) Program example 
+ 
+ 
+ 
+
+=== PAGE 78 ===
+ 
+ 
+ 
+5 - 12                                                                                                                                                       5 - 12 
+MELSEC-A
+5 PROGRAMMING 
+ 
+5.2.4 Program Example for Use of the ACPU/QCPU (A mode) (dedicated instructions) 
+A sequence program is used to set the network and automatic refresh parameters. 
+ 
+(1) Program example 
+ 
+Setting of network parameters using RLPA dedicated instruction
+Setting of automatic refresh parameters using RRPA dedicated instruction
+Synchronization mode 
+invalid
+Number of connected 
+modules:1
+AJ65VBTCU-68DAVN 
+station information (remote 
+device station, 3 station 
+occupied, station No. 1)
+Dedicated instruction 
+(RLPA)
+Starting I/O number of 
+master module
+Parameter storage starting 
+device 
+Device which turns on 
+1 scan at completion 
+Reads parameter status 
+at abnormal completion.
+Sets RX starting number.
+Sets "X".
+Sets X400.
+Sets RY starting number.
+Sets 32 points.
+Sets "Y".
+Sets Y400.
+Sets 32 points.
+Sets RW starting number.
+Sets "D".
+Sets D200.
+Sets 265 points
+ 
+ 
+
+=== PAGE 79 ===
+ 
+ 
+ 
+5 - 13                                                                                                                                                       5 - 13 
+MELSEC-A
+5 PROGRAMMING 
+ 
+  
+
+=== PAGE 80 ===
+ 
+ 
+ 
+5 - 14                                                                                                                                                       5 - 14 
+MELSEC-A
+5 PROGRAMMING 
+ 
+Error reset
+Processing at error occurrence
+Analog output enable/disable specification
+Setting of digital values
+Digital value
+setting 
+Analog output
+enable
+Turns on error reset
+request flag (RY1A).
+Turns off error reset
+request flag (RY1A).
+CH.1 digital value 
+setting (RWw0) : 500
+CH.2 digital value 
+setting (RWw1) : 1000
+Turns on CH.1 analog 
+output enable/disable 
+flag (RY00).
+Turns on CH.2 analog 
+output enable/disable 
+flag (RY01).
+Read CH.    check code
+(RWr0, RWr1).
+Reads error code (RWr8).
+ 
+ 
+
+=== PAGE 81 ===
+ 
+ 
+ 
+5 - 15                                                                                                                                                       5 - 15 
+MELSEC-A
+5 PROGRAMMING 
+ 
+5.2.5 Program Example for Use of the ACPU/QCPU (A mode) (FROM/TO instructions) 
+A sequence program is used to set the network parameters. 
+ 
+(1) Program example 
+ 
+ 
+ 
+
+=== PAGE 82 ===
+ 
+ 
+ 
+5 - 16                                                                                                                                                       5 - 16 
+MELSEC-A
+5 PROGRAMMING 
+ 
+  
+
+=== PAGE 83 ===
+ 
+ 
+ 
+5 - 17                                                                                                                                                       5 - 17 
+MELSEC-A
+5 PROGRAMMING 
+ 
+5.3 When Remote Net Ver. 2 Mode Is Used 
+5.3.1 Conditions of program examples 
+The program examples in this section are created under the following conditions. 
+ 
+(1) System configuration 
+ 
+ 
+ 
+(2) Relationships between programmable controller CPU, 
+AJ65VBTCU-68ADV and AJ65VBTCU-68DAVN 
+ 
+[Remote input (RX), remote output (RY)]  
+ 
+
+=== PAGE 84 ===
+ 
+ 
+ 
+5 - 18                                                                                                                                                       5 - 18 
+MELSEC-A
+5 PROGRAMMING 
+ 
+[Remote registers (RWw, RWr)]  
+ 
+
+=== PAGE 85 ===
+ 
+ 
+ 
+5 - 19                                                                                                                                                       5 - 19 
+MELSEC-A
+5 PROGRAMMING 
+ 
+(3) Initial settings  
+Remote Device Station Setting Item Settings 
+A/D conversion enable/prohibit 
+specification (RWw0) 
+A/D conversion enable channel: 
+Channel 1, 2 
+CH. 1 to CH. 4 input range 
+setting (RWw1) 
+Channel 1: 0 to 5V 
+Channel 2: User range setting 1 
+Average processing specification 
+(RWw3) 
+Channel 1: Sampling processing 
+Channel 2: Average processing, 
+number of times averaging 
+AJ65VBTCU-68ADV 
+CH. 2 average time, number of 
+times setting (RWw5) 
+Number of average processing 
+times of channel 2: 16 times 
+Analog output enable/disable 
+setting (RWw8) Channels 1, 2: enable 
+CH. 1 to CH. 4 output range 
+setting (RWw9) 
+Channel 1: 0 to 5V 
+Channel 2: user range setting 1 
+AJ65VBTCU-68DAVN 
+HOLD/CLEAR setting (RWwB) Channels 1, 2: CLEAR 
+ 
+(4) Other settings  
+Remote Device Station Setting Item Settings 
+CH. 1 digital value (RWw0) 500 
+CH. 2 digital value (RWw1) 1000 
+CH. 1 analog output 
+enable/prohibit flag (RY00) Enable AJ65VBTCU-68DAVN 
+CH. 2 analog output 
+enable/prohibit flag (RY01) Enable 
+ 
+POINT  
+When using the AJ65VBTCU-68DAVN as the ver. 2 remote device station in the 
+normal mode, set the mode select switch to "3". 
+ 
+

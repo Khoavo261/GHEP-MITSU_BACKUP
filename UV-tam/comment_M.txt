@@ -1,0 +1,33 @@
+Device	Comment
+M0	Co loi chan luu Ballast
+M10	Co loi quat lam mat hut gio
+M20	Co loi ap suat gio
+M30	Co loi interlock buong UV
+M40	Co loi Shutter
+M51	Co loi Chiller giai nhiet
+M60	Co loi dong chay nuoc
+M120	Co loi dung khan cap E-Stop
+M130	Co loi mo cua tu nguon
+M150	Tin hieu dich ma loi nhom 1
+M151	Tin hieu dich ma loi nhom 2
+M161	Bit quet ma loi 1
+M162	Bit quet ma loi 2 (Ballast)
+M163	Bit quet ma loi 3 (Quat)
+M164	Bit quet ma loi 4 (Ap gio)
+M165	Bit quet ma loi 5 (Buong UV)
+M166	Bit quet ma loi 6 (Shutter)
+M167	Bit quet ma loi 7 (Dong chay)
+M168	Bit quet ma loi 8 (E-Stop)
+M169	Bit quet ma loi 9 (Cua tu)
+M170	Bit quet ma loi 10 (Chiller)
+M171	Bit quet ma loi 11
+M172	Bit quet ma loi 12 (Cuoi vong)
+M180	Co bao loi tong hop he thong
+M189	Cuon Master Control N0
+M194	Co nho tat coi bao dong
+M520	Co trang thai den UV dang bat
+M540	Den UV da sang on dinh
+M560	Xung suon xuong khi tat den
+M561	Che do lam mat sau khi tat den
+M570	Dieu kien cho phep mo Shutter
+M571	Tin hieu cho phep nap lieu

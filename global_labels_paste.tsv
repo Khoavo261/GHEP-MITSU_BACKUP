@@ -190,3 +190,12 @@ VAR_GLOBAL	Test_Speed_Ms	REAL		D628	Toc do test manual Ghep Ms (0..16000)
 VAR_GLOBAL	Test_Speed_S	REAL		D630	Toc do test manual Dau S (0..16000)
 VAR_GLOBAL	Test_Torque_M	REAL		D632	Torque test manual Thang M (0..16000)
 VAR_GLOBAL	Test_Speed_U	REAL		D634	Toc do test manual Xa U (0..16000)
+VAR_GLOBAL	Real_PPR_T	DINT		D830	So xung tren vong thuc te Pha Z Truc Thu T
+VAR_GLOBAL	Real_PPR_X1	DINT		D832	So xung tren vong thuc te Pha Z Truc Keo X1
+VAR_GLOBAL	Real_PPR_X2	DINT		D834	So xung tren vong thuc te Pha Z Truc Master X2
+VAR_GLOBAL	Real_PPR_Ms	DINT		D836	So xung tren vong thuc te Pha Z Truc Ghep Ms
+VAR_GLOBAL	Rev_Count_T	DINT		D840	So vong quay da ghi nhan Pha Z Truc Thu T
+VAR_GLOBAL	Rev_Count_X1	DINT		D842	So vong quay da ghi nhan Pha Z Truc Keo X1
+VAR_GLOBAL	Rev_Count_X2	DINT		D844	So vong quay da ghi nhan Pha Z Truc Master X2
+VAR_GLOBAL	Rev_Count_Ms	DINT		D846	So vong quay da ghi nhan Pha Z Truc Ghep Ms
+

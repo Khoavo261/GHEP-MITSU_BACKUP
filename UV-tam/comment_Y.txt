@@ -1,0 +1,25 @@
+Den coi bao loi tong hop
+Coi bao dong su co Buzzer
+Khoi dong den UV cong suat 80W
+Kich tang cong suat den 120W
+Kich tang cong suat den 160W
+Van xa khi buong chieu 1
+Van xa khi buong chieu 2
+Van dong mo Shutter
+Dong co quat hut khi hoat dong
+Dieu khien toc do quat cap 1
+Dieu khien toc do quat cap 2
+
+Den bao quat hut dang chay
+Den bao den UV dang sang
+Den bao Standby san sang
+Den bao Running dang say
+Den bao cong suat 120W
+Den bao cong suat 160W
+Lenh mo tre Shutter
+Lenh dong tre Shutter
+Bit 0 LED 7 doan ma loi
+Bit 1 LED 7 doan ma loi
+Bit 2 LED 7 doan ma loi
+Bit 3 LED 7 doan ma loi
+Lenh khoi dong Chiller

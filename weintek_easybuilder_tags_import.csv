@@ -164,3 +164,12 @@
 "Test_Speed_S","metaline","D","630","32-bit Float","Read/Write","Toc do test manual Dau S"
 "Test_Torque_M","metaline","D","632","32-bit Float","Read/Write","Torque test manual Thang M"
 "Test_Speed_U","metaline","D","634","32-bit Float","Read/Write","Toc do test manual Xa U"
+"Real_PPR_T","metaline","D","830","32-bit Signed","Read/Write","So xung tren vong thuc te Pha Z Truc Thu T"
+"Real_PPR_X1","metaline","D","832","32-bit Signed","Read/Write","So xung tren vong thuc te Pha Z Truc Keo X1"
+"Real_PPR_X2","metaline","D","834","32-bit Signed","Read/Write","So xung tren vong thuc te Pha Z Truc Master X2"
+"Real_PPR_Ms","metaline","D","836","32-bit Signed","Read/Write","So xung tren vong thuc te Pha Z Truc Ghep Ms"
+"Rev_Count_T","metaline","D","840","32-bit Signed","Read/Write","So vong quay da ghi nhan Pha Z Truc Thu T"
+"Rev_Count_X1","metaline","D","842","32-bit Signed","Read/Write","So vong quay da ghi nhan Pha Z Truc Keo X1"
+"Rev_Count_X2","metaline","D","844","32-bit Signed","Read/Write","So vong quay da ghi nhan Pha Z Truc Master X2"
+"Rev_Count_Ms","metaline","D","846","32-bit Signed","Read/Write","So vong quay da ghi nhan Pha Z Truc Ghep Ms"
+

@@ -54,17 +54,57 @@ IF Ramp_Decel_Rate  <= 0.0   THEN Ramp_Decel_Rate  := 1.0;    END_IF;
 (* ============================================================================ *)
 (* 1. KÍCH HOẠT VÀ ĐỌC 4 KÊNH ENCODER QD62D (SLOT 2 & 3) MỖI SCAN               *)
 (* ============================================================================ *)
-(* Kích hoạt cờ đếm xung cho 2 module QD62D *)
-Y21 := TRUE; (* QD62D #1 (Slot 2 H20) CH1: Enable Trục Thu T *)
-Y22 := TRUE; (* QD62D #1 (Slot 2 H20) CH2: Enable Trục Kéo X1 *)
-Y31 := TRUE; (* QD62D #2 (Slot 3 H30) CH1: Enable Trục Master X2 *)
-Y32 := TRUE; (* QD62D #2 (Slot 3 H30) CH2: Enable Trục Ghép Ms *)
+(* Kích hoạt cờ đếm xung và cờ Latch Function Start cho 2 module QD62D *)
+Y24 := TRUE; (* QD62D #1 (Slot 2 H20) CH1 Count Enable: Trục Thu T *)
+Y26 := TRUE; (* QD62D #1 (Slot 2 H20) CH1 Latch Function Enable *)
+Y2C := TRUE; (* QD62D #1 (Slot 2 H20) CH2 Count Enable: Trục Kéo X1 *)
+Y2E := TRUE; (* QD62D #1 (Slot 2 H20) CH2 Latch Function Enable *)
 
-(* Đọc xung 32-bit từ Buffer Memory QD62D liên tục mỗi scan *)
-DMOV(TRUE, U2\G2,  Curr_Pulse_T);  (* Slot 2 CH1: Trục Thu T *)
-DMOV(TRUE, U2\G10, Curr_Pulse_X1); (* Slot 2 CH2: Trục Kéo X1 *)
-DMOV(TRUE, U3\G2,  Curr_Pulse_X2); (* Slot 3 CH1: Trục Master X2 *)
-DMOV(TRUE, U3\G10, Curr_Pulse_Ms); (* Slot 3 CH2: Trục Ghép Ms *)
+Y34 := TRUE; (* QD62D #2 (Slot 3 H30) CH1 Count Enable: Trục Master X2 *)
+Y36 := TRUE; (* QD62D #2 (Slot 3 H30) CH1 Latch Function Enable *)
+Y3C := TRUE; (* QD62D #2 (Slot 3 H30) CH2 Count Enable: Trục Ghép Ms *)
+Y3E := TRUE; (* QD62D #2 (Slot 3 H30) CH2 Latch Function Enable *)
+
+(* Đọc xung 32-bit từ Buffer Memory QD62D liên tục mỗi scan: CH1 = G2, CH2 = G34 (22H = 34D) *)
+DMOV(TRUE, U2\G2,  Curr_Pulse_T);  (* Slot 2 CH1: Trục Thu T (G2..G3) *)
+DMOV(TRUE, U2\G34, Curr_Pulse_X1); (* Slot 2 CH2: Trục Kéo X1 (G34..G35, 22H=34D) *)
+DMOV(TRUE, U3\G2,  Curr_Pulse_X2); (* Slot 3 CH1: Trục Master X2 (G2..G3) *)
+DMOV(TRUE, U3\G34, Curr_Pulse_Ms); (* Slot 3 CH2: Trục Ghép Ms (G34..G35, 22H=34D) *)
+
+(* Đọc giá trị Latch Pha Z (32-bit) từ Buffer Memory: CH1 = G12 (0CH), CH2 = G44 (2CH) *)
+Curr_Latch_T  := U2\G12; (* Slot 2 CH1 Latch Value (G12..G13) *)
+Curr_Latch_X1 := U2\G44; (* Slot 2 CH2 Latch Value (G44..G45) *)
+Curr_Latch_X2 := U3\G12; (* Slot 3 CH1 Latch Value (G12..G13) *)
+Curr_Latch_Ms := U3\G44; (* Slot 3 CH2 Latch Value (G44..G45) *)
+
+(* Tự động tính số xung/vòng (PPR) và đếm vòng quay khi có xung Pha Z mới *)
+IF (Curr_Latch_T <> Prev_Latch_T) THEN
+    Delta_PPR_T := Curr_Latch_T - Prev_Latch_T;
+    IF Delta_PPR_T < DINT#0 THEN Real_PPR_T := -Delta_PPR_T; ELSE Real_PPR_T := Delta_PPR_T; END_IF;
+    Prev_Latch_T := Curr_Latch_T;
+    Rev_Count_T  := Rev_Count_T + DINT#1;
+END_IF;
+
+IF (Curr_Latch_X1 <> Prev_Latch_X1) THEN
+    Delta_PPR_X1 := Curr_Latch_X1 - Prev_Latch_X1;
+    IF Delta_PPR_X1 < DINT#0 THEN Real_PPR_X1 := -Delta_PPR_X1; ELSE Real_PPR_X1 := Delta_PPR_X1; END_IF;
+    Prev_Latch_X1 := Curr_Latch_X1;
+    Rev_Count_X1  := Rev_Count_X1 + DINT#1;
+END_IF;
+
+IF (Curr_Latch_X2 <> Prev_Latch_X2) THEN
+    Delta_PPR_X2 := Curr_Latch_X2 - Prev_Latch_X2;
+    IF Delta_PPR_X2 < DINT#0 THEN Real_PPR_X2 := -Delta_PPR_X2; ELSE Real_PPR_X2 := Delta_PPR_X2; END_IF;
+    Prev_Latch_X2 := Curr_Latch_X2;
+    Rev_Count_X2  := Rev_Count_X2 + DINT#1;
+END_IF;
+
+IF (Curr_Latch_Ms <> Prev_Latch_Ms) THEN
+    Delta_PPR_Ms := Curr_Latch_Ms - Prev_Latch_Ms;
+    IF Delta_PPR_Ms < DINT#0 THEN Real_PPR_Ms := -Delta_PPR_Ms; ELSE Real_PPR_Ms := Delta_PPR_Ms; END_IF;
+    Prev_Latch_Ms := Curr_Latch_Ms;
+    Rev_Count_Ms  := Rev_Count_Ms + DINT#1;
+END_IF;
 
 (* ============================================================================ *)
 (* 2. ĐỌC VÀ LỌC 8 KÊNH ANALOG INPUT TỪ TRẠM 2 CC-LINK ADC (AJ65VBTCU-68ADVN)   *)

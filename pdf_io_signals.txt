@@ -1,0 +1,512 @@
+=== PAGE 27 ===
+ 
+ 
+ 
+3 - 5                                                                                                                                                       3 - 5 
+MELSEC-A 
+3   SPECIFICATION 
+ 
+3.3.2 Relationship between offset/gain setting and analog output value 
+How to calculate the analog output value: 
+The resolution of AJ65VBTCU-68DAVN can be set arbitrarily by modifying the setting 
+of the offset value and gain value. 
+How to calculate the analog value resolution and the analog output value for a given 
+digital input value when the settings of the offset value and gain value are changed is 
+shown next. 
+ 
+(1)   Resolution 
+Find the resolution with the following expression.  
+(Analog resolution) = (Gain value) - (Offset value) 
+4000  
+(2)   Analog output value 
+Find the analog output value with the following expression.  
+(Analog output) = (Analog resolution) × (Digital input value) + (Offset value) 
+ 
+3.3.3 Accuracy 
+Accuracy is relative to the maximum value of the analog output value. 
+If you change the offset/gain setting or output range to change the output characteristic, 
+accuracy does not change and is held within the range indicated in the performance 
+specifications. 
+ 
+(1)   Accuracy of voltage output 
+For voltage output, the maximum value of the analog output value changes with 
+the range. 
+For example, accuracy is relative to 5V when the 0 to 5V range is selected. 
+Analog output is provided at the accuracy of within ±0.2% (±10mV) when the 
+operating ambient temperature is 25±5°C, or within ±0.3% (±15mA) when the 
+operating ambient temperature is 0 to 55°C. 
+ 
+0V
+0 4000
+Digital input value
+Varies within the range of 
+    0.2% (   10mV) at operating 
+ambient temperature of 25   5    .
+5VAnalog output voltage
+Varies within the range of 
+   0.3% (   15mV) at operating 
+ambient temperature of 0 to 55    .
+ 
+ 
+Fig. 3.2 Voltage Output Accuracy (When 0 to 5V Range Is Selected) 
+ 
+
+=== PAGE 28 ===
+ 
+ 
+ 
+3 - 6                                                                                                                                                       3 - 6 
+MELSEC-A 
+3   SPECIFICATION 
+ 
+3.3.4 Conversion speed 
+Conversion speed indicates time required to read the digital output value written to the 
+buffer memory, perform D/A conversion, and then output the specified analog value. 
+Conversion speed per channel of the AJ65VBTCU-68DAVN is 1ms. 
+Due to the data link processing time of the CC-Link system, there is a transmission 
+delay until the D/A conversion value is read actually. 
+For the data link processing time, refer to the user's manual of the master module used. 
+ 
+Example1) Ver. 1 remote device station (ver. 1 compatible device station) setting 
+Data link processing time taken in the asynchronous mode when the 
+master module is the QJ61BT11 (normal value) 
+[Calculation expression] 
+SM+LS×1+remote device station processing time 
+SM: Scan time of master station sequence program 
+LS : Link scan time 
+Remote device station processing time: (Number of channels used+1)  
+× 1ms 
+: Internal processing time of AJ65VBTCU-68DAVN 
+ 
+Example 2) Ver. 2 remote device station (ver. 2 compatible device station) setting 
+Data link processing time taken in the asynchronous mode when the 
+master module is the QJ61BT11N (normal value) 
+[Calculation expression] 
+(a) In the case of the remote input (RX), remote register (RWr) 
+SM + LS × 1 × m + remote device station processing time 
+(b) In the case of the remote output (RY), remote register (RWw) 
+SM + LS × 1 × (m + 1) + remote device station processing time 
+SM: Scan time of master station sequence program 
+LS : Link scan time 
+M : Constant 1 
+Remote device station processing time: (Number of channels used + 1 2) 
+× 1ms 
+1: Expanded cyclic setting is quadruple in this module, m = 7. 
+2: Internal processing time of AJ65VBTCU-68DAVN 
+
+=== PAGE 29 ===
+ 
+ 
+ 
+3 - 7                                                                                                                                                       3 - 7 
+MELSEC-A 
+3   SPECIFICATION 
+ 
+3.4 Function 
+Table 3.3 lists the functions of the AJ65VBTCU-68DAVN. 
+ 
+Table 3.3 AJ65VBTCU-68DAVN Function List 
+Item Description Refer to 
+D/A output 
+enable/disable function 
+Specify whether the D/A conversion value is output or the offset value is output per 
+channel. 
+Note that the conversion speed is constant independently of the output 
+enable/disable setting. 
+Section 3.5.2 
+D/A conversion 
+enable/disable function 
+Specify whether D/A conversion is enabled or disabled per channel. 
+The sampling cycle can be shortened by setting the unused channel to D/A 
+conversion disable. 
+Section 3.6.3 
+Output range changing 
+function 
+You can set the analog output range per channel to change the I/O conversion 
+characteristics. 
+Select the output range setting from among the following 5 types. 
+Section 3.6.4 
+ Output Range Set Value  
+ -10 to 10V 0H  
+ 0 to 5V 1H  
+ 1 to 5V 2H  
+ User ran ge setting 1 (-10 to 10V) 3 H  
+ User ran ge setting 2 (0 to 5V) 4 H  
+   
+Function to specify hold 
+or clear of the analog 
+output when the 
+programmable controller 
+CPU is in the STOP 
+status (HOLD/CLEAR 
+setting) 
+Specify per channel whether to hold or clear (output the offset value) the analog 
+value which is being output from each channel when the programmable controller 
+CPU has entered the STOP status or the AJ65VBTCU-68DAVN has stopped D/A 
+conversion due to error occurrence. 
+Section 3.6.5 
+Offset/gain setting You can make offset/gain setting per channel without potentiometers to change the 
+I/O conversion characteristics freely. Section 4.4 
+ 
+
+=== PAGE 30 ===
+ 
+ 
+ 
+3 - 8                                                                                                                                                       3 - 8 
+MELSEC-A 
+3   SPECIFICATION 
+ 
+3.4.1 Combinations of various functions 
+You can set the analog output as indicated in Table 3.4 by combining the Analog 
+output enable/disable setting (RWwm+8), CH.  analog output enable/disable flag 
+(RYn0 to RYn7) and HOLD/CLEAR setting (RWwm+B). 
+Make setting according to your system application.  
+Table 3.4 Analog output status combination list 
+Setting  
+combi- 
+nation 
+Exe- 
+cution  
+status 
+Analog output enable/disable 
+setting (RWwm+8) Enable Prohibit 
+CH.  analog output enable/ 
+disable flag (RYn0 to RYn7) Enable (ON) Prohibit (OFF) Enable or disable 
+HOLD/CLEAR setting (RWwm+B) HOLD CLEA R HOLD or CLEAR HOLD or CLEAR 
+Analog output status when the programmable 
+controller CPU is in the RUN status 
+Output of the analog value after D/A 
+conversion from the digital value specified 
+by the programmable controller CPU 
+Offset value 0V 
+Analog output status when the programmable 
+controller CPU is in the STOP status 
+Analog value before 
+the programmable 
+controller CPU stop 
+is retained 
+Offset value Offset value 0V 
+Analog output status at programmable controller 
+CPU stop error 
+Analog value before 
+the programmable 
+controller CPU stop 
+is retained 
+Offset value Offset value 0V 
+Analog output status at occurrence of AJ65VBTCU-
+68DAV digital value setting error 
+Output of the maximum or minimum analog 
+value Offset value 0V 
+Analog output status when the "L RUN" LED turns 
+off/"L.ERR" LED turns on 
+The analog value 
+before the "L RUN" 
+LED turns off is 
+retained. 
+Offset value Offset value 0V 
+Analog output status when the "L ERR." LED 
+flickers 
+Output of the analog value after D/A 
+conversion from the digital value specified 
+by the programmable controller CPU 
+Offset value 0V 
+Analog output status in initial processing completion 
+status after power-reset 
+Output of the analog value after D/A 
+conversion from the digital value specified 
+by the programmable controller CPU 
+Offset value 0V 
+Analog output status at occurrence of AJ65VBTCU-
+68DAVN output range setting error 0V 0V 0V 0V 
+Analog output status at occurrence of AJ65VBTCU-
+68DAVN watchdog timer error 0V 0V 0V 0V 
+ 
+ 
+POINT  
+When the QnACPU is used, using "Y" as the remote output (RY) refresh device of 
+the automatic refresh parameter may not hold the analog value even for the HOLD 
+setting. 
+For the HOLD setting, use "M" or "B" as the remote output (RY) refresh device. 
+ 
+ 
+
+=== PAGE 31 ===
+ 
+ 
+ 
+3 - 9                                                                                                                                                       3 - 9 
+MELSEC-A 
+3   SPECIFICATION 
+ 
+3.5 Remote I/O Signals 
+This section describes the assignment and functions of the remote I/O signals. 
+ 
+3.5.1 Remote I/O signal list 
+Remote inputs (RX) mean the input signals from the AJ65VBTCU-68DAVN to the 
+master module, and remote outputs (RY) mean the output signals from the master 
+module to the AJ65VBTCU-68DAVN. 
+In communications with the master station, the AJ65VBTCU-68DAVN uses 32 points 
+of the remote inputs (RX) and 32 points of the remote outputs (RY). 
+The number of stations occupied by this module differs between ver. 1 remote device 
+station (ver. 1 compatible device station) setting and ver. 2 remote device station (ver. 
+2 compatible device station) setting. 
+3 stations are occupied in the case of ver. 1 remote device station (ver. 1 compatible 
+device station) setting. The latter 64 points are not used. 
+1 station is occupied in the case of ver. 2 remote device station (ver. 2 compatible 
+device station) setting. Expanded cyclic setting is fixed to quadruple and the latter 32 
+points are not used. 
+ 
+
+=== PAGE 32 ===
+ 
+ 
+ 
+3 - 10                                                                                                                                                       3 - 10 
+MELSEC-A 
+3   SPECIFICATION 
+ 
+(1)   Remote I/O signal list for ver. 1 remote device station (ver. 1 
+compatible device station) setting 
+Table 3.5 indicates the assignment and names of the remote I/O signals for ver. 
+1 remote device station (ver. 1 compatible device station) setting. 
+ 
+Table 3.5 Remote I/O Signal List for Ver. 1 Remote Device Station  
+(Ver. 1 Compatible Device Station) Setting 
+Signal Direction: AJ65VBTCU-68DAVN  Master Module Si gnal Direction: Master Module  AJ65VBTCU-68DAVN 
+Remote input (RX) Name Remote output (RY) Name 
+RXn0 
+to 
+RXnB 
+Reserved 
+RYn0 CH.1 analog output enable/disable flag 
+RYn1 CH.2 analog output enable/disable flag 
+RYn2 CH.3 analog output enable/disable flag 
+RYn3 CH.4 analog output enable/disable flag 
+RYn4 CH.5 analog output enable/disable flag 
+RYn5 CH.6 analog output enable/disable flag 
+RYn6 CH.7 analog output enable/disable flag 
+RYn7 CH.8 analog output enable/disable flag 
+RYn8 
+to 
+RY (n+1) 7 
+Reserved 
+RXnC E2PROM write error flag 
+RXnD 
+to 
+RX (n+1) 7 
+Reserved 
+RX (n+1) 8 Initial data processing request flag RY (n+1) 8 Initial data processin g complete flag 
+RX (n+1) 9 Initial data setting complete flag RY (n+1) 9 Initial data setting request flag 
+RX (n+1) A Error status flag RY (n+1) A Error reset request flag 
+RX (n+1) B Remote READY 
+RY (n+1) B 
+to 
+RY (n+5) F 
+Reserved RX (n+1) C 
+to 
+RX (n+5) F 
+Reserved 
+ 
+POINT  
+The reserved devices given in Table 3.5 are used by the system and cannot be 
+used by the user. 
+If the user has used (turned on/off) any of them, we cannot guarantee the functions 
+of the AJ65VBTCU-68DAVN. 
+ 
+
+=== PAGE 33 ===
+ 
+ 
+ 
+3 - 11                                                                                                                                                       3 - 11 
+MELSEC-A 
+3   SPECIFICATION 
+ 
+(2)   Remote I/O signal list for ver. 2 remote device station (ver. 2 
+compatible device station) setting 
+Table 3.6 indicates the assignment and names of the remote I/O signals for ver. 
+2 remote device station (ver. 2 compatible device station) setting. 
+ 
+Table 3.6 Remote I/O Signal List for Ver. 2 Remote Device Station  
+(Ver. 2 Compatible Device Station) Setting 
+Signal Direction: AJ65VBTCU-68DAVN  Master Module Si gnal Direction: Master Module  AJ65VBTCU-68DAVN 
+Remote input (RX) Name Remote output (RY) Name 
+RXn0 
+to 
+RXnB 
+Reserved 
+RYn0 CH.1 analog output enable/disable flag 
+RYn1 CH.2 analog output enable/disable flag 
+RYn2 CH.3 analog output enable/disable flag 
+RYn3 CH.4 analog output enable/disable flag 
+RYn4 CH.5 analog output enable/disable flag 
+RYn5 CH.6 analog output enable/disable flag 
+RYn6 CH.7 analog output enable/disable flag 
+RYn7 CH.8 analog output enable/disable flag 
+RYn8 
+to 
+RY (n+1) 7 
+Reserved 
+RXnC E2PROM write error flag 
+RXnD 
+to 
+RX (n+1) 7 
+Reserved 
+RX (n+1) 8 Initial data processing request flag RY (n+1) 8 Initial data processin g complete flag 
+RX (n+1) 9 Initial data setting complete flag RY (n+1) 9 Initial data setting request flag 
+RX (n+1) A Error status flag RY (n+1) A Error reset request flag 
+RX (n+1) B Remote READY 
+RY (n+1) B 
+to 
+RY (n+3) F 
+Reserved RX (n+1) C 
+to 
+RX (n+3) F 
+Reserved 
+ 
+POINT  
+The reserved devices given in Table 3.6 are used by the system and cannot be 
+used by the user. 
+If the user has used (turned on/off) any of them, we cannot guarantee the functions 
+of the AJ65VBTCU-68DAVN. 
+ 
+
+=== PAGE 34 ===
+ 
+ 
+ 
+3 - 12                                                                                                                                                       3 - 12 
+MELSEC-A 
+3   SPECIFICATION 
+ 
+3.5.2 Functions of the remote I/O signals 
+Table 3.6 explains the functions of the remote I/O signals of the AJ65VBTCU-68DAVN.  
+Table 3.7 Remote I/O Signal Details (1/2) 
+Device No. Signal Name Description 
+RXnC E2PROM write error flag 
+Turns on the number of E2PROM write times exceeds its limit (1000,000 times per 
+channel). If this flag has turned on, this module itself has failed (hardware fault) and 
+therefore this flag cannot be reset (turned off) by the error reset request flag. 
+At occurrence of this error, power on the AJ65VBTCU-68DAVN again. If this flag turns 
+on after the power is switched on again, it is a hardware fault. Contact your nearest 
+Mitsubishi representative. 
+RX (n+1) 8 Initial data processing request 
+flag 
+After power-on, the initial data processing request flag is turned on by the AJ65VBTCU-
+68DAVN to request the initial data to be set. 
+Also, after the initial data processing is complete (initial data processing complete flag 
+RY (n+1) 8 ON), the flag is turned off. 
+ 
+  
+RX (n+1) 9 Initial data setting complete flag 
+When the initial data setting request (RY (n+1) 9 ON) is made, the flag turns on after 
+the initial data setting completion is done. 
+Also, after the initial data setting is complete, the initial setting complete flag turns off 
+when the initial data setting request flag turns off. 
+RX (n+1) A Error status flag 
+Turns on at occurrence of the output range setting error, digital value setting error or 
+E2PROM write error (RXnC). 
+Does not turn on at occurrence of the watchdog timer error.  
+(The "RUN" LED goes off.) 
+ 
+  
+RX (n+1) B Remote READY 
+Turns on when initial data setting is completed after power-on or at termination of the 
+test mode. 
+(Used for interlocking read/write from/to the master module.)  
+n: Address allocated to the master module by station number setting.  
+
+=== PAGE 35 ===
+ 
+ 
+ 
+3 - 13                                                                                                                                                       3 - 13 
+MELSEC-A 
+3   SPECIFICATION 
+ 
+Table 3.7 Remote I/O Signal Details (2/2) 
+Device No. Signal Name Description 
+RYn0 
+to 
+RYn7 
+CH.  analog output 
+enable/disable flag 
+D/A conversion value output enable flag for channel 1 to 8. Turn on this flag to enable 
+the D/A conversion value of the corresponding channel to be output. 
+Turn off when you want to disable the output of the D/A conversion value. 
+Processed on the leading edge of ON/OFF. 
+RY (n+1) 8 Initial data processing complete 
+flag 
+Turns on after initial data processing completion when initial data processing is 
+requested after power-on or test mode operation. 
+RY (n+1) 9 Initial data settin g request flag Turns on at the time of initial data settin g or changing. 
+RY (n+1) A Error reset request flag 
+Turning on this flag resets (turns off) the error status flag (RX(n+1)A) and also clears (to 
+0000H) the error code (RWrn+8) and CH.  check code (RWrn to RWrn+7) in the 
+remote register. However, since the E2PROM write error flag (RXnC) cannot be reset, 
+the error status flag remains on, too.  
+n: Address allocated to the master module by station number setting. 
+ 
+
+=== PAGE 36 ===
+ 
+ 
+ 
+3 - 14                                                                                                                                                       3 - 14 
+MELSEC-A 
+3   SPECIFICATION 
+ 
+3.6 Remote Register 
+The AJ65VBTCU-68DAVN has a remote register for data communication with the 
+master module. The remote register allocation and data structures are described below. 
+ 
+3.6.1 Allocation of the remote register 
+The number of data of the AJ65VBTCU-68DAVN differs between ver. 1 remote device 
+station (ver. 1 compatible device station) setting and ver. 2 remote device station (ver. 
+2 compatible device station) setting. 
+ 
+(1)   Remote register assignment for ver. 1 remote device station (ver. 1 
+compatible device station) setting 
+Table 3.8 indicates the remote register assignment for ver. 1 remote device 
+station (ver. 1 compatible device station) setting. 
+ 
+Table 3.8 Remote Register Assignment for Ver. 1 Remote Device Station  
+(Ver. 1 Compatible Device Station) Setting 
+Transfer Direction Address Description Default Value Refer to 
+Master  Remote 
+RWwm+0H CH. 1 digital value setting 0 
+Section 3.6.2 
+RWwm+1H CH. 2 digital value setting 0 
+RWwm+2H CH. 3 digital value setting 0 
+RWwm+3H CH. 4 digital value setting 0 
+RWwm+4H CH. 5 digital value setting 0 
+RWwm+5H CH. 6 digital value setting 0 
+RWwm+6H CH. 7 digital value setting 0 
+RWwm+7H CH. 8 digital value setting 0 
+RWwm+8H Analo g output enable/disable setting 0 Section 3.6.3 
+RWwm+9H CH. 1 to 4 output ran ge setting 0 Section 3.6.4 RWwm+AH CH. 5 to 8 output ran ge setting 0 
+RWwm+BH HOLD/CLEAR setting 0 Section 3.6.5 
+Remote  Master 
+RWrn+0H CH. 1 check code 0 
+Section 3.6.5 
+RWrn+1H CH. 2 check code 0 
+RWrn+2H CH. 3 check code 0 
+RWrn+3H CH. 4 check code 0 
+RWrn+4H CH. 5 check code 0 
+RWrn+5H CH. 6 check code 0 
+RWrn+6H CH. 7 check code 0 
+RWrn+7H CH. 8 check code 0 
+RWrn+8H Error code 0 Section 3.6.7 
+RWrn+9H 
+to 
+RWrn+BH 
+Reserved 0  
+ 
+m, n: The address set for the master station in the station number setting. 
+ 
+POINT  
+Do not execute read or write to the remote register that is not allowed to use. When 
+a read or write is executed, the functions of the AJ65VBTCU-68DAVN is not 
+guaranteed.  
+
