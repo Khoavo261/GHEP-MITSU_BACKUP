@@ -1,0 +1,224 @@
+================================================================================
+                    TÀI LIỆU HƯỚNG DẪN VẬN HÀNH & TEST MÁY
+                     HỆ THỐNG TỦ SẤY UV CÔNG NGHIỆP
+                     PLC MITSUBISHI FX2N + HMI WEINTEK MT6103iP
+================================================================================
+
+MỤC LỤC:
+  PHẦN 1: QUY TRÌNH VẬN HÀNH TIÊU CHUẨN (3 BƯỚC)
+  PHẦN 2: BẢNG TRA CỨU & KIỂM TRA 9 MÃ LỖI HỆ THỐNG (ALARM CODES 1..9)
+  PHẦN 3: QUY TRÌNH TEST MÁY VÀ CHẠY THỬ NGHIỆM TẠI XƯỞNG
+  PHẦN 4: BẢNG ÁNH XẠ I/O VẬT LÝ & THANH GHI HMI GIÁM SÁT
+
+================================================================================
+PHẦN 1: QUY TRÌNH VẬN HÀNH TIÊU CHUẨN (3 BƯỚC)
+================================================================================
+
+BƯỚC 1: KHỞI ĐỘNG VÀ SẤY NÓNG BÓNG UV (WARM-UP 30S)
+--------------------------------------------------------------------------------
+1. Kiểm tra máy làm lạnh Chiller nước làm mát (X016/X017 sẵn sàng, không báo lỗi).
+2. Đóng kín cửa tủ điện nguồn (tiếp điểm an toàn X004 thường đóng).
+3. Bật aptomat nguồn: PLC FX2N tự trễ 2.0s để ổn định nguồn (tonPowerOnInit).
+4. Nhấn nút START (PB ON - X020) hoặc chạm nút START trên màn hình HMI:
+   - Quạt hút tổng (Y010) và Chiller (Y030) khởi động.
+   - Quạt cấp gió chạy Cấp 1 Êm (Y011) để tránh làm nguội hồ quang bóng đèn.
+   - Khởi động từ 80W (Y002) đóng mồi bóng đèn UV.
+   - Cửa chắn Shutter (Y007) giữ đóng kín để chắn tia cực tím phát xạ ra ngoài.
+5. Màn hình HMI đếm ngược thời gian sấy nóng từ 30s về 0s (D102 hiển thị, D100=1).
+6. Sau đúng 30 giây: Bóng đèn đạt áp suất hơi thủy ngân ổn định, cờ M540 bật lên,
+   máy chuyển sang chế độ STANDBY sẵn sàng sấy (Đèn báo Y016 sáng, D100=2).
+
+
+BƯỚC 2: QUY TRÌNH SẤY SẢN PHẨM (RUNNING)
+--------------------------------------------------------------------------------
+1. Chế độ công suất tiêu chuẩn 120W (Mặc định khi không gạt công tắc):
+   - Điều kiện sấy: Đèn đã sấy nóng xong (M540=1) VÀ Cửa buồng nạp phôi đóng (X005=1)
+     VÀ Máy in / Băng tải chính đang chạy (X006=1).
+   - Hệ thống tự động:
+     * Cuộn hút khí nén Y007 mở Shutter cho tia UV chiếu xuống phôi (Sensor X012 báo mở).
+     * Khởi động từ 120W (Y003) đóng (D103=120W, D100=3).
+     * Quạt tự động tăng lên Cấp 2 Vừa (Y012).
+     * Sensor phôi X014 mở van gió Damper 1 (Y005); Sensor phôi X015 mở Damper 2 (Y006).
+
+2. Chế độ công suất cao 160W (Turbo sấy nhanh):
+   - Gạt công tắc X024 sang vị trí 160W:
+     * Khởi động từ Turbo 160W (Y004) đóng (D103=160W, D100=4).
+     * Quạt tự động tăng lên Cấp 3 Turbo (Y013) để giải nhiệt và thoát khí Ozone tối đa.
+
+3. Khóa an toàn chống cháy phôi (Anti-Burn Dropback):
+   - Trong lúc đang sấy, nếu băng tải dừng (X006=0) hoặc mở cửa buồng sấy (X005=0):
+     * Cửa Shutter Y007 sập đóng tức thời.
+     * Cắt điện 120W/160W ngay lập tức, đèn tự động tụt về 80W Standby.
+     * Ngăn ngừa hoàn toàn nguy cơ cháy sản phẩm hoặc biến dạng nhiệt trên băng tải!
+
+
+BƯỚC 3: TẮT MÁY VÀ LÀM MÁT SAU (AFTER-COOLING 180S)
+--------------------------------------------------------------------------------
+1. Nhấn nút STOP (PB OFF - X021) hoặc chạm nút STOP trên màn hình HMI:
+   - Toàn bộ nguồn kích đèn UV (Y002, Y003, Y004) ngắt điện ngay lập tức (đèn tắt).
+   - Hệ thống BẮT BUỘC bước vào chu trình After-Cooling kéo dài đúng 180 giây:
+     * Quạt hút tổng (Y010) và Quạt Cấp 3 Turbo (Y013) tiếp tục chạy tối đa.
+     * Chiller tuần hoàn (Y030) tiếp tục bơm nước làm mát máng phản xạ và bóng đèn.
+     * Màn hình HMI đếm lùi thời gian giải nhiệt từ 180s về 0s (D105, D100=5).
+   - Mục đích: Hạ nhiệt ống thạch anh an toàn dưới ngưỡng kết tinh và hút sạch 
+     khí Ozone độc hại (O3) ra ngoài xưởng.
+2. Sau 180 giây: Quạt và Chiller tự động ngắt điện. Máy trở về trạng thái dừng hoàn toàn.
+
+
+================================================================================
+PHẦN 2: BẢNG TRA CỨU & KIỂM TRA 9 MÃ LỖI HỆ THỐNG (ALARM CODES 1..9)
+================================================================================
+
+Khi có bất kỳ lỗi nào xảy ra:
+- Đèn báo sự cố tổng Y000 sáng.
+- Còi báo động Y001 kêu (có thể nhấn nút X022 để tắt còi tạm thời).
+- Mã lỗi hiển thị tại thanh ghi D101 trên HMI và xuất mã 4-bit ra ngõ ra Y024..Y027.
+- Nếu có nhiều lỗi đồng thời: Hệ thống tự động quét luân chuyển hiển thị mỗi mã 2.0s.
+
++----+----------------------------+-------+-------+---------------------------------------+
+| MÃ | TÊN SỰ CỐ / LỖI            | INPUT | TRỄ   | NGUYÊN NHÂN & CÁCH KIỂM TRA XỬ LÝ     |
++----+----------------------------+-------+-------+---------------------------------------+
+| 01 | Lỗi điện áp chấn lưu       | X001/ | 5.0s  | - Điện áp nguồn dao động hoặc cháy nổ |
+|    | (Ballast Voltage Fault)    | X002  |       |   tụ kích / biến thế chấn lưu.        |
+|    |                            |       |       | - X001 ngắt: Sụt áp sau khi chạy 30s. |
+|    |                            |       |       | - X002 đóng: Quá áp khi đang chạy 80W.|
++----+----------------------------+-------+-------+---------------------------------------+
+| 02 | Mất áp suất gió buồng sấy  | X010  | 5.0s  | - Quạt hút không quay hoặc đứt dây đai|
+|    | (Air Pressure Switch Fault)|       |       | - Đường ống xả khí bị tắc nghẽn.      |
+|    |                            |       |       | - Kiểm tra công tắc vi sai gió X010.  |
++----+----------------------------+-------+-------+---------------------------------------+
+| 03 | Mở cửa an toàn tủ điện     | X004  | 0.0s  | - Cửa tủ điện đang bị mở hoặc công tắc|
+|    | (Cabinet Door Open Fault)  |       | (Tức  |   hành trình an toàn X004 hỏng.       |
+|    |                            |       | thời) | - Hệ thống ngắt điện toàn bộ vì sự cố |
+|    |                            |       |       |   nguy hiểm điện giật.                |
++----+----------------------------+-------+-------+---------------------------------------+
+| 04 | Mất lưu lượng gió hút      | X011  | 0.0s  | - Lưu lượng gió hút dưới ngưỡng cài   |
+|    | (Air Flow Switch Fault)    |       | (Tức  |   đặt an toàn, cánh quạt bị kẹt bẩn.  |
+|    |                            |       | thời) | - Kiểm tra limit switch cánh gió X011.|
++----+----------------------------+-------+-------+---------------------------------------+
+| 05 | Mất lưu lượng nước làm mát | X016  | 15.0s | - Chiller bị cạn nước, rò rỉ đường ống|
+|    | (Water Flow Switch Fault)  |       |       | - Bơm tuần hoàn nước bị hỏng/kẹt rác. |
+|    |                            |       |       | - Trễ 15s để lọc bọt khí trong ống.  |
++----+----------------------------+-------+-------+---------------------------------------+
+| 06 | Kẹt hành trình Shutter     | X012/ | 5.0s  | - Phát lệnh mở (Y007=1) nhưng sau 5s  |
+|    | (Shutter Travel Jam Fault) | X013  |       |   sensor báo mở X012 không tác động.  |
+|    |                            |       |       | - Lệnh đóng mà sensor đóng X013 mất.  |
+|    |                            |       |       | - Kiểm tra áp khí nén và xilanh kẹt.  |
++----+----------------------------+-------+-------+---------------------------------------+
+| 07 | Sự cố máy Chiller          | X031  | 10.0s | - Rơ le nhiệt Chiller tác động quá tải|
+|    | (Chiller Unit Trip Fault)  |       |       | - Máy nén gas Chiller bị ngắt áp suất.|
+|    |                            |       |       | - Trễ 10s tránh báo lỗi khi khởi động.|
++----+----------------------------+-------+-------+---------------------------------------+
+| 08 | Quá nhiệt buồng sấy        | X003  | 0.0s  | - Nhiệt độ buồng sấy vượt ngưỡng an   |
+|    | (Chamber Over-Temperature) |       | (Tức  |   toàn hoặc có cháy cục bộ.           |
+|    |                            |       | thời) | - Nút nhấn dừng khẩn cấp E-Stop ấn.  |
++----+----------------------------+-------+-------+---------------------------------------+
+| 09 | Hết tuổi thọ bóng đèn UV   | M     | 5.0s  | - Cảnh báo: Giờ chạy đèn đã vượt mức  |
+|    | (Lamp Life Expired Warning)| nội   |       |   định mức (1000h..1500h).            |
+|    |                            | bộ    |       | - Cần thay bóng UV mới để đảm bảo độ  |
+|    |                            |       |       |   đóng rắn mực in / keo dán.          |
++----+----------------------------+-------+-------+---------------------------------------+
+
+* THAO TÁC XỬ LÝ LỖI:
+  1. Khi có sự cố, còi kêu: Nhấn nút X022 (Buzzer Stop) để tắt còi, đèn Y000 vẫn sáng.
+  2. Tra cứu mã lỗi hiển thị trên HMI hoặc đếm đèn LED nhị phân Y024..Y027 theo bảng trên.
+  3. Khắc phục dứt điểm nguyên nhân cơ khí / điện / cảm biến.
+  4. Nhấn nút X023 (Fault Reset) trên tủ hoặc chạm RESET trên HMI để xóa cờ lỗi.
+
+
+================================================================================
+PHẦN 3: QUY TRÌNH TEST MÁY VÀ CHẠY THỬ NGHIỆM TẠI XƯỞNG
+================================================================================
+
+BƯỚC TEST 1: KIỂM TRA MÔ PHỎNG PHẦN MỀM (DRY RUN - F3 MONITOR)
+--------------------------------------------------------------------------------
+1. Kết nối cáp nạp PLC FX2N, mở GX Works2, mở tab POU_01 [PRG] Program [ST].
+2. Nhấn phím F3 để kích hoạt chế độ Monitor Online.
+3. Nhấn Alt + 3 mở cửa sổ Watch 1, nhập 3 tên Struct: stStatus, stAlarms, stOutputs.
+4. Đặt trỏ chuột vào biến di_BtnLampOn (X020), nhấn Shift + Enter:
+   - stOutputs.q_Lamp80W chuyển thành TRUE.
+   - stOutputs.q_FanSpeed1 chuyển thành TRUE.
+   - stStatus.iWarmupRemainSec đếm lùi từ 30 về 0.
+5. Sau 30s, force tiếp di_MainMachineRunning (X006) thành TRUE:
+   - stOutputs.q_ShutterSolenoid chuyển thành TRUE (Y007 mở Shutter).
+   - stOutputs.q_Lamp120W chuyển thành TRUE (Y003 bật).
+   - stOutputs.q_FanSpeed2 chuyển thành TRUE (Quạt lên Cấp 2).
+6. Force di_BtnLampOff (X021) thành TRUE:
+   - Các đèn UV ngắt ngay lập tức.
+   - stStatus.bAfterCoolActive chuyển thành TRUE và đếm lùi 180s.
+
+
+BƯỚC TEST 2: KIỂM TRA 9 MÃ LỖI VÀ LIÊN ĐỘNG AN TOÀN
+--------------------------------------------------------------------------------
+Thực hiện ngắt từng cảm biến để kiểm tra hệ thống có kích hoạt bảo vệ đúng không:
+- Test Lỗi 3 (Cửa mở): Mở cửa tủ điện -> Mã 3 hiện ngay tức thì, khóa khởi động.
+- Test Lỗi 2 (Áp gió): Rút ống công tắc áp gió X010 -> Sau đúng 5s còi kêu, mã 2 hiện.
+- Test Lỗi 5 (Nước làm mát): Khóa van nước X016 -> Sau đúng 15s còi kêu, mã 5 hiện.
+- Test Tắt còi: Khi còi Y001 kêu, nhấn X022 -> Còi ngắt ngay, đèn Y000 giữ sáng.
+- Test Xóa lỗi: Cắm lại ống cảm biến, nhấn X023 -> Cờ lỗi biến mất, mã về 0.
+
+
+BƯỚC TEST 3: KIỂM TRA BỘ QUÉT MÃ LỖI LUÂN PHIÊN (SEQUENCER 2.0S)
+--------------------------------------------------------------------------------
+1. Tạo 2 lỗi đồng thời: Ngắt áp gió (Lỗi 2) và Ngắt nước làm mát (Lỗi 5).
+2. Quan sát thanh ghi D101 trên HMI hoặc 4-bit output Y024..Y027:
+   - Cứ sau mỗi 2.0 giây, mã lỗi sẽ tự động nhảy luân phiên: 2 -> 5 -> 2 -> 5...
+   - Đảm bảo người vận hành phát hiện được tất cả các sự cố đang xảy ra trong tủ sấy.
+
+
+================================================================================
+PHẦN 4: BẢNG ÁNH XẠ I/O VẬT LÝ & THANH GHI HMI GIÁM SÁT
+================================================================================
+
+1. NGÕ VÀO VẬT LÝ (INPUTS - X):
+   X001 : di_LampVoltageLow         - Lỗi sụt áp chấn lưu Ballast
+   X002 : di_LampVoltageHigh        - Lỗi quá áp chấn lưu Ballast
+   X003 : di_EStop                  - Sự cố quá nhiệt buồng sấy / Dừng khẩn cấp
+   X004 : di_CabinetDoorOpen        - Công tắc an toàn cửa tủ điện (Cửa mở = 0)
+   X005 : di_InfeedDoorClosed       - Cảm biến cửa nạp phôi đóng an toàn
+   X006 : di_MainMachineRunning     - Tín hiệu máy chính / băng tải đang chạy
+   X010 : di_AirPressureSw          - Công tắc áp suất gió buồng sấy
+   X011 : di_ChamberLTS             - Limit switch lưu lượng gió hút
+   X012 : di_ShutterOpenLimit       - Cảm biến Shutter mở hết hành trình
+   X013 : di_ShutterClosedLimit     - Cảm biến Shutter đóng kín hành trình
+   X014 : di_ChamberPos1            - Sensor vị trí 1 mở van xả gió Damper 1
+   X015 : di_ChamberPos2            - Sensor vị trí 2 mở van xả gió Damper 2
+   X016 : di_WaterFlowSw            - Cảm biến dòng chảy nước làm mát
+   X020 : di_BtnLampOn              - Nút nhấn bật đèn UV (PB ON)
+   X021 : di_BtnLampOff             - Nút nhấn tắt đèn UV (PB OFF)
+   X022 : di_BtnBuzzerStop          - Nút tắt còi báo động (Buzzer Stop)
+   X023 : di_BtnFaultReset          - Nút Reset giải trừ sự cố hệ thống
+   X024 : di_SwPower160W            - Công tắc chọn công suất cao 160W Turbo
+   X027 : di_SwPower80W             - Công tắc chọn công suất thấp 80W Standby
+   X031 : di_ChillerFaultSig        - Tín hiệu báo sự cố / trip máy Chiller
+
+2. NGÕ RA VẬT LÝ (OUTPUTS - Y):
+   Y000 : do_MasterAlarm            - Đèn báo tổng hợp sự cố hệ thống UV
+   Y001 : do_Buzzer                 - Còi báo động sự cố (Buzzer)
+   Y002 : do_LampPower80W           - Khởi động từ đóng điện đèn UV 80W / Warmup
+   Y003 : do_LampPower120W          - Khởi động từ tăng áp đèn UV 120W
+   Y004 : do_LampPower160W          - Khởi động từ tăng áp đèn UV 160W Turbo
+   Y005 : do_ExhaustDamper1         - Van điện từ mở van gió buồng 1 (Damper 1)
+   Y006 : do_ExhaustDamper2         - Van điện từ mở van gió buồng 2 (Damper 2)
+   Y007 : do_ShutterValve           - Van khí nén đóng/mở cửa chắn tia UV Shutter
+   Y010 : do_ExhaustFan             - Khởi động từ quạt hút chính buồng sấy
+   Y011 : do_FanSpeedStage1         - Điều khiển quạt tốc độ Cấp 1 (Low Speed)
+   Y012 : do_FanSpeedStage2         - Điều khiển quạt tốc độ Cấp 2 (Mid Speed)
+   Y013 : do_FanSpeedStage3         - Điều khiển quạt tốc độ Cấp 3 (Turbo Speed)
+   Y024 : do_ErrorCodeBit0          - Bit 0 xuất mã lỗi nhị phân / LED 7 đoạn
+   Y025 : do_ErrorCodeBit1          - Bit 1 xuất mã lỗi nhị phân / LED 7 đoạn
+   Y026 : do_ErrorCodeBit2          - Bit 2 xuất mã lỗi nhị phân / LED 7 đoạn
+   Y027 : do_ErrorCodeBit3          - Bit 3 xuất mã lỗi nhị phân / LED 7 đoạn
+   Y030 : do_ChillerCommand         - Khởi động máy làm lạnh Chiller tuần hoàn
+
+3. THANH GHI GIÁM SÁT HMI WEINTEK (REGISTERS - D):
+   D100 : hmi_MachineState          - Trạng thái máy (0:Stop, 1:Warmup, 2:Standby, 3:120W, 4:160W, 5:AfterCool)
+   D101 : hmi_ActiveAlarmCode       - Mã số lỗi đang quét hiện hành (0..9)
+   D102 : hmi_WarmupRemainSec       - Thời gian đếm lùi sấy nóng 30s về 0s
+   D103 : hmi_PowerWatt             - Công suất đèn UV tức thời (0W, 80W, 120W, 160W)
+   D104 : hmi_FanSpeedStage         - Cấp tốc độ quạt hút buồng sấy (0, 1, 2, 3)
+   D105 : hmi_RemainingAfterCoolSec - Thời gian đếm lùi làm mát sau 180s về 0s
+
+================================================================================
+                    TÀI LIỆU LƯU HÀNH NỘI BỘ - PHÒNG KỸ THUẬT
+================================================================================
