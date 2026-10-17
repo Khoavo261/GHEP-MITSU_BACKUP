@@ -2,6 +2,7 @@
    PROGRAM MAIN: PRG_UV_Main (CHUẨN STRUCTURED DATA TYPES)
    GX Works2: Dán vào cửa sổ Program [ST] của PRG_UV_Main
    Khớp 100% với Global_Labels.tsv đã nạp (Có chú thích đầy đủ mã X, Y, D từng dòng)
+   Bổ sung giám sát trực quan 9 mã lỗi chi tiết ngay trên màn hình POU_01
    ============================================================================== *)
 
 (* ==============================================================================
@@ -74,6 +75,22 @@ fbAlarmManager(
     q_Buzzer              := stOutputs.q_Buzzer,                    (* Lenh xuat coi bao dong Y001 *)
     stOutputs_AlarmBits   := stOutputs.q_AlarmCodeBits              (* Ma loi 4-bit xuat ra Y024..Y027 *)
 );
+
+
+(* ==============================================================================
+   BƯỚC 3.1: GIÁM SÁT TRỰC QUAN 9 TRẠNG THÁI MÃ LỖI CHI TIẾT TRÊN POU_01
+   (Khi Online F3, bạn sẽ thấy từng cờ lỗi này chuyển TRUE/FALSE ngay trên màn hình)
+   ============================================================================== *)
+bFault1_BallastVoltage      := stAlarms.bBallastFault;              (* Ma 1: Dien ap chan luu Ballast T1 (5s) *)
+bFault2_AirPressure         := stAlarms.bAirPressureFault;          (* Ma 2: Ap suat gio buong say T11 (5s) *)
+bFault3_CabinetDoorOpen     := stAlarms.bDoorOpenFault;             (* Ma 3: Mo cua an toan tu say X004 *)
+bFault4_AirFlowExhaust      := stAlarms.bAirFlowFault;              (* Ma 4: Luu luong gio hut buong say X011 *)
+bFault5_WaterFlowCooling    := stAlarms.bWaterFlowFault;            (* Ma 5: Dong chay nuoc lam mat T41 (15s) *)
+bFault6_ShutterLimitJam     := stAlarms.bShutterFault;              (* Ma 6: Ket hanh trinh Shutter T21 (5s) *)
+bFault7_ChillerUnitTrip     := stAlarms.bChillerFault;              (* Ma 7: Qua tai / Trip may Chiller T101 (10s) *)
+bFault8_ChamberOverTemp     := stAlarms.bOverTempFault;             (* Ma 8: Qua nhiet buong say X003 *)
+bFault9_LampHourExpired     := stAlarms.bLampLifeExpired;           (* Ma 9: Het tuoi tho bong den UV T120 (5s) *)
+bMasterSystemAlarm          := stAlarms.bSystemAlarm;               (* M180: Co tong hop su co toan he thong *)
 
 
 (* ==============================================================================

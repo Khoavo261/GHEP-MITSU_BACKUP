@@ -5,3 +5,13 @@ VAR	stSensors	ST_UV_Sensors				Struct chua tin hieu cam bien vat ly X
 VAR	stOutputs	ST_UV_Outputs				Struct chua tin hieu xuat coi den quat chiller Y
 VAR	stStatus	ST_UV_Status				Struct chua trang thai van hanh va dem giay
 VAR	stAlarms	ST_UV_Alarms				Struct chua 9 co su co va ma loi quet
+VAR	bFault1_BallastVoltage	BOOL				Ma 1: Loi dien ap chan luu Ballast T1 (5s)
+VAR	bFault2_AirPressure	BOOL				Ma 2: Loi ap suat gio buong say T11 (5s)
+VAR	bFault3_CabinetDoorOpen	BOOL				Ma 3: Loi mo cua an toan tu say X004
+VAR	bFault4_AirFlowExhaust	BOOL				Ma 4: Loi luu luong gio hut buong say X011
+VAR	bFault5_WaterFlowCooling	BOOL				Ma 5: Loi dong chay nuoc lam mat T41 (15s)
+VAR	bFault6_ShutterLimitJam	BOOL				Ma 6: Loi ket hanh trinh Shutter T21 (5s)
+VAR	bFault7_ChillerUnitTrip	BOOL				Ma 7: Loi qua tai / Trip may Chiller T101 (10s)
+VAR	bFault8_ChamberOverTemp	BOOL				Ma 8: Loi qua nhiet buong say X003
+VAR	bFault9_LampHourExpired	BOOL				Ma 9: Canh bao het tuoi tho bong UV T120 (5s)
+VAR	bMasterSystemAlarm	BOOL				Tong hop co su co toan he thong (M180)
