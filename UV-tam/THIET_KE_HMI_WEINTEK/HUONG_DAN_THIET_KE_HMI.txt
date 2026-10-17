@@ -1,0 +1,182 @@
+================================================================================
+          TÀI LIỆU HƯỚNG DẪN THIẾT KẾ GIAO DIỆN HMI WEINTEK MT6103iP
+                    HỆ THỐNG TỦ SẤY UV CÔNG NGHIỆP
+           (KÈM FILE IMPORT TAGS HMI.CSV VÀ HÌNH ẢNH MÔ PHỎNG 3D)
+================================================================================
+
+I. CẤU TRÚC THƯ MỤC LƯU TRỮ (THIET_KE_HMI_WEINTEK):
+--------------------------------------------------------------------------------
+Thư mục: d:\data-2026\lap_top\GHEP-MITSU_BACKUP\UV-tam\THIET_KE_HMI_WEINTEK\
+├── hmi.csv                                  <- File 79 Tag ánh xạ địa chỉ PLC FX2N
+├── HUONG_DAN_THIET_KE_HMI.txt               <- Tài liệu hướng dẫn chi tiết này
+└── Hinh_Anh_Giao_Dien/
+    └── HMI_UV_Curing_Mimic_3D.jpg           <- Ảnh phối cảnh 3D buồng sấy UV (16:9)
+
+
+================================================================================
+II. BƯỚC 1: KHỞI TẠO PROJECT & IMPORT TAGS TỪ HMI.CSV VÀO EASYBUILDER PRO
+================================================================================
+
+1. Mở phần mềm EasyBuilder Pro (Weintek):
+   - Chọn [New Project].
+   - Chọn Model HMI: [MT6103iP] (Màn hình 10.1 inch, độ phân giải 1024 x 600, tỷ lệ 16:9).
+   - Tại bảng [System Parameters] -> Thẻ [Device]:
+     * Nhấn [New Device...]
+     * Device Name: PLC_FX2N
+     * Device Type: Mitsubishi FX2N / FX3U
+     * Interface: RS-485 / RS-422 (Cổng COM nối PLC FX2N)
+     * COM Port Settings: 9600 bps, 7 Data bits, Even Parity, 1 Stop bit.
+
+2. Import toàn bộ 79 biến từ file hmi.csv:
+   - Trên thanh menu EasyBuilder Pro: Vào thẻ [Project] -> Chọn [Address] (hoặc Tag Library).
+   - Nhấn nút [Import...] hoặc [Import Tag].
+   - Trỏ đường dẫn đến file:
+     d:\data-2026\lap_top\GHEP-MITSU_BACKUP\UV-tam\THIET_KE_HMI_WEINTEK\hmi.csv
+   - Nhấn [Open] -> EasyBuilder Pro sẽ tự động nạp toàn bộ danh sách 79 biến:
+     * Toàn bộ ngõ vào cảm biến: X001 .. X031
+     * Toàn bộ ngõ ra khởi động từ, van, quạt: Y000 .. Y030
+     * Toàn bộ nút điều khiển HMI: M500 .. M515
+     * Toàn bộ cờ lỗi giám sát độc lập: M200 .. M208
+     * Toàn bộ thanh ghi giám sát: D100 .. D105
+   - Kết quả: Không cần phải gõ tay từng địa chỉ PLC, chỉ cần chọn tên biến từ danh sách!
+
+
+================================================================================
+III. BƯỚC 2: NẠP HÌNH ẢNH PHỐI CẢNH 3D VÀO EASYBUILDER PRO
+================================================================================
+
+1. Vào menu [Project] -> Chọn [Picture Library].
+2. Nhấn nút [Add Picture] (hoặc biểu tượng dấu +):
+   - Đặt tên Picture: "BG_UV_CHAMBER_3D"
+   - Chọn đường dẫn đến file:
+     d:\data-2026\lap_top\GHEP-MITSU_BACKUP\UV-tam\THIET_KE_HMI_WEINTEK\Hinh_Anh_Giao_Dien\HMI_UV_Curing_Mimic_3D.jpg
+   - Nhấn [OK].
+3. Mở màn hình chính [Window 10: Main / Process]:
+   - Kéo đối tượng [Picture Object] vào màn hình và chọn ảnh "BG_UV_CHAMBER_3D".
+   - Căn chỉnh ảnh nằm chính giữa màn hình làm khung mô phỏng trực quan.
+
+
+================================================================================
+IV. BƯỚC 3: CHI TIẾT CÁCH GẮN CÁC ĐÈN BÁO LÊN HÌNH VẼ TRÊN HMI
+================================================================================
+
+Nguyên tắc vàng: Đặt đèn báo và hiệu ứng chớp lỗi đúng ngay trên thiết bị thực tế
+để người vận hành nhìn thấy ngay vị trí xảy ra sự cố.
+
+--------------------------------------------------------------------------------
+1. CỤM BÓNG ĐÈN UV (GIỮA BUỒNG SẤY)
+--------------------------------------------------------------------------------
+- Đèn báo công suất đèn UV (Word Lamp):
+  * Vị trí: Đặt ngay trên hình bóng đèn thạch anh trong máng phản xạ.
+  * Địa chỉ đọc: Thanh ghi D103 (hmi_PowerWatt) hoặc D100 (hmi_MachineState).
+  * Cài đặt Multi-State:
+    + State 0 (0W)   : Màu Xám tối (Bóng tắt).
+    + State 1 (80W)  : Màu Vàng Cam (Bóng đang sấy nóng Warm-up 30s).
+    + State 2 (120W) : Màu Tím Sáng rực (Chế độ sấy chuẩn).
+    + State 3 (160W) : Màu Tím Neon sáng cực đại (Chế độ sấy Turbo).
+- Đèn cảnh báo sự cố chấn lưu / Quá nhiệt bóng (Bit Lamp):
+  * Vị trí: Đặt biểu tượng tam giác cảnh báo (!) ngay cạnh bóng đèn.
+  * Địa chỉ đọc: Bit M200 (bMon_BallastFault) hoặc M207 (bMon_OverTempFault).
+  * Thuộc tính: Chọn [Blink] (Nhấp nháy đỏ). Khi chấn lưu sụt áp/quá áp hoặc bóng quá nhiệt,
+    biểu tượng này chớp đỏ ngay lập tức!
+
+--------------------------------------------------------------------------------
+2. CỬA CHẮN TIA UV SHUTTER KHÍ NÉN (PNEUMATIC SHUTTER FLAP)
+--------------------------------------------------------------------------------
+- Đèn báo trạng thái đóng/mở Shutter (Bit Lamp):
+  * Vị trí: Đặt tại nắp chắn Shutter trước cửa buồng.
+  * Địa chỉ đọc: Ngõ ra Y007 (do_ShutterValve) hoặc sensor mở X012.
+  * Thuộc tính:
+    + State 0: Màu Xám / Đen (Shutter đóng kín an toàn).
+    + State 1: Màu Xanh lá cây (Shutter mở cho tia UV chiếu sấy phôi).
+- Đèn cảnh báo kẹt hành trình Shutter (Bit Lamp):
+  * Vị trí: Đặt tại xilanh khí nén Shutter.
+  * Địa chỉ đọc: Bit M205 (bMon_ShutterJamFault).
+  * Thuộc tính: Nhấp nháy ĐỎ (Blink). Quá 5.0s mở mà không chạm sensor X012 sẽ chớp đỏ báo kẹt!
+
+--------------------------------------------------------------------------------
+3. QUẠT HÚT CHÍNH & ĐƯỜNG ỐNG THOÁT KHÍ (EXHAUST BLOWER & DUCT)
+--------------------------------------------------------------------------------
+- Biểu tượng quạt quay / Đèn cấp tốc độ (Word Lamp):
+  * Vị trí: Đặt ngay trên quạt ly tâm gió xả.
+  * Địa chỉ đọc: D104 (hmi_FanSpeedStage).
+  * Thuộc tính:
+    + State 0 (Dừng) : Cánh quạt màu Xám.
+    + State 1 (Cấp 1): Cánh quạt màu Xanh dương nhạt (Êm).
+    + State 2 (Cấp 2): Cánh quạt màu Xanh lá cây (Vừa).
+    + State 3 (Cấp 3): Cánh quạt màu Tím Turbo (Tối đa).
+- Đèn cảnh báo mất áp suất gió & mất lưu lượng (Bit Lamp):
+  * Vị trí: Đặt ngay trên đường ống xả cong dẫn khí ra ngoài.
+  * Địa chỉ đọc: Bit M201 (bMon_AirPressureFault) hoặc M203 (bMon_AirFlowFault).
+  * Thuộc tính: Nhấp nháy ĐỎ (Blink). Khi đứt curoa hoặc tắc ống, đường ống chớp đỏ báo động!
+
+--------------------------------------------------------------------------------
+4. HAI CỬA VAN GIÓ BUỒNG SẤY (DAMPER 1 & DAMPER 2)
+--------------------------------------------------------------------------------
+- Đèn báo van Damper 1: Đặt tại cổ hút gió buồng 1 -> Đọc ngõ ra Y005 (Sensor phôi X014 kích mở).
+- Đèn báo van Damper 2: Đặt tại cổ hút gió buồng 2 -> Đọc ngõ ra Y006 (Sensor phôi X015 kích mở).
+- Thuộc tính: Xanh lá = Đang mở van hút khí; Xám = Đóng kín.
+
+--------------------------------------------------------------------------------
+5. MÁY LÀM LẠNH CHILLER & ĐƯỜNG ỐNG NƯỚC TUẦN HOÀN (CHILLER SYSTEM)
+--------------------------------------------------------------------------------
+- Đèn báo Chiller chạy (Bit Lamp):
+  * Vị trí: Đặt ngay khối máy làm lạnh Chiller cạnh buồng sấy.
+  * Địa chỉ đọc: Y030 (do_ChillerCommand). Xanh dương = Đang bơm làm mát; Xám = Dừng.
+- Đèn cảnh báo mất dòng chảy nước làm mát (Bit Lamp):
+  * Vị trí: Đặt dọc theo đường ống nước màu xanh nối vào buồng đèn.
+  * Địa chỉ đọc: Bit M204 (bMon_WaterFlowFault).
+  * Thuộc tính: Nhấp nháy ĐỎ (Blink). Khi thiếu nước làm mát quá 15s, đường ống nhấp nháy đỏ!
+- Đèn cảnh báo Chiller bị Trip / Quá tải:
+  * Vị trí: Đặt tại tủ điều khiển Chiller -> Đọc bit M206 (bMon_ChillerFault). Nhấp nháy đỏ khi trip.
+
+--------------------------------------------------------------------------------
+6. BĂNG TẢI CHÍNH & CÁC CỬA AN TOÀN (CONVEYOR & SAFETY DOORS)
+--------------------------------------------------------------------------------
+- Cửa tủ điện nguồn (Bit Lamp):
+  * Vị trí: Cửa hông tủ điện.
+  * Địa chỉ đọc: Bit M202 (bMon_CabinetDoorFault). Nhấp nháy ĐỎ tức thời khi mở cửa tủ.
+- Băng tải phôi (Bit Lamp):
+  * Vị trí: Băng tải cao su chạy xuyên qua buồng sấy.
+  * Địa chỉ đọc: X006 (di_MainMachineRunning).
+  * Xanh lá = Đang kéo phôi; Vàng/Xám = Băng tải dừng (Tự động kích hoạt Anti-Burn).
+
+--------------------------------------------------------------------------------
+7. CÁC NÚT NHẤN ĐIỀU KHIỂN CẢM ỨNG (HMI TOUCH BUTTONS)
+--------------------------------------------------------------------------------
+Đặt góc dưới bên trái màn hình:
+- Nút [START]: Function: Set ON (Bit M500). Màu Xanh lá cây.
+- Nút [STOP]: Function: Set ON (Bit M501). Màu Đỏ sẫm.
+- Nút [TẮT CÒI]: Function: Momentary (Bit M502). Màu Vàng.
+- Nút [RESET LỖI]: Function: Momentary (Bit M503). Màu Xanh dương.
+- Công tắc chọn [160W TURBO]: Function: Toggle (Bit M504).
+
+
+================================================================================
+V. BƯỚC 4: TẠO THANH BANNER THÔNG BÁO LỖI THÔNG MINH (DƯỚI ĐÁY MÀN HÌNH)
+================================================================================
+
+Để người vận hành không cần nhớ mã số, đặt 1 thanh thông báo lỗi chạy chữ tự động:
+1. Chọn đối tượng [Word Lamp] hoặc [Message Display] trải dài sát cạnh dưới màn hình.
+2. Địa chỉ đọc: Thanh ghi D101 (hmi_ActiveAlarmCode).
+3. Cài đặt các trạng thái chữ (Text states):
+   * State 0: Nền Xanh lá cây dịu | Chữ: [OK] HỆ THỐNG BÌNH THƯỜNG - SẴN SÀNG HOẠT ĐỘNG
+   * State 1: Nền Đỏ nhấp nháy    | Chữ: [LỖI 01] SỰ CỐ ĐIỆN ÁP CHẤN LƯU (BALLAST FAULT - X001/X002)
+   * State 2: Nền Đỏ nhấp nháy    | Chữ: [LỖI 02] MẤT ÁP SUẤT GIÓ BUỒNG SẤY (AIR PRESSURE - X010)
+   * State 3: Nền Đỏ nhấp nháy    | Chữ: [LỖI 03] CỬA AN TOÀN TỦ ĐIỆN ĐANG MỞ (CABINET OPEN - X004)
+   * State 4: Nền Đỏ nhấp nháy    | Chữ: [LỖI 04] MẤT LƯU LƯỢNG GIÓ HÚT BUỒNG (AIR FLOW - X011)
+   * State 5: Nền Đỏ nhấp nháy    | Chữ: [LỖI 05] MẤT NƯỚC LÀM MÁT CHILLER (WATER FLOW - X016)
+   * State 6: Nền Đỏ nhấp nháy    | Chữ: [LỖI 06] KẸT HÀNH TRÌNH SHUTTER KHÍ NÉN (SHUTTER JAM - X012/X013)
+   * State 7: Nền Đỏ nhấp nháy    | Chữ: [LỖI 07] SỰ CỐ QUÁ TẢI MÁY CHILLER (CHILLER TRIP - X031)
+   * State 8: Nền Đỏ nhấp nháy    | Chữ: [LỖI 08] QUÁ NHIỆT BUỒNG SẤY / DỪNG KHẨN (OVERTEMP / E-STOP - X003)
+   * State 9: Nền Vàng nhấp nháy  | Chữ: [CẢNH BÁO 09] HẾT TUỔI THỌ BÓNG ĐÈN UV (LAMP LIFE EXPIRED)
+
+* CƠ CHẾ QUÉT LỖI LUÂN PHIÊN (2.0s):
+  Nếu xảy ra đồng thời 2 lỗi (ví dụ Lỗi 2 mất gió và Lỗi 5 mất nước), thanh banner
+  sẽ tự động nhảy luân phiên: [LỖI 02] (2 giây) -> [LỖI 05] (2 giây) -> [LỖI 02]...
+  Đồng thời cả vị trí quạt gió và vị trí đường ống nước trên hình vẽ 3D đều chớp đỏ,
+  giúp người vận hành nhìn phát là nhận diện được toàn bộ sự cố ngay!
+
+================================================================================
+                      BẢN QUYỀN THIẾT KẾ - PHÒNG TỰ ĐỘNG HÓA
+================================================================================
