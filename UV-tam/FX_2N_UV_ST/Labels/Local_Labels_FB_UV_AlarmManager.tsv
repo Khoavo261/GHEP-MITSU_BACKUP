@@ -1,0 +1,29 @@
+VAR_INPUT	stSensors	ST_UV_Sensors		Struct chua toan bo tin hieu cam bien va lien dong
+VAR_INPUT	stCmd	ST_UV_Commands		Struct chua tin hieu nut nhan va lenh dieu khien HMI
+VAR_INPUT	bLamp80WActive	BOOL		Trang thai den dang chay 80W
+VAR_INPUT	bLampStabilized	BOOL		Co den da say nong on dinh 30s (M540)
+VAR_INPUT	bShutterSolenoid	BOOL		Cuon hut mo Shutter dang duoc cap dien
+VAR_INPUT	bLampIgnited	BOOL		Den da bat sang (bat ky cap cong suat nao)
+VAR_INPUT	bLampHourMeterExpired	BOOL		Co dem gio chay den UV vuot nguong cai dat
+VAR_OUTPUT	stAlarms	ST_UV_Alarms		Struct 9 su co va ma loi quet he thong
+VAR_OUTPUT	q_Buzzer	BOOL		Y023: Tin hieu coi bao dong
+VAR_OUTPUT	stOutputs_AlarmBits	INT		K1Y024: 4 bit ma loi xuat den/PLC ngoai
+VAR	bBuzzerMuted	BOOL		Co da bam nut tat chuong coi
+VAR	bShutterConditionError	BOOL		Dieu kien phat hien ket hanh trinh Shutter
+VAR	iScanPointer	INT		Con tro quet su co (1..9)
+VAR	bFoundActive	BOOL		Co danh dau da tim thay loi tich cuc
+VAR	iSearchCount	INT		Bien dem vong lap tim kiem su co
+VAR	tonBallast	TON		T1 Lc nhieu qua/sut ap chan luu (5s)
+VAR	tonAirPressure	TON		T11 Loc nhieu ap suat gio buong say (5s)
+VAR	tonShutter	TON		T21 Loc nhieu ket hanh trinh Shutter (5s)
+VAR	tonWaterFlow	TON		T41 Loc nhieu dong chay nuoc lam mat (15s)
+VAR	tonChillerStart	TON		T101 Tre giam sat trip Chiller khi khoi dong (10s)
+VAR	tonLampLife	TON		T120 Loc nhieu bao tuoi tho den UV (5s)
+VAR	tonScanTimer	TON		Timer chu ky chuyen buoc quet ma loi 2.0s
+VAR_CONSTANT	tBallastFaultDelay	TIME	T#5s	Thoi gian loc loi chan luu
+VAR_CONSTANT	tAirPressureDelay	TIME	T#5s	Thoi gian loc loi ap gio buong say
+VAR_CONSTANT	tShutterFaultDelay	TIME	T#5s	Thoi gian loc loi hanh trinh Shutter
+VAR_CONSTANT	tWaterFlowDelay	TIME	T#15s	Thoi gian loc loi nuoc lam mat
+VAR_CONSTANT	tChillerFaultDelay	TIME	T#10s	Thoi gian tre giam sat Chiller
+VAR_CONSTANT	tLampLifeDelay	TIME	T#5s	Thoi gian loc canh bao bong UV
+VAR_CONSTANT	tScanStepDuration	TIME	T#2s	Thoi gian giu moi ma loi khi hien thi

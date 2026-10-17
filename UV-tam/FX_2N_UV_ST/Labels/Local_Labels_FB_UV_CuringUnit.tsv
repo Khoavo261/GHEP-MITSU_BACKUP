@@ -1,0 +1,16 @@
+VAR_INPUT	stCmd	ST_UV_Commands		Struct tin hieu nut nhan va lenh HMI
+VAR_INPUT	stSensors	ST_UV_Sensors		Struct cam bien va tiep diem an toan
+VAR_INPUT	bSystemAlarm	BOOL		Co tong hop su co he thong (M180)
+VAR_OUTPUT	stOutputs	ST_UV_Outputs		Struct dau ra chap hanh den quat chiller
+VAR_OUTPUT	stStatus	ST_UV_Status		Struct trang thai he thong va thoi gian
+VAR	bRunLatch	BOOL		Co chot duy tri he thong dang hoat dong
+VAR	bStopTrigger	BOOL		Dieu kien dung he thong
+VAR	bTriggerAfterCool	BOOL		Xung kich hoat chu ky lam mat sau 180s
+VAR	bPowerOnDebounceDone	BOOL		Co bao nguon PLC da on dinh 2s
+VAR	bPermitHighPower	BOOL		Dieu kien cho phep mo Shutter va tang cong suat
+VAR	tonPowerOnInit	TON		Timer loc nhieu nguon khoi dong 2s
+VAR	tonWarmup	TON		Timer say nong 80W 30s
+VAR	tonAfterCool	TON		Timer lam mat sau khi tat den 180s
+VAR_CONSTANT	tPowerOnInitDelay	TIME	T#2s	Thoi gian on dinh nguon PLC
+VAR_CONSTANT	tWarmupDuration	TIME	T#30s	Thoi gian say nong bong UV
+VAR_CONSTANT	tAfterCoolDuration	TIME	T#180s	Thoi gian lam mat sau

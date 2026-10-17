@@ -1,0 +1,55 @@
+VAR_GLOBAL	di_FanThermalOverload	BOOL		X000		Bao loi quat hut thong gio
+VAR_GLOBAL	di_LampVoltageLow	BOOL		X001		Loi sut ap den UV duoi nguong
+VAR_GLOBAL	di_LampVoltageHigh	BOOL		X002		Loi qua ap den UV tren nguong
+VAR_GLOBAL	di_EStop	BOOL		X003		Nut dung khan cap E-Stop
+VAR_GLOBAL	di_CabinetDoorOpen	BOOL		X004		Loi mo cua tu dien nguon
+VAR_GLOBAL	di_InfeedDoorClosed	BOOL		X005		Cam bien cua nap phoi da dong kin
+VAR_GLOBAL	di_MainMachineRunning	BOOL		X006		Tin hieu may chinh dang chay
+VAR_GLOBAL	di_AirPressureSw	BOOL		X010		Cong tac ap suat gio buong say
+VAR_GLOBAL	di_ChamberLTS	BOOL		X011		Limit switch lien dong buong UV
+VAR_GLOBAL	di_ShutterOpenLimit	BOOL		X012		Cam bien Shutter da mo het
+VAR_GLOBAL	di_ShutterClosedLimit	BOOL		X013		Cam bien Shutter da dong kin
+VAR_GLOBAL	di_ChamberPos1	BOOL		X014		Cam bien vi tri buong chieu 1
+VAR_GLOBAL	di_ChamberPos2	BOOL		X015		Cam bien vi tri buong chieu 2
+VAR_GLOBAL	di_WaterFlowSw	BOOL		X016		Cam bien dong chay nuoc Flow Switch
+VAR_GLOBAL	di_BtnLampOn	BOOL		X020		Nut nhan bat den UV PB ON
+VAR_GLOBAL	di_BtnLampOff	BOOL		X021		Nut nhan tat den UV PB OFF
+VAR_GLOBAL	di_BtnBuzzerStop	BOOL		X022		Nut tat coi bao dong Buzzer
+VAR_GLOBAL	di_BtnFaultReset	BOOL		X023		Nut Reset giai tru loi he thong
+VAR_GLOBAL	di_SwPower160W	BOOL		X024		Cong tac chon cong suat 160W
+VAR_GLOBAL	di_ShutterDelayCloseSig	BOOL		X025		Tin hieu Shutter dong tre
+VAR_GLOBAL	di_ShutterDelayCloseInterlock	BOOL		X026		Tin hieu Shutter dong tre interlock
+VAR_GLOBAL	di_SwPower80W	BOOL		X027		Cong tac chon cong suat 80W
+VAR_GLOBAL	di_ChillerRunningSig	BOOL		X030		Tin hieu Chiller dang chay
+VAR_GLOBAL	di_ChillerFaultSig	BOOL		X031		Tin hieu bao loi Chiller
+VAR_GLOBAL	do_MasterAlarm	BOOL		Y000		Den bao loi tong hop he thong
+VAR_GLOBAL	do_Buzzer	BOOL		Y001		Coi bao dong su co Buzzer
+VAR_GLOBAL	do_LampPower80W	BOOL		Y002		Khoi dong den UV cong suat 80W
+VAR_GLOBAL	do_LampPower120W	BOOL		Y003		Kich tang cong suat den UV 120W
+VAR_GLOBAL	do_LampPower160W	BOOL		Y004		Kich tang cong suat den UV 160W
+VAR_GLOBAL	do_ExhaustDamper1	BOOL		Y005		Van xa khi buong chieu Damper 1
+VAR_GLOBAL	do_ExhaustDamper2	BOOL		Y006		Van xa khi buong chieu Damper 2
+VAR_GLOBAL	do_ShutterValve	BOOL		Y007		Van khi dong mo cua chan Shutter
+VAR_GLOBAL	do_ExhaustFan	BOOL		Y010		Dong co quat hut khi hoat dong
+VAR_GLOBAL	do_FanSpeedStage1	BOOL		Y011		Dieu khien toc do quat cap 1
+VAR_GLOBAL	do_FanSpeedStage2	BOOL		Y012		Dieu khien toc do quat cap 2
+VAR_GLOBAL	do_FanSpeedStage3	BOOL		Y013		Dieu khien toc do quat cap 3
+VAR_GLOBAL	do_LampFanRunning	BOOL		Y014		Den bao quat hut dang chay
+VAR_GLOBAL	do_LampUVOn	BOOL		Y015		Den bao den UV dang sang
+VAR_GLOBAL	do_LampStandby	BOOL		Y016		Den bao che do STANDBY san sang
+VAR_GLOBAL	do_LampRunning	BOOL		Y017		Den bao che do RUNNING dang say
+VAR_GLOBAL	do_Lamp120W	BOOL		Y020		Den bao cong suat 120W
+VAR_GLOBAL	do_Lamp160W	BOOL		Y021		Den bao cong suat 160W
+VAR_GLOBAL	do_ShutterDelayOpen	BOOL		Y022		Tin hieu nap phoi Mo Shutter tre
+VAR_GLOBAL	do_ShutterDelayClose	BOOL		Y023		Lenh dong Shutter tre
+VAR_GLOBAL	do_ErrorCodeBit0	BOOL		Y024		Bit 0 LED 7 doan ma loi
+VAR_GLOBAL	do_ErrorCodeBit1	BOOL		Y025		Bit 1 LED 7 doan ma loi
+VAR_GLOBAL	do_ErrorCodeBit2	BOOL		Y026		Bit 2 LED 7 doan ma loi
+VAR_GLOBAL	do_ErrorCodeBit3	BOOL		Y027		Bit 3 LED 7 doan ma loi
+VAR_GLOBAL	do_ChillerCommand	BOOL		Y030		Lenh khoi dong Chiller
+VAR_GLOBAL	hmi_MachineState	WORD		D100		HMI Trang thai may 0 den 6
+VAR_GLOBAL	hmi_ActiveAlarmCode	WORD		D101		HMI Ma so loi hien hanh 0 den 9
+VAR_GLOBAL	hmi_AlarmMask	WORD		D102		HMI Bitmap 16 bit luu tru 9 ma loi
+VAR_GLOBAL	hmi_PowerWatt	WORD		D103		HMI Cong suat thuc te Watt
+VAR_GLOBAL	hmi_FanSpeedStage	WORD		D104		HMI Cap toc do quat 0 1 2
+VAR_GLOBAL	hmi_RemainingAfterCoolSec	INT		D105		HMI Thoi gian lam mat con lai giay

@@ -1,0 +1,7 @@
+bWarmupActive	BOOL		Dang trong giai doan say nong 30s ban dau
+bLampStabilized	BOOL		Den da say nong on dinh (M540)
+bAfterCoolActive	BOOL		Dang trong chu trinh lam mat sau khi tat 180s (M560)
+bSystemReady	BOOL		He thong san sang hoat dong (khong co loi, du dieu kien)
+iStateCode	INT		0:OFF, 1:WARMUP_80W, 2:RUN_80W, 3:RUN_120W, 4:RUN_160W, 5:AFTER_COOL
+iWarmupRemainSec	INT		Thoi gian con lai say nong 30s (dem nguoc ve 0)
+iAfterCoolRemainSec	INT		Thoi gian con lai lam mat 180s (dem nguoc ve 0)

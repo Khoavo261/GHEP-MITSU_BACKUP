@@ -1,0 +1,14 @@
+di_LampVoltageLow	BOOL		X001: Ap thap chan luu Ballast (T1 filter)
+di_LampVoltageHigh	BOOL		X002: Ap cao chan luu Ballast
+di_OverTempTrip	BOOL		X003: Su co qua nhiet buong say UV
+di_PowerCabinetDoorClosed	BOOL		X004: Cua tu dien dong an toan
+di_SafetyDoorClosed	BOOL		X005: Cua buong say / cap phoi dong
+di_MainLineRunning	BOOL		X006: Tin hieu may in / bang tai chinh dang chay
+di_AirFlowSw	BOOL		X011: Cong tac luu luong gio hut
+di_ShutterOpenLimit	BOOL		X012: Cong tac hanh trinh Shutter Mo
+di_ShutterClosedLimit	BOOL		X013: Cong tac hanh trinh Shutter Dong
+di_DamperPos1Sw	BOOL		X014: Sensor vi tri 1 kich hoat Mo Damper 1
+di_DamperPos2Sw	BOOL		X015: Sensor vi tri 2 kich hoat Mo Damper 2
+di_ChillerTrip	BOOL		X016: Su co Chiller nuoc lam mat
+di_WaterFlowSw	BOOL		X017: Cong tac luu luong nuoc lam mat
+di_AirPressureSw	BOOL		X022: Cong tac ap suat gio buong say

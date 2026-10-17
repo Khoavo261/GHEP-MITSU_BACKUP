@@ -1,0 +1,13 @@
+q_Lamp80W	BOOL		Y002: Khoi dong tu bat den 80W / Warmup
+q_Lamp120W	BOOL		Y003: Khoi dong tu tang ap 120W
+q_Lamp160W	BOOL		Y004: Khoi dong tu Turbo 160W
+q_Damper1	BOOL		Y005: Mo van gio hut buong say 1
+q_Damper2	BOOL		Y006: Mo van gio hut buong say 2
+q_ShutterSolenoid	BOOL		Y007: Mo Shutter che UV cho tia chieu xuong vat
+q_FanMain	BOOL		Y010: Quat hut tong buong say
+q_FanSpeed1	BOOL		Y011: Quat hut cap toc do 1 (Low)
+q_FanSpeed2	BOOL		Y012: Quat hut cap toc do 2 (Mid)
+q_FanSpeed3	BOOL		Y013: Quat hut cap toc do 3 (High / Turbo)
+q_Chiller	BOOL		Y030: May lam lanh nuoc tuan hoan
+q_Buzzer	BOOL		Y023: Coi bao dong su co
+q_AlarmCodeBits	INT		K1Y024: 4-bit ma loi (0..9) xuat ra den/PLC ngoai

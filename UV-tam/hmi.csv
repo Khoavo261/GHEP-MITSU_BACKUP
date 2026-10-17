@@ -1,4 +1,4 @@
-﻿Tag Name,Device Name,Address Type,Address,Data Type,Description
+Tag Name,Device Name,Address Type,Address,Data Type,Description
 BTN_UV_ON,FX2N_UV,X,20,Bit,Nút nhấn bật đèn UV (X020)
 BTN_UV_OFF,FX2N_UV,X,21,Bit,Nút nhấn tắt đèn UV (X021)
 BTN_BUZZER_STOP,FX2N_UV,X,22,Bit,Nút tắt còi cảnh báo Buzzer (X022)
@@ -33,7 +33,8 @@ VALVE_DAMPER_2,FX2N_UV,Y,6,Bit,Van xả khí buồng chiếu Damper 2 (Y006)
 VALVE_SHUTTER,FX2N_UV,Y,7,Bit,Van khí nén đóng mở Shutter (Y007)
 CMD_FAN_MAIN,FX2N_UV,Y,10,Bit,Khởi động động cơ quạt hút chính (Y010)
 CMD_FAN_SPEED_1,FX2N_UV,Y,11,Bit,Điều khiển quạt tốc độ cấp 1 - Êm (Y011)
-CMD_FAN_SPEED_2,FX2N_UV,Y,12,Bit,Điều khiển quạt tốc độ cấp 2 - Mạnh (Y012)
+CMD_FAN_SPEED_2,FX2N_UV,Y,12,Bit,Điều khiển quạt tốc độ cấp 2 - Vừa (Y012)
+CMD_FAN_SPEED_3,FX2N_UV,Y,13,Bit,Điều khiển quạt tốc độ cấp 3 - Turbo (Y013)
 LAMP_FAN_RUNNING,FX2N_UV,Y,14,Bit,Đèn báo quạt hút đang chạy (Y014)
 LAMP_UV_RUNNING,FX2N_UV,Y,15,Bit,Đèn báo đèn UV đang bật (Y015)
 LAMP_STANDBY,FX2N_UV,Y,16,Bit,Đèn báo trạng thái Standby sẵn sàng (Y016)
@@ -71,3 +72,9 @@ TMR_FLOW_ERR_BIT,FX2N_UV,T,41,Bit,Tiếp điểm trễ bắt lỗi dòng nước
 TMR_WARMUP_VAL,FX2N_UV,TV,140,16-bit Unsigned,Giá trị đếm thời gian sấy nóng đèn 0-300 (T140)
 TMR_AFTERCOOL_VAL,FX2N_UV,TV,130,16-bit Unsigned,Giá trị đếm thời gian giải nhiệt 0-1800 (T130)
 TMR_FAN_DLY_VAL,FX2N_UV,TV,120,16-bit Unsigned,Giá trị đếm thời gian duy trì quạt 0-900 (T120)
+HMI_MACHINE_STATE,FX2N_UV,D,100,16-bit Signed,Trạng thái máy 0=Stop 1=Warmup 2=Standby 3=120W 4=160W 5=Cool 6=Fault
+HMI_ACTIVE_ALARM_CODE,FX2N_UV,D,101,16-bit Signed,Mã số lỗi hiện hành 0=Normal 1..9=Lỗi E01..E09
+HMI_ALARM_MASK_16BIT,FX2N_UV,D,102,16-bit Unsigned,Bitmap 16-bit lưu trữ đồng thời toàn bộ 9 mã lỗi
+HMI_CURRENT_POWER_WATT,FX2N_UV,D,103,16-bit Signed,Công suất sấy thực tế 0W 80W 120W 160W
+HMI_FAN_SPEED_STAGE,FX2N_UV,D,104,16-bit Signed,Cấp tốc độ quạt hút 0=Stop 1=Cấp 1 2=Cấp 2
+HMI_REMAINING_COOL_SEC,FX2N_UV,D,105,16-bit Signed,Thời gian đếm lùi làm mát After-Cool còn lại (Giây)

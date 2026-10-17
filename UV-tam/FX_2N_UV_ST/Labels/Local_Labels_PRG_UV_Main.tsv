@@ -1,0 +1,7 @@
+VAR	fbAlarmManager	FB_UV_AlarmManager				Instance quan ly 9 nguon su co va quet loi
+VAR	fbCuringUnit	FB_UV_CuringUnit				Instance dieu khien chu trinh den UV quat chiller
+VAR	stCommands	ST_UV_Commands				Struct chua tin hieu nut nhan va HMI
+VAR	stSensors	ST_UV_Sensors				Struct chua tin hieu cam bien vat ly X
+VAR	stOutputs	ST_UV_Outputs				Struct chua tin hieu xuat coi den quat chiller Y
+VAR	stStatus	ST_UV_Status				Struct chua trang thai van hanh va dem giay
+VAR	stAlarms	ST_UV_Alarms				Struct chua 9 co su co va ma loi quet

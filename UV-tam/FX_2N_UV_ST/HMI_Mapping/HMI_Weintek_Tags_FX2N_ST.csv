@@ -1,0 +1,49 @@
+Tag Name,Device Name,Address Type,Address,Data Type,Description
+Lamp_PB_ON,FX2N_UV,X,20,Bit,Nut nhan bat den UV
+Lamp_PB_OFF,FX2N_UV,X,21,Bit,Nut nhan tat den UV
+Buzzer_Mute_PB,FX2N_UV,X,22,Bit,Nut tat coi bao dong Buzzer
+Fault_Reset_PB,FX2N_UV,X,23,Bit,Nut Reset giai tru loi
+Power_160W_SW,FX2N_UV,X,24,Bit,Cong tac chon cong suat 160W
+Power_80W_SW,FX2N_UV,X,27,Bit,Cong tac chon cong suat 80W
+Door_Safe_SW,FX2N_UV,X,4,Bit,Cong tac hanh trinh cua tu nguon
+Master_Alarm_Lamp,FX2N_UV,Y,0,Bit,Den bao loi tong hop he thong
+Buzzer_Audio,FX2N_UV,Y,1,Bit,Coi bao dong su co
+Lamp_Ignited_80W,FX2N_UV,Y,2,Bit,Den UV chay cong suat 80W
+Lamp_Run_120W,FX2N_UV,Y,3,Bit,Den UV chay cong suat 120W
+Lamp_Turbo_160W,FX2N_UV,Y,4,Bit,Den UV chay cong suat 160W
+Damper_Zone1,FX2N_UV,Y,5,Bit,Van mo gio buong chieu 1
+Damper_Zone2,FX2N_UV,Y,6,Bit,Van mo gio buong chieu 2
+Shutter_Pneumatic_Valve,FX2N_UV,Y,7,Bit,Van khi dong mo Shutter
+Exhaust_Fan_Motor,FX2N_UV,Y,10,Bit,Dong co quat hut khi ozone
+Fan_Speed_Low,FX2N_UV,Y,11,Bit,Quat hut chay cap toc do 1
+Fan_Speed_High,FX2N_UV,Y,12,Bit,Quat hut chay cap toc do 2
+Lamp_Fan_Running,FX2N_UV,Y,14,Bit,Den bao quat hut dang chay
+Lamp_UV_ON,FX2N_UV,Y,15,Bit,Den bao UV dang sang
+Lamp_Standby,FX2N_UV,Y,16,Bit,Den bao che do Standby san sang
+Lamp_Running,FX2N_UV,Y,17,Bit,Den bao che do Running dang say
+Indication_120W,FX2N_UV,Y,20,Bit,Den bao cong suat 120W
+Indication_160W,FX2N_UV,Y,21,Bit,Den bao cong suat 160W
+Shutter_Delay_Open,FX2N_UV,Y,22,Bit,Tin hieu cho phep nap phoi
+Shutter_Delay_Close,FX2N_UV,Y,23,Bit,Tin hieu dong Shutter tre
+Chiller_Recirculation,FX2N_UV,Y,30,Bit,Lenh khoi dong may lanh Chiller
+Fault_Ballast_M0,FX2N_UV,M,0,Bit,Co bao loi chan luu Ballast
+Fault_Fan_M10,FX2N_UV,M,10,Bit,Co bao loi qua tai quat hut
+Fault_AirPress_M20,FX2N_UV,M,20,Bit,Co bao loi mat ap suat gio
+Fault_Chamber_M30,FX2N_UV,M,30,Bit,Co bao loi buong chieu UV
+Fault_Shutter_M40,FX2N_UV,M,40,Bit,Co bao loi ket hanh trinh Shutter
+Fault_Chiller_M51,FX2N_UV,M,51,Bit,Co bao loi may lam lanh Chiller
+Fault_WaterFlow_M60,FX2N_UV,M,60,Bit,Co bao loi mat dong chay nuoc
+Fault_EStop_M120,FX2N_UV,M,120,Bit,Co bao loi dung khan cap E-Stop
+Fault_DoorOpen_M130,FX2N_UV,M,130,Bit,Co bao loi mo cua tu dien nguon
+Master_Alarm_Flag_M180,FX2N_UV,M,180,Bit,Co bao loi tong hop he thong
+Door_Safe_Flag_M189,FX2N_UV,M,189,Bit,Co an toan cua tu dien MC N0
+Lamp_ON_Status_M520,FX2N_UV,M,520,Bit,Co trang thai den UV dang bat
+Lamp_Ready_Status_M540,FX2N_UV,M,540,Bit,Co den da on dinh quang thong 30s
+AfterCool_Status_M561,FX2N_UV,M,561,Bit,Co che do lam mat sau tat den 180s
+Feed_Allowed_M571,FX2N_UV,M,571,Bit,Co cho phep nap lieu
+HMI_Machine_State,FX2N_UV,D,100,16-bit Signed,Trang thai may 0=Stop 1=Warmup 2=Standby 3=120W 4=160W 5=Cool 6=Fault
+HMI_Active_Alarm_Code,FX2N_UV,D,101,16-bit Signed,Ma so loi hien tai dang hien thi 0 den 9
+HMI_Alarm_Mask_16Bit,FX2N_UV,D,102,16-bit Unsigned,Bitmap 16-bit tong hop toan bo 9 loi
+HMI_Current_Power_Watt,FX2N_UV,D,103,16-bit Signed,Muc cong suat thuc te cua he thong 0 80 120 160 Watt
+HMI_Fan_Speed_Stage,FX2N_UV,D,104,16-bit Signed,Cap toc do quat hut 0=Stop 1=Cap1 2=Cap2
+HMI_Remaining_AfterCool_Sec,FX2N_UV,D,105,16-bit Signed,So giay lam mat After-Cool con lai

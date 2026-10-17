@@ -1,0 +1,7 @@
+bStart	BOOL		Lenh khoi dong chu trinh UV (X020 / HMI)
+bStop	BOOL		Lenh dung he thong (X021 / HMI) - vao chu trinh 180s lam mat
+bSelect80W	BOOL		Che do cong suat 80W (X027 / HMI)
+bSelect120W	BOOL		Che do cong suat 120W (X023 / HMI)
+bSelect160W	BOOL		Che do cong suat 160W Turbo (X024 / HMI)
+bBuzzerStop	BOOL		Lenh tat chuong bao dong (X026 / HMI)
+bResetFault	BOOL		Lenh xoa loi / Reset he thong (HMI)
